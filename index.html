@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechWoofer.com - Domain for Sale</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      animation: fadeInDown 1s ease-out;
+    }
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeIn 1.5s ease-out forwards;
+      animation-delay: 0.5s;
+    }
+    a {
+      background: #ff9800;
+      color: white;
+      padding: 14px 28px;
+      text-decoration: none;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      transition: background 0.3s ease, transform 0.3s ease;
+      opacity: 0;
+      animation: fadeInUp 1.5s ease-out forwards;
+      animation-delay: 1s;
+    }
+    a:hover {
+      background: #e68900;
+      transform: scale(1.05);
+    }
+    footer {
+      position: absolute;
+      bottom: 15px;
+      font-size: 0.9rem;
+      opacity: 0.6;
+      animation: fadeIn 2s ease-out forwards;
+      animation-delay: 1.5s;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .particles {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/stardust.png');
+      opacity: 0.1;
+      animation: moveBackground 30s linear infinite;
+      z-index: -1;
+    }
+    @keyframes moveBackground {
+      from { background-position: 0 0; }
+      to { background-position: 1000px 1000px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles"></div>
+  <h1>TechWoofer.com</h1>
+  <p>This premium domain is available for purchase.</p>
+  <a href="mailto:miralbenizi7@gmail.com?subject=Offer%20for%20TechWoofer.com">Make an Offer</a>
+  <footer>© 2025 TechWoofer.com</footer>
+</body>
+</html>
