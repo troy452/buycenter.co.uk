@@ -9,22 +9,18 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background: #f8f8f8;
+      background: #f9f9f9;
       color: #333;
     }
     header {
       background: #e52e06;
       color: white;
       text-align: center;
-      padding: 1.5rem 1rem;
+      padding: 1rem;
     }
-    header h1 {
+    h1 {
       margin: 0;
-      font-size: 2rem;
-    }
-    header p {
-      margin-top: 0.5rem;
-      font-size: 1rem;
+      font-size: 1.8rem;
     }
     #search-bar {
       display: flex;
@@ -49,11 +45,11 @@
       cursor: pointer;
     }
     button:hover {
-      background: #c82404;
+      background: #cc2504;
     }
     #products {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1rem;
       padding: 1rem;
     }
@@ -63,7 +59,7 @@
       overflow: hidden;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       text-align: center;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s;
     }
     .product:hover {
       transform: scale(1.03);
@@ -103,8 +99,8 @@
     const API_KEY = "f20f471c2dmshce15dfde5f134d6p12d328jsn92daa756db76";
     const API_HOST = "aliexpress-datahub.p.rapidapi.com";
 
-    async function fetchProducts(query = "watches") {
-      const url = `https://${API_HOST}/item_search_1?q=${encodeURIComponent(query)}&page=1`;
+    async function fetchProducts(query = "electronics") {
+      const url = `https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=1`;
       const options = {
         method: "GET",
         headers: {
@@ -116,26 +112,30 @@
       try {
         const res = await fetch(url, options);
         const data = await res.json();
-        console.log("API Response:", data);
-        displayProducts(data.result?.resultList || []);
+        if (data.result && data.result.resultList) {
+          displayProducts(data.result.resultList);
+        } else {
+          document.getElementById("products").innerHTML = "<p>No products found.</p>";
+        }
       } catch (error) {
-        console.error("Fetch error:", error);
         document.getElementById("products").innerHTML = "<p>Failed to load products. Try again later.</p>";
+        console.error(error);
       }
     }
 
     function displayProducts(items) {
+      const container = document.getElementById("products");
       if (!items.length) {
-        document.getElementById("products").innerHTML = "<p>No products found.</p>";
+        container.innerHTML = "<p>No products found.</p>";
         return;
       }
 
-      document.getElementById("products").innerHTML = items.map(item => `
+      container.innerHTML = items.map(item => `
         <div class="product">
           <a href="${item.product_detail_url}" target="_blank">
-            <img src="${item.image || item.product_main_image_url}" alt="${item.title}" />
+            <img src="${item.image_url}" alt="${item.title}" />
             <p>${item.title}</p>
-            <div class="price">$${item.sale_price || item.target_sale_price || "—"}</div>
+            <div class="price">$${item.sale_price}</div>
           </a>
         </div>
       `).join('');
@@ -146,7 +146,7 @@
       fetchProducts(query || "popular");
     }
 
-    fetchProducts(); // Load default items
+    fetchProducts(); // Load default products
   </script>
 </body>
 </html>
