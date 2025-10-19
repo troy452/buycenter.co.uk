@@ -95,45 +95,49 @@
 
   <div id="products">Loading products...</div>
 
-  <script>
-    const API_KEY = "f20f471c2dmshce15dfde5f134d6p12d328jsn92daa756db76";
-    const API_HOST = "aliexpress-datahub.p.rapidapi.com";
+ <script>
+  const API_KEY = "d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
+  const API_HOST = "aliexpress-datahub.p.rapidapi.com";
 
-    async function fetchProducts(query = "trending") {
-      const url = `https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=1`;
-      const options = {
-        method: "GET",
-        headers: {
-          "x-rapidapi-key": API_KEY,
-          "x-rapidapi-host": API_HOST
-        }
-      };
+  async function fetchProducts(query = "trending") {
+    const url = `https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=1`;
 
-      try {
-        const res = await fetch(url, options);
-        const data = await res.json();
-        const items = data?.result?.resultList || [];
-
-        if (!items.length) {
-          document.getElementById("products").innerHTML = "<p>No products found.</p>";
-          return;
-        }
-
-        displayProducts(items);
-      } catch (error) {
-        console.error(error);
-        document.getElementById("products").innerHTML = "<p>Failed to load products. Try again later.</p>";
+    const options = {
+      method: "GET",
+      headers: {
+        "x-rapidapi-key": API_KEY,
+        "x-rapidapi-host": API_HOST
       }
+    };
+
+    try {
+      const res = await fetch(url, options);
+      const data = await res.json();
+      console.log(data);
+
+      // Extract product list correctly
+      const items = data?.result?.resultList?.map(x => x.item) || [];
+
+      if (!items.length) {
+        document.getElementById("products").innerHTML = "<p>No products found.</p>";
+        return;
+      }
+
+      displayProducts(items);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      document.getElementById("products").innerHTML =
+        "<p>Failed to load products. Try again later.</p>";
     }
+  }
 
-    function displayProducts(items) {
-      const container = document.getElementById("products");
-      container.innerHTML = items.map(item => {
+  function displayProducts(items) {
+    document.getElementById("products").innerHTML = items
+      .map(item => {
         const title = item.title || "Unnamed Product";
-        const price = item.sale_price || "N/A";
-        const img = item.image_url ? `https:${item.image_url}` : "https://via.placeholder.com/200";
-        const link = item.product_detail_url ? `https:${item.product_detail_url}` : "#";
-
+        const price = item.sku?.def?.promotionPrice ?? "N/A";
+        const img = item.image ? `https:${item.image}` : "https://via.placeholder.com/200";
+        const link = item.itemUrl ? `https:${item.itemUrl}` : "#";
         return `
           <div class="product">
             <a href="${link}" target="_blank">
@@ -143,15 +147,17 @@
             </a>
           </div>
         `;
-      }).join('');
-    }
+      })
+      .join("");
+  }
 
-    function searchProducts() {
-      const query = document.getElementById("query").value.trim();
-      fetchProducts(query || "trending");
-    }
+  function searchProducts() {
+    const query = document.getElementById("query").value.trim();
+    fetchProducts(query || "trending");
+  }
 
-    fetchProducts(); // Load default products on page load
-  </script>
+  // Load default products on startup
+  fetchProducts();
+</script>
 </body>
 </html>
