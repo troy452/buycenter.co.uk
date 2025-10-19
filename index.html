@@ -5,158 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BuyCenter | AliExpress Deals</title>
 <style>
-  /* --- General Styles --- */
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f5f7;
-    color: #333;
-  }
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  /* --- Header --- */
-  header {
-    background: linear-gradient(90deg,#e52e06,#ff6b35);
-    color: white;
-    padding: 1rem 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  header h1 {
-    margin: 0;
-    font-size: 2rem;
-  }
-  #search-bar {
-    display: flex;
-    width: 100%;
-    max-width: 600px;
-    gap: 0.5rem;
-  }
-  #search-bar input {
-    flex: 1;
-    padding: 0.7rem 1rem;
-    border-radius: 5px 0 0 5px;
-    border: none;
-    font-size: 1rem;
-  }
-  #search-bar button {
-    padding: 0.7rem 1.2rem;
-    border: none;
-    border-radius: 0 5px 5px 0;
-    background-color: #fff;
-    color: #e52e06;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  #search-bar button:hover {
-    background-color: #ffe6dc;
-  }
-
-  /* --- Layout --- */
-  main {
-    display: flex;
-    padding: 2rem;
-    gap: 2rem;
-    flex-wrap: wrap;
-  }
-
-  /* --- Sidebar Filters --- */
-  #filters {
-    flex: 0 0 220px;
-    background: #fff;
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    height: fit-content;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  #filters h3 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
-    color: #e52e06;
-  }
-  #filters button {
-    width: 100%;
-    padding: 0.5rem;
-    border: none;
-    border-radius: 8px;
-    background: #f2f2f2;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  #filters button:hover {
-    background: #e52e06;
-    color: white;
-  }
-  #filters label {
-    font-size: 0.9rem;
-    margin-bottom: 0.3rem;
-  }
-  #filters input[type="range"], #filters select {
-    width: 100%;
-  }
-
-  /* --- Product Grid --- */
-  #products {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
-    gap: 1.5rem;
-  }
-  .product {
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .product:hover {
-    transform: translateY(-5px) scale(1.03);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-  }
-  .product img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    transition: transform 0.3s;
-  }
-  .product:hover img {
-    transform: scale(1.05);
-  }
-  .product-details {
-    padding: 0.7rem 1rem 1rem 1rem;
-  }
-  .product-details p {
-    font-size: 0.95rem;
-    margin: 0.3rem 0;
-    height: 45px;
-    overflow: hidden;
-  }
-  .price {
-    color: #e52e06;
-    font-weight: bold;
-    font-size: 1rem;
-  }
-
-  /* --- Responsive --- */
-  @media (max-width: 900px) {
-    main { flex-direction: column; padding: 1rem; }
-    #filters { flex-direction: row; overflow-x: auto; width: 100%; gap: 0.5rem; }
-    #filters button { flex: 1 0 auto; }
-  }
-  @media (max-width: 600px) {
-    #search-bar { flex-direction: column; }
-    #search-bar input, #search-bar button { width: 100%; border-radius: 8px; }
-    #search-bar button { margin-top: 0.5rem; }
-  }
+  body { margin:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f4f5f7; color:#333; }
+  a { text-decoration:none; color:inherit; }
+  header { background:linear-gradient(90deg,#e52e06,#ff6b35); color:white; padding:1rem 2rem; display:flex; flex-direction:column; align-items:center; gap:0.5rem; }
+  header h1 { margin:0; font-size:2rem; }
+  #search-bar { display:flex; width:100%; max-width:600px; gap:0.5rem; }
+  #search-bar input { flex:1; padding:0.7rem 1rem; border-radius:5px 0 0 5px; border:none; font-size:1rem; }
+  #search-bar button { padding:0.7rem 1.2rem; border:none; border-radius:0 5px 5px 0; background:#fff; color:#e52e06; font-weight:bold; cursor:pointer; transition:0.2s; }
+  #search-bar button:hover { background:#ffe6dc; }
+  main { display:flex; padding:2rem; gap:2rem; flex-wrap:wrap; }
+  #filters { flex:0 0 220px; background:#fff; border-radius:12px; padding:1rem; box-shadow:0 2px 10px rgba(0,0,0,0.1); height:fit-content; display:flex; flex-direction:column; gap:1rem; }
+  #filters h3 { margin:0 0 0.5rem 0; font-size:1.1rem; color:#e52e06; }
+  #filters button { width:100%; padding:0.5rem; border:none; border-radius:8px; background:#f2f2f2; cursor:pointer; transition:0.2s; }
+  #filters button:hover { background:#e52e06; color:white; }
+  #filters label { font-size:0.9rem; margin-bottom:0.3rem; }
+  #filters input[type="range"], #filters select { width:100%; }
+  #categoryTab { display:none; flex-direction:column; gap:0.3rem; margin-top:0.5rem; }
+  #categoryTab button { background:#f9f9f9; padding:0.4rem; font-size:0.9rem; border:none; cursor:pointer; transition:0.2s; }
+  #categoryTab button:hover { background:#e52e06; color:white; }
+  #products { flex:1; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1.5rem; }
+  .product { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; }
+  .product:hover { transform: translateY(-5px) scale(1.03); box-shadow:0 6px 18px rgba(0,0,0,0.15); }
+  .product img { width:100%; height:180px; object-fit:cover; transition:transform 0.3s; }
+  .product:hover img { transform: scale(1.05); }
+  .product-details { padding:0.7rem 1rem 1rem 1rem; }
+  .product-details p { font-size:0.95rem; margin:0.3rem 0; height:45px; overflow:hidden; }
+  .price { color:#e52e06; font-weight:bold; font-size:1rem; }
+  @media(max-width:900px){ main{flex-direction:column; padding:1rem;} #filters{flex-direction:row; overflow-x:auto; width:100%; gap:0.5rem;} #filters button{flex:1 0 auto;} }
+  @media(max-width:600px){ #search-bar{flex-direction:column;} #search-bar input,#search-bar button{width:100%; border-radius:8px;} #search-bar button{margin-top:0.5rem;} }
 </style>
 </head>
 <body>
@@ -172,10 +48,8 @@
 <main>
   <aside id="filters">
     <h3>Categories</h3>
-    <button onclick="applyFilter('trending')">Trending</button>
-    <button onclick="applyFilter('electronics')">Electronics</button>
-    <button onclick="applyFilter('fashion')">Fashion</button>
-    <button onclick="applyFilter('home')">Home</button>
+    <button onclick="toggleCategories()">Categories</button>
+    <div id="categoryTab"></div>
 
     <h3>Price</h3>
     <label>Max: $<span id="priceValue">100</span></label>
@@ -193,38 +67,92 @@
 </main>
 
 <script>
-const API_KEY = "d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
-const API_HOST = "aliexpress-datahub.p.rapidapi.com";
+const APP_KEY = "520572"; // Your AppKey
+const APP_SECRET = "UNLhnad0msmXAUhKlz7duxPKXIxClotQ"; // Your App Secret
+const AFFILIATE_ID = "default"; // Replace with your numeric aff_id
+let currentPage=1, currentQuery="trending", allProducts=[];
 
-let currentPage = 1;
-let currentQuery = "trending";
-let allProducts = [];
+const categories = [
+  "Women's Clothing",
+  "Men's Clothing",
+  "Consumer Electronics",
+  "Home & Garden",
+  "Beauty & Health",
+  "Toys & Hobbies",
+  "Sports & Entertainment",
+  "Automobiles & Motorcycles",
+  "Luggage & Bags",
+  "Jewelry & Watches"
+];
 
-async function fetchProducts(query = "trending", page = 1) {
-  const url = `https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=${page}`;
-  const options = {
-    method: "GET",
-    headers: { "x-rapidapi-key": API_KEY, "x-rapidapi-host": API_HOST }
-  };
-  try {
-    const res = await fetch(url, options);
+// Toggle category tab
+function toggleCategories(){
+  const tab = document.getElementById("categoryTab");
+  if(tab.style.display==="flex"){ tab.style.display="none"; return; }
+  tab.innerHTML = "";
+  categories.forEach(cat=>{
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+    btn.onclick = ()=>applyFilter(cat);
+    tab.appendChild(btn);
+  });
+  tab.style.display = "flex";
+}
+
+// Apply filter
+function applyFilter(cat){
+  document.getElementById("query").value = cat;
+  searchProducts();
+}
+
+// Price filter
+function updatePrice(value){
+  document.getElementById("priceValue").textContent = value;
+  document.querySelectorAll(".product").forEach(p=>{
+    const price=parseFloat(p.dataset.price)||0;
+    p.style.display = price<=value?"block":"none";
+  });
+}
+
+// Sort products
+function sortProducts(type){
+  if(type==="default") return;
+  const container=document.getElementById("products");
+  Array.from(container.querySelectorAll(".product"))
+    .sort((a,b)=>type==="low"?parseFloat(a.dataset.price)-parseFloat(b.dataset.price):parseFloat(b.dataset.price)-parseFloat(a.dataset.price))
+    .forEach(p=>container.appendChild(p));
+}
+
+// Search products
+function searchProducts(){
+  currentQuery=document.getElementById("query").value.trim()||"trending";
+  currentPage=1;
+  fetchProducts(currentQuery,currentPage);
+}
+
+// Fetch products directly from AliExpress Affiliate API
+async function fetchProducts(query="trending", page=1){
+  const url = `https://portals.aliexpress.com/openapi/affiliate/productSearch?app_key=${APP_KEY}&page=${page}&keywords=${encodeURIComponent(query)}&fields=productId,productTitle,salePrice,imageUrl,productUrl`;
+  try{
+    const res = await fetch(url);
     const data = await res.json();
-    const items = data?.result?.resultList?.map(x => x.item || x).filter(Boolean) || [];
-    if (page === 1) allProducts = items; else allProducts = allProducts.concat(items);
+    const items = data?.result?.products || [];
+    if(page===1) allProducts=items; else allProducts=allProducts.concat(items);
     displayProducts(allProducts);
-  } catch (e) {
+  }catch(e){
     console.error(e);
-    if (page === 1) document.getElementById("products").innerHTML = "<p>Failed to load products.</p>";
+    if(page===1) document.getElementById("products").innerHTML="<p>Failed to load products.</p>";
   }
 }
 
-function displayProducts(items) {
-  const container = document.getElementById("products");
-  container.innerHTML = items.map(item => {
-    const title = item.title || "Unnamed Product";
-    const price = parseFloat(item.sku?.def?.promotionPrice ?? item.salePrice ?? 0);
-    const img = item.image ? `https:${item.image}` : "https://via.placeholder.com/200";
-    const link = item.itemUrl ? `https:${item.itemUrl}` : "#";
+// Display products
+function displayProducts(items){
+  const container=document.getElementById("products");
+  container.innerHTML = items.map(item=>{
+    const title=item.productTitle||"Unnamed Product";
+    const price=parseFloat(item.salePrice)||0;
+    const img=item.imageUrl||"https://via.placeholder.com/200";
+    const link = item.productUrl?`${item.productUrl}&aff_fcid=${AFFILIATE_ID}`:"#";
     return `<div class="product" data-price="${price}">
       <a href="${link}" target="_blank">
         <img src="${img}" alt="${title}" loading="lazy">
@@ -239,23 +167,12 @@ function displayProducts(items) {
   sortProducts(document.getElementById("sort").value);
 }
 
-function searchProducts() { currentQuery = document.getElementById("query").value.trim() || "trending"; currentPage=1; fetchProducts(currentQuery,currentPage); }
-function applyFilter(cat) { document.getElementById("query").value = cat; searchProducts(); }
-function updatePrice(value) {
-  document.getElementById("priceValue").textContent = value;
-  document.querySelectorAll(".product").forEach(p => { const price=parseFloat(p.dataset.price)||0; p.style.display = price <= value ? "block":"none"; });
-}
-function sortProducts(type) {
-  if(type==="default") return;
-  const container=document.getElementById("products");
-  Array.from(container.querySelectorAll(".product"))
-    .sort((a,b)=>type==="low"?parseFloat(a.dataset.price)-parseFloat(b.dataset.price):parseFloat(b.dataset.price)-parseFloat(a.dataset.price))
-    .forEach(p=>container.appendChild(p));
-}
-
 // Infinite scroll
-window.addEventListener("scroll", () => {
-  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) { currentPage++; fetchProducts(currentQuery,currentPage); }
+window.addEventListener("scroll",()=>{
+  if(window.innerHeight+window.scrollY >= document.body.offsetHeight-500){
+    currentPage++;
+    fetchProducts(currentQuery,currentPage);
+  }
 });
 
 // Initial load
