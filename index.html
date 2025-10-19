@@ -1,89 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechWoofer.com - Domain for Sale</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="BuyCenter - Discover trending AliExpress products with great deals" />
+  <title>BuyCenter | AliExpress Deals</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background: #e52e06;
       color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       text-align: center;
-      overflow: hidden;
+      padding: 1rem;
     }
     h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      animation: fadeInDown 1s ease-out;
+      margin: 0;
+      font-size: 1.8rem;
     }
-    p {
-      font-size: 1.2rem;
-      margin-bottom: 20px;
-      opacity: 0;
-      animation: fadeIn 1.5s ease-out forwards;
-      animation-delay: 0.5s;
+    #search-bar {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    a {
-      background: #ff9800;
+    input[type="text"] {
+      width: 300px;
+      padding: 0.6rem;
+      border: 1px solid #ddd;
+      border-radius: 5px 0 0 5px;
+      outline: none;
+    }
+    button {
+      padding: 0.6rem 1rem;
+      border: none;
+      background: #e52e06;
       color: white;
-      padding: 14px 28px;
-      text-decoration: none;
-      border-radius: 30px;
-      font-size: 1.1rem;
-      transition: background 0.3s ease, transform 0.3s ease;
-      opacity: 0;
-      animation: fadeInUp 1.5s ease-out forwards;
-      animation-delay: 1s;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
     }
-    a:hover {
-      background: #e68900;
-      transform: scale(1.05);
+    button:hover {
+      background: #cc2504;
     }
-    footer {
-      position: absolute;
-      bottom: 15px;
+    #products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .product {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .product:hover {
+      transform: scale(1.03);
+    }
+    .product img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .product p {
       font-size: 0.9rem;
-      opacity: 0.6;
-      animation: fadeIn 2s ease-out forwards;
-      animation-delay: 1.5s;
+      padding: 0.5rem;
+      height: 40px;
+      overflow: hidden;
     }
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .particles {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: url('https://www.transparenttextures.com/patterns/stardust.png');
-      opacity: 0.1;
-      animation: moveBackground 30s linear infinite;
-      z-index: -1;
-    }
-    @keyframes moveBackground {
-      from { background-position: 0 0; }
-      to { background-position: 1000px 1000px; }
+    .price {
+      color: #e52e06;
+      font-weight: bold;
+      padding-bottom: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <div class="particles"></div>
-  <h1>TechWoofer.com</h1>
-  <p>This premium domain is available for purchase.</p>
-  <a href="mailto:miralbenizi7@gmail.com?subject=Offer%20for%20TechWoofer.com">Make an Offer</a>
-  <footer>© 2025 TechWoofer.com</footer>
+  <header>
+    <h1>BuyCenter - AliExpress Deals</h1>
+    <p>Find the best trending products from AliExpress!</p>
+  </header>
+
+  <div id="search-bar">
+    <input type="text" id="query" placeholder="Search AliExpress products..." />
+    <button onclick="searchProducts()">Search</button>
+  </div>
+
+  <div id="products">Loading products...</div>
+
+  <script>
+    const API_KEY = "d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
+    const API_HOST = "aliexpress-datahub.p.rapidapi.com";
+
+    async function fetchProducts(query = "electronics") {
+      const url = `https://${API_HOST}/item_search?q=${encodeURIComponent(query)}&page=1`;
+      const options = {
+        method: "GET",
+        headers: {
+          "x-rapidapi-key": API_KEY,
+          "x-rapidapi-host": API_HOST
+        }
+      };
+
+      try {
+        const res = await fetch(url, options);
+        const data = await res.json();
+        displayProducts(data.result || []);
+      } catch (error) {
+        document.getElementById("products").innerHTML = "<p>Failed to load products. Try again later.</p>";
+        console.error(error);
+      }
+    }
+
+    function displayProducts(items) {
+      if (!items.length) {
+        document.getElementById("products").innerHTML = "<p>No products found.</p>";
+        return;
+      }
+      document.getElementById("products").innerHTML = items.map(item => `
+        <div class="product">
+          <a href="${item.url}" target="_blank">
+            <img src="${item.image}" alt="${item.title}" />
+            <p>${item.title}</p>
+            <div class="price">${item.sale_price}</div>
+          </a>
+        </div>
+      `).join('');
+    }
+
+    function searchProducts() {
+      const query = document.getElementById("query").value.trim();
+      fetchProducts(query || "popular");
+    }
+
+    fetchProducts(); // Load default products
+  </script>
 </body>
 </html>
