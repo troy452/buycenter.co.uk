@@ -3,144 +3,123 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="BuyCenter - Discover trending AliExpress products with great deals" />
-  <title>BuyCenter | AliExpress Deals</title>
+  <title>AliExpress DataHub Search</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #fafafa;
       margin: 0;
-      background: #f9f9f9;
-      color: #333;
-    }
-    header {
-      background: #e52e06;
-      color: white;
-      text-align: center;
-      padding: 1rem;
+      padding: 20px;
     }
     h1 {
-      margin: 0;
-      font-size: 1.8rem;
+      color: #ff4747;
+      text-align: center;
     }
-    #search-bar {
+    .search-box {
       display: flex;
       justify-content: center;
-      padding: 1rem;
-      background: white;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin: 20px 0;
     }
-    input[type="text"] {
+    input {
       width: 300px;
-      padding: 0.6rem;
-      border: 1px solid #ddd;
-      border-radius: 5px 0 0 5px;
-      outline: none;
+      padding: 10px;
+      border: 2px solid #ff4747;
+      border-radius: 8px 0 0 8px;
     }
     button {
-      padding: 0.6rem 1rem;
-      border: none;
-      background: #e52e06;
+      background: #ff4747;
       color: white;
-      border-radius: 0 5px 5px 0;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 0 8px 8px 0;
       cursor: pointer;
     }
     button:hover {
-      background: #cc2504;
+      background: #e33b3b;
     }
-    #products {
+    .results {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 1rem;
-      padding: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
     }
-    .product {
+    .item {
       background: white;
       border-radius: 10px;
-      overflow: hidden;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 10px;
       text-align: center;
-      transition: transform 0.2s;
+      transition: 0.3s;
     }
-    .product:hover {
+    .item:hover {
       transform: scale(1.03);
     }
-    .product img {
+    img {
       width: 100%;
-      height: 180px;
+      border-radius: 8px;
+      height: 200px;
       object-fit: cover;
     }
-    .product p {
-      font-size: 0.9rem;
-      padding: 0.5rem;
-      height: 40px;
-      overflow: hidden;
-    }
     .price {
-      color: #e52e06;
+      color: #e33b3b;
       font-weight: bold;
-      padding-bottom: 0.5rem;
+      margin-top: 5px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>BuyCenter - AliExpress Deals</h1>
-    <p>Find the best trending products from AliExpress!</p>
-  </header>
-
-  <div id="search-bar">
-    <input type="text" id="query" placeholder="Search AliExpress products..." />
-    <button onclick="searchProducts()">Search</button>
+  <h1>AliExpress Product Search 🔍</h1>
+  <div class="search-box">
+    <input id="searchInput" type="text" placeholder="Search products..." />
+    <button onclick="searchItems()">Search</button>
   </div>
 
-  <div id="products">Loading products...</div>
+  <div id="results" class="results"></div>
 
   <script>
-    const API_KEY = "d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
-    const API_HOST = "aliexpress-datahub.p.rapidapi.com";
+    async function searchItems() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return alert("Please enter a search term!");
 
-    async function fetchProducts(query = "electronics") {
-      const url = `https://${API_HOST}/item_search?q=${encodeURIComponent(query)}&page=1`;
+      const url = `https://aliexpress-datahub.p.rapidapi.com/item_search_1?q=${encodeURIComponent(query)}&page=1&sort=default`;
+
       const options = {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "x-rapidapi-key": API_KEY,
-          "x-rapidapi-host": API_HOST
+          'x-rapidapi-key': 'd94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1',
+          'x-rapidapi-host': 'aliexpress-datahub.p.rapidapi.com'
         }
       };
 
       try {
         const res = await fetch(url, options);
         const data = await res.json();
-        displayProducts(data.result || []);
-      } catch (error) {
-        document.getElementById("products").innerHTML = "<p>Failed to load products. Try again later.</p>";
-        console.error(error);
+        console.log(data);
+        const items = data.result?.resultList || [];
+        const container = document.getElementById('results');
+        container.innerHTML = '';
+
+        if (items.length === 0) {
+          container.innerHTML = '<p>No items found.</p>';
+          return;
+        }
+
+        items.forEach(item => {
+          const el = document.createElement('div');
+          el.className = 'item';
+          el.innerHTML = `
+            <img src="${item.image || ''}" alt="Product image" />
+            <h3>${item.title}</h3>
+            <p class="price">$${item.price}</p>
+            <a href="${item.productUrl}" target="_blank">View on AliExpress</a>
+          `;
+          container.appendChild(el);
+        });
+
+      } catch (err) {
+        console.error(err);
+        alert('Error fetching data.');
       }
     }
-
-    function displayProducts(items) {
-      if (!items.length) {
-        document.getElementById("products").innerHTML = "<p>No products found.</p>";
-        return;
-      }
-      document.getElementById("products").innerHTML = items.map(item => `
-        <div class="product">
-          <a href="${item.url}" target="_blank">
-            <img src="${item.image}" alt="${item.title}" />
-            <p>${item.title}</p>
-            <div class="price">${item.sale_price}</div>
-          </a>
-        </div>
-      `).join('');
-    }
-
-    function searchProducts() {
-      const query = document.getElementById("query").value.trim();
-      fetchProducts(query || "popular");
-    }
-
-    fetchProducts(); // Load default products
   </script>
 </body>
 </html>
