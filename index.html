@@ -31,6 +31,7 @@
   .product-details { padding:0.7rem 1rem 1rem 1rem; }
   .product-details p { font-size:0.95rem; margin:0.3rem 0; height:45px; overflow:hidden; }
   .price { color:#e52e06; font-weight:bold; font-size:1rem; }
+  #notice { max-width:900px; margin:0.6rem auto; font-size:0.9rem; color:#444; text-align:center; }
   @media(max-width:900px){ main{flex-direction:column; padding:1rem;} #filters{flex-direction:row; overflow-x:auto; width:100%; gap:0.5rem;} #filters button{flex:1 0 auto;} }
   @media(max-width:600px){ #search-bar{flex-direction:column;} #search-bar input,#search-bar button{width:100%; border-radius:8px;} #search-bar button{margin-top:0.5rem;} }
 </style>
@@ -40,23 +41,26 @@
 <header>
   <h1>BuyCenter</h1>
   <div id="search-bar">
-    <input type="text" id="query" placeholder="Search products...">
-    <button onclick="searchProducts()">Search</button>
+    <input type="text" id="query" placeholder="Search products..." value="trending">
+    <button id="searchBtn">Search</button>
+  </div>
+  <div id="notice">
+    Live products via <strong>Cloudflare Worker</strong>. Affiliate links included.
   </div>
 </header>
 
 <main>
   <aside id="filters">
     <h3>Categories</h3>
-    <button onclick="toggleCategories()">Categories</button>
+    <button id="catToggle">Categories</button>
     <div id="categoryTab"></div>
 
     <h3>Price</h3>
     <label>Max: $<span id="priceValue">100</span></label>
-    <input type="range" id="priceRange" min="1" max="1000" value="100" oninput="updatePrice(this.value)">
+    <input type="range" id="priceRange" min="1" max="1000" value="100">
 
     <h3>Sort</h3>
-    <select id="sort" onchange="sortProducts(this.value)">
+    <select id="sort">
       <option value="default">Default</option>
       <option value="low">Price: Low to High</option>
       <option value="high">Price: High to Low</option>
@@ -67,98 +71,85 @@
 </main>
 
 <script>
-const APP_KEY = "520572"; // Your AppKey
-const AFFILIATE_ID = "0604199028011995"; // Numeric affiliate tracking ID
-let currentPage = 1, currentQuery = "trending", allProducts = [];
+// ========== CONFIG ==========
+const WORKER_URL = 'https://aliexpress-proxy.your-subdomain.workers.dev'; // your Cloudflare Worker URL
+let currentPage = 1;
+let currentQuery = "trending";
+let allProducts = [];
+const categories = ["Women's Clothing","Men's Clothing","Consumer Electronics","Home & Garden","Beauty & Health","Toys & Hobbies","Sports & Entertainment","Automobiles & Motorcycles","Luggage & Bags","Jewelry & Watches"];
+// ============================
 
-const categories = [
-  "Women's Clothing","Men's Clothing","Consumer Electronics","Home & Garden",
-  "Beauty & Health","Toys & Hobbies","Sports & Entertainment",
-  "Automobiles & Motorcycles","Luggage & Bags","Jewelry & Watches"
-];
+// UI wiring
+document.getElementById('catToggle').addEventListener('click', toggleCategories);
+document.getElementById('searchBtn').addEventListener('click', searchProducts);
+document.getElementById('priceRange').addEventListener('input', e=>updatePrice(e.target.value));
+document.getElementById('sort').addEventListener('change', e=>sortProducts(e.target.value));
 
-// Toggle category tab
-function toggleCategories() {
+function toggleCategories(){
   const tab = document.getElementById("categoryTab");
-  if(tab.style.display === "flex") { tab.style.display="none"; return; }
+  if(tab.style.display==="flex"){ tab.style.display="none"; return; }
   tab.innerHTML = "";
-  categories.forEach(cat => {
-    const btn = document.createElement("button");
+  categories.forEach(cat=>{
+    const btn = document.createElement('button');
     btn.textContent = cat;
-    btn.onclick = () => applyFilter(cat);
+    btn.onclick = ()=>{ document.getElementById('query').value = cat; searchProducts(); };
     tab.appendChild(btn);
   });
   tab.style.display = "flex";
 }
 
-// Apply filter
-function applyFilter(cat) {
-  document.getElementById("query").value = cat;
-  searchProducts();
-}
-
-// Price filter
 function updatePrice(value){
-  document.getElementById("priceValue").textContent = value;
-  document.querySelectorAll(".product").forEach(p=>{
+  document.getElementById('priceValue').textContent = value;
+  document.querySelectorAll('.product').forEach(p=>{
     const price = parseFloat(p.dataset.price) || 0;
-    p.style.display = price <= value ? "block" : "none";
+    p.style.display = price <= value ? 'block' : 'none';
   });
 }
 
-// Sort products
 function sortProducts(type){
   if(type==="default") return;
-  const container = document.getElementById("products");
-  Array.from(container.querySelectorAll(".product"))
-    .sort((a,b)=>type==="low"?parseFloat(a.dataset.price)-parseFloat(b.dataset.price):parseFloat(b.dataset.price)-parseFloat(a.dataset.price))
+  const container = document.getElementById('products');
+  Array.from(container.querySelectorAll('.product'))
+    .sort((a,b)=> type==='low' ? parseFloat(a.dataset.price)-parseFloat(b.dataset.price) : parseFloat(b.dataset.price)-parseFloat(a.dataset.price))
     .forEach(p=>container.appendChild(p));
 }
 
-// Search products
 function searchProducts(){
-  currentQuery = document.getElementById("query").value.trim() || "trending";
+  currentQuery = document.getElementById('query').value.trim() || "trending";
   currentPage = 1;
-  fetchProducts(currentQuery,currentPage);
+  allProducts = [];
+  fetchProducts(currentQuery, currentPage);
 }
 
-// Fetch products via server-side proxy
 async function fetchProducts(query="trending", page=1){
-  // This endpoint should exist on your server and securely include APP_SECRET
-  const url = `/api/aliexpress?query=${encodeURIComponent(query)}&page=${page}&app_key=${APP_KEY}`;
-  try{
-    const res = await fetch(url);
+  const container = document.getElementById('products');
+  container.innerHTML = '<p>Loading products…</p>';
+
+  try {
+    const res = await fetch(`${WORKER_URL}?query=${encodeURIComponent(query)}&page=${page}`);
     const data = await res.json();
     const items = data?.result?.products || [];
-    if(page === 1) allProducts = items; else allProducts = allProducts.concat(items);
+    if(page===1) allProducts = items; else allProducts = allProducts.concat(items);
     displayProducts(allProducts);
-  }catch(e){
-    console.error(e);
-    if(page === 1) document.getElementById("products").innerHTML="<p>Failed to load products.</p>";
+  } catch(err){
+    console.error('Worker fetch failed:', err);
+    container.innerHTML = '<p>Unable to load products live. See console for details.</p>';
   }
 }
 
-// Display products
 function displayProducts(items){
-  const container = document.getElementById("products");
-  container.innerHTML = items.map(item => {
-    const title = item.productTitle || "Unnamed Product";
+  const container = document.getElementById('products');
+  if(!items || items.length===0){ container.innerHTML='<p>No products found.</p>'; return; }
+  container.innerHTML = items.map(item=>{
+    const title = item.productTitle || 'Unnamed Product';
     const price = parseFloat(item.salePrice) || 0;
-    const img = item.imageUrl || "https://via.placeholder.com/200";
-
-    // Safely append affiliate ID
-    let productLink = item.productUrl || "#";
-    try {
-      const urlObj = new URL(productLink);
-      urlObj.searchParams.set("aff_fcid", AFFILIATE_ID);
-      productLink = urlObj.toString();
-    } catch(e) { console.warn("Invalid product URL", productLink); }
-
+    const img = item.imageUrl || 'https://via.placeholder.com/400x300?text=No+Image';
+    const link = item.productUrl || '#';
     return `<div class="product" data-price="${price}">
-      <a href="${productLink}" target="_blank">
-        <img src="${img}" alt="${title}" loading="lazy">
+      <a href="${link}" target="_blank" rel="noopener noreferrer">
+        <img src="${img}" alt="${escapeHtml(title)}" loading="lazy">
         <div class="product-details">
-          <p>${title}</p>
+          <p>${escapeHtml(title)}</p>
           <div class="price">$${price}</div>
         </div>
       </a>
@@ -168,9 +159,12 @@ function displayProducts(items){
   sortProducts(document.getElementById("sort").value);
 }
 
+// Utility to escape HTML
+function escapeHtml(text){ return text.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
 // Infinite scroll
-window.addEventListener("scroll", () => {
-  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500){
+window.addEventListener("scroll", ()=>{
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight-500){
     currentPage++;
     fetchProducts(currentQuery, currentPage);
   }
@@ -179,6 +173,5 @@ window.addEventListener("scroll", () => {
 // Initial load
 fetchProducts();
 </script>
-
 </body>
 </html>
