@@ -68,39 +68,31 @@
 
 <script>
 const APP_KEY = "520572"; // Your AppKey
-const APP_SECRET = "UNLhnad0msmXAUhKlz7duxPKXIxClotQ"; // Your App Secret
-const AFFILIATE_ID = "0604199028011995"; // Replace with your numeric aff_id
-let currentPage=1, currentQuery="trending", allProducts=[];
+const AFFILIATE_ID = "0604199028011995"; // Numeric affiliate tracking ID
+let currentPage = 1, currentQuery = "trending", allProducts = [];
 
 const categories = [
-  "Women's Clothing",
-  "Men's Clothing",
-  "Consumer Electronics",
-  "Home & Garden",
-  "Beauty & Health",
-  "Toys & Hobbies",
-  "Sports & Entertainment",
-  "Automobiles & Motorcycles",
-  "Luggage & Bags",
-  "Jewelry & Watches"
+  "Women's Clothing","Men's Clothing","Consumer Electronics","Home & Garden",
+  "Beauty & Health","Toys & Hobbies","Sports & Entertainment",
+  "Automobiles & Motorcycles","Luggage & Bags","Jewelry & Watches"
 ];
 
 // Toggle category tab
-function toggleCategories(){
+function toggleCategories() {
   const tab = document.getElementById("categoryTab");
-  if(tab.style.display==="flex"){ tab.style.display="none"; return; }
+  if(tab.style.display === "flex") { tab.style.display="none"; return; }
   tab.innerHTML = "";
-  categories.forEach(cat=>{
+  categories.forEach(cat => {
     const btn = document.createElement("button");
     btn.textContent = cat;
-    btn.onclick = ()=>applyFilter(cat);
+    btn.onclick = () => applyFilter(cat);
     tab.appendChild(btn);
   });
   tab.style.display = "flex";
 }
 
 // Apply filter
-function applyFilter(cat){
+function applyFilter(cat) {
   document.getElementById("query").value = cat;
   searchProducts();
 }
@@ -109,15 +101,15 @@ function applyFilter(cat){
 function updatePrice(value){
   document.getElementById("priceValue").textContent = value;
   document.querySelectorAll(".product").forEach(p=>{
-    const price=parseFloat(p.dataset.price)||0;
-    p.style.display = price<=value?"block":"none";
+    const price = parseFloat(p.dataset.price) || 0;
+    p.style.display = price <= value ? "block" : "none";
   });
 }
 
 // Sort products
 function sortProducts(type){
   if(type==="default") return;
-  const container=document.getElementById("products");
+  const container = document.getElementById("products");
   Array.from(container.querySelectorAll(".product"))
     .sort((a,b)=>type==="low"?parseFloat(a.dataset.price)-parseFloat(b.dataset.price):parseFloat(b.dataset.price)-parseFloat(a.dataset.price))
     .forEach(p=>container.appendChild(p));
@@ -125,36 +117,45 @@ function sortProducts(type){
 
 // Search products
 function searchProducts(){
-  currentQuery=document.getElementById("query").value.trim()||"trending";
-  currentPage=1;
+  currentQuery = document.getElementById("query").value.trim() || "trending";
+  currentPage = 1;
   fetchProducts(currentQuery,currentPage);
 }
 
-// Fetch products directly from AliExpress Affiliate API
+// Fetch products via server-side proxy
 async function fetchProducts(query="trending", page=1){
-  const url = `https://portals.aliexpress.com/openapi/affiliate/productSearch?app_key=${APP_KEY}&page=${page}&keywords=${encodeURIComponent(query)}&fields=productId,productTitle,salePrice,imageUrl,productUrl`;
+  // This endpoint should exist on your server and securely include APP_SECRET
+  const url = `/api/aliexpress?query=${encodeURIComponent(query)}&page=${page}&app_key=${APP_KEY}`;
   try{
     const res = await fetch(url);
     const data = await res.json();
     const items = data?.result?.products || [];
-    if(page===1) allProducts=items; else allProducts=allProducts.concat(items);
+    if(page === 1) allProducts = items; else allProducts = allProducts.concat(items);
     displayProducts(allProducts);
   }catch(e){
     console.error(e);
-    if(page===1) document.getElementById("products").innerHTML="<p>Failed to load products.</p>";
+    if(page === 1) document.getElementById("products").innerHTML="<p>Failed to load products.</p>";
   }
 }
 
 // Display products
 function displayProducts(items){
-  const container=document.getElementById("products");
-  container.innerHTML = items.map(item=>{
-    const title=item.productTitle||"Unnamed Product";
-    const price=parseFloat(item.salePrice)||0;
-    const img=item.imageUrl||"https://via.placeholder.com/200";
-    const link = item.productUrl?`${item.productUrl}&aff_fcid=${AFFILIATE_ID}`:"#";
+  const container = document.getElementById("products");
+  container.innerHTML = items.map(item => {
+    const title = item.productTitle || "Unnamed Product";
+    const price = parseFloat(item.salePrice) || 0;
+    const img = item.imageUrl || "https://via.placeholder.com/200";
+
+    // Safely append affiliate ID
+    let productLink = item.productUrl || "#";
+    try {
+      const urlObj = new URL(productLink);
+      urlObj.searchParams.set("aff_fcid", AFFILIATE_ID);
+      productLink = urlObj.toString();
+    } catch(e) { console.warn("Invalid product URL", productLink); }
+
     return `<div class="product" data-price="${price}">
-      <a href="${link}" target="_blank">
+      <a href="${productLink}" target="_blank">
         <img src="${img}" alt="${title}" loading="lazy">
         <div class="product-details">
           <p>${title}</p>
@@ -168,10 +169,10 @@ function displayProducts(items){
 }
 
 // Infinite scroll
-window.addEventListener("scroll",()=>{
-  if(window.innerHeight+window.scrollY >= document.body.offsetHeight-500){
+window.addEventListener("scroll", () => {
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500){
     currentPage++;
-    fetchProducts(currentQuery,currentPage);
+    fetchProducts(currentQuery, currentPage);
   }
 });
 
