@@ -31,7 +31,6 @@
   .product-details { padding:0.7rem 1rem 1rem 1rem; }
   .product-details p { font-size:0.95rem; margin:0.3rem 0; height:45px; overflow:hidden; }
   .price { color:#e52e06; font-weight:bold; font-size:1rem; }
-  #notice { max-width:900px; margin:0.6rem auto; font-size:0.9rem; color:#444; text-align:center; }
   @media(max-width:900px){ main{flex-direction:column; padding:1rem;} #filters{flex-direction:row; overflow-x:auto; width:100%; gap:0.5rem;} #filters button{flex:1 0 auto;} }
   @media(max-width:600px){ #search-bar{flex-direction:column;} #search-bar input,#search-bar button{width:100%; border-radius:8px;} #search-bar button{margin-top:0.5rem;} }
 </style>
@@ -41,26 +40,23 @@
 <header>
   <h1>BuyCenter</h1>
   <div id="search-bar">
-    <input type="text" id="query" placeholder="Search products..." value="trending">
-    <button id="searchBtn">Search</button>
-  </div>
-  <div id="notice">
-    Live products via <strong>Cloudflare Worker</strong>. Affiliate links included.
+    <input type="text" id="query" placeholder="Search products...">
+    <button onclick="searchProducts()">Search</button>
   </div>
 </header>
 
 <main>
   <aside id="filters">
     <h3>Categories</h3>
-    <button id="catToggle">Categories</button>
+    <button onclick="toggleCategories()">Categories</button>
     <div id="categoryTab"></div>
 
     <h3>Price</h3>
     <label>Max: $<span id="priceValue">100</span></label>
-    <input type="range" id="priceRange" min="1" max="1000" value="100">
+    <input type="range" id="priceRange" min="1" max="1000" value="100" oninput="updatePrice(this.value)">
 
     <h3>Sort</h3>
-    <select id="sort">
+    <select id="sort" onchange="sortProducts(this.value)">
       <option value="default">Default</option>
       <option value="low">Price: Low to High</option>
       <option value="high">Price: High to Low</option>
@@ -71,85 +67,76 @@
 </main>
 
 <script>
-// ========== CONFIG ==========
-const WORKER_URL = 'https://aliexpress-proxy.miralbenizi7.workers.dev/'; // your Cloudflare Worker URL
-let currentPage = 1;
-let currentQuery = "trending";
+const WORKER_URL = "https://your-worker-subdomain.workers.dev"; // Replace with your Worker URL
 let allProducts = [];
-const categories = ["Women's Clothing","Men's Clothing","Consumer Electronics","Home & Garden","Beauty & Health","Toys & Hobbies","Sports & Entertainment","Automobiles & Motorcycles","Luggage & Bags","Jewelry & Watches"];
-// ============================
-
-// UI wiring
-document.getElementById('catToggle').addEventListener('click', toggleCategories);
-document.getElementById('searchBtn').addEventListener('click', searchProducts);
-document.getElementById('priceRange').addEventListener('input', e=>updatePrice(e.target.value));
-document.getElementById('sort').addEventListener('change', e=>sortProducts(e.target.value));
+const categories = [
+  "Women's Clothing","Men's Clothing","Consumer Electronics","Home & Garden","Beauty & Health",
+  "Toys & Hobbies","Sports & Entertainment","Automobiles & Motorcycles","Luggage & Bags","Jewelry & Watches"
+];
 
 function toggleCategories(){
   const tab = document.getElementById("categoryTab");
   if(tab.style.display==="flex"){ tab.style.display="none"; return; }
   tab.innerHTML = "";
   categories.forEach(cat=>{
-    const btn = document.createElement('button');
+    const btn = document.createElement("button");
     btn.textContent = cat;
-    btn.onclick = ()=>{ document.getElementById('query').value = cat; searchProducts(); };
+    btn.onclick = ()=>applyFilter(cat);
     tab.appendChild(btn);
   });
   tab.style.display = "flex";
 }
 
+function applyFilter(cat){
+  document.getElementById("query").value = cat;
+  searchProducts();
+}
+
 function updatePrice(value){
-  document.getElementById('priceValue').textContent = value;
-  document.querySelectorAll('.product').forEach(p=>{
-    const price = parseFloat(p.dataset.price) || 0;
-    p.style.display = price <= value ? 'block' : 'none';
+  document.getElementById("priceValue").textContent = value;
+  document.querySelectorAll(".product").forEach(p=>{
+    const price=parseFloat(p.dataset.price)||0;
+    p.style.display = price<=value?"block":"none";
   });
 }
 
 function sortProducts(type){
   if(type==="default") return;
-  const container = document.getElementById('products');
-  Array.from(container.querySelectorAll('.product'))
-    .sort((a,b)=> type==='low' ? parseFloat(a.dataset.price)-parseFloat(b.dataset.price) : parseFloat(b.dataset.price)-parseFloat(a.dataset.price))
+  const container=document.getElementById("products");
+  Array.from(container.querySelectorAll(".product"))
+    .sort((a,b)=>type==="low"?parseFloat(a.dataset.price)-parseFloat(b.dataset.price):parseFloat(b.dataset.price)-parseFloat(a.dataset.price))
     .forEach(p=>container.appendChild(p));
 }
 
-function searchProducts(){
-  currentQuery = document.getElementById('query').value.trim() || "trending";
-  currentPage = 1;
-  allProducts = [];
-  fetchProducts(currentQuery, currentPage);
+async function searchProducts(){
+  const query=document.getElementById("query").value.trim()||"trending";
+  fetchProducts(query);
 }
 
-async function fetchProducts(query="trending", page=1){
-  const container = document.getElementById('products');
-  container.innerHTML = '<p>Loading products…</p>';
-
-  try {
-    const res = await fetch(`${WORKER_URL}?query=${encodeURIComponent(query)}&page=${page}`);
+async function fetchProducts(query){
+  try{
+    const res = await fetch(WORKER_URL);
     const data = await res.json();
-    const items = data?.result?.products || [];
-    if(page===1) allProducts = items; else allProducts = allProducts.concat(items);
+    allProducts = data.result.products || [];
     displayProducts(allProducts);
-  } catch(err){
-    console.error('Worker fetch failed:', err);
-    container.innerHTML = '<p>Unable to load products live. See console for details.</p>';
+  }catch(e){
+    console.error(e);
+    document.getElementById("products").innerHTML="<p>Unable to load products live.</p>";
   }
 }
 
 function displayProducts(items){
-  const container = document.getElementById('products');
-  if(!items || items.length===0){ container.innerHTML='<p>No products found.</p>'; return; }
+  const container=document.getElementById("products");
   container.innerHTML = items.map(item=>{
-    const title = item.productTitle || 'Unnamed Product';
-    const price = parseFloat(item.salePrice) || 0;
-    const img = item.imageUrl || 'https://via.placeholder.com/400x300?text=No+Image';
-    const link = item.productUrl || '#';
+    const title=item.productTitle||"Unnamed Product";
+    const price=parseFloat(item.salePrice)||0;
+    const img=item.imageUrl||"https://via.placeholder.com/200";
+    const link=item.productUrl||"#";
     return `<div class="product" data-price="${price}">
-      <a href="${link}" target="_blank" rel="noopener noreferrer">
-        <img src="${img}" alt="${escapeHtml(title)}" loading="lazy">
+      <a href="${link}" target="_blank">
+        <img src="${img}" alt="${title}" loading="lazy">
         <div class="product-details">
-          <p>${escapeHtml(title)}</p>
+          <p>${title}</p>
           <div class="price">$${price}</div>
         </div>
       </a>
@@ -159,19 +146,9 @@ function displayProducts(items){
   sortProducts(document.getElementById("sort").value);
 }
 
-// Utility to escape HTML
-function escapeHtml(text){ return text.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-// Infinite scroll
-window.addEventListener("scroll", ()=>{
-  if(window.innerHeight + window.scrollY >= document.body.offsetHeight-500){
-    currentPage++;
-    fetchProducts(currentQuery, currentPage);
-  }
-});
-
 // Initial load
-fetchProducts();
+fetchProducts("trending");
 </script>
+
 </body>
 </html>
