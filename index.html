@@ -28,11 +28,180 @@ header h1 { margin:0; font-size:2rem; }
 #search-bar button:hover { background-color:#ffe6dc; }
 main { display:flex; padding:2rem; gap:2rem; flex-wrap:wrap; }
 #filters {
-  flex: 0 0 240px; background:#fff; border-radius:12px;
-  padding:1rem; box-shadow:0 2px 10px rgba(0,0,0,0.1);
-  display:flex; flex-direction:column; gap:1rem; height:fit-content;
+  flex:0 0 240px;
+  background:#fff;
+  border-radius:12px;
+  padding:1rem;
+  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+  height:fit-content;
 }
 #filters h3 { margin:0 0 0.5rem 0; font-size:1.1rem; color:#e52e06; }
 #categories-tab {
   display:none;
-  flex-direction:
+  flex-direction:column;
+  gap:0.3rem;
+  border-top:1px solid #eee;
+  padding-top:0.5rem;
+}
+#categories-tab button {
+  background:#f9f9f9;
+  padding:0.5rem;
+  font-size:0.95rem;
+  text-align:left;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  transition:0.2s;
+}
+#categories-tab button:hover { background:#e52e06; color:white; }
+#products {
+  flex:1;
+  display:grid;
+  grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+  gap:1.5rem;
+}
+.product {
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.product:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow:0 6px 18px rgba(0,0,0,0.15);
+}
+.product img { width:100%; height:180px; object-fit:cover; transition: transform 0.3s; }
+.product:hover img { transform: scale(1.05); }
+.product-details { padding:0.7rem 1rem 1rem 1rem; }
+.product-details p { font-size:0.95rem; margin:0.3rem 0; height:45px; overflow:hidden; }
+.price { color:#e52e06; font-weight:bold; font-size:1rem; }
+</style>
+</head>
+<body>
+
+<header>
+<h1>BuyCenter</h1>
+<div id="search-bar">
+  <input type="text" id="query" placeholder="Search products...">
+  <button onclick="searchProducts()">Search</button>
+</div>
+</header>
+
+<main>
+<aside id="filters">
+  <h3>Filters</h3>
+  <button onclick="toggleCategories()">Categories</button>
+  <div id="categories-tab">
+    <button onclick="applyFilter('Women\'s Clothing')">Women's Clothing</button>
+    <button onclick="applyFilter('Men\'s Clothing')">Men's Clothing</button>
+    <button onclick="applyFilter('Consumer Electronics')">Consumer Electronics</button>
+    <button onclick="applyFilter('Home & Garden')">Home & Garden</button>
+    <button onclick="applyFilter('Beauty & Health')">Beauty & Health</button>
+    <button onclick="applyFilter('Toys & Hobbies')">Toys & Hobbies</button>
+    <button onclick="applyFilter('Sports & Entertainment')">Sports & Entertainment</button>
+    <button onclick="applyFilter('Automobiles & Motorcycles')">Automobiles & Motorcycles</button>
+    <button onclick="applyFilter('Luggage & Bags')">Luggage & Bags</button>
+    <button onclick="applyFilter('Jewelry & Watches')">Jewelry & Watches</button>
+  </div>
+
+  <h3>Price</h3>
+  <label>Max: $<span id="priceValue">100</span></label>
+  <input type="range" id="priceRange" min="1" max="1000" value="100" oninput="updatePrice(this.value)">
+
+  <h3>Sort</h3>
+  <select id="sort" onchange="sortProducts(this.value)">
+    <option value="default">Default</option>
+    <option value="low">Price: Low to High</option>
+    <option value="high">Price: High to Low</option>
+  </select>
+</aside>
+
+<section id="products">Loading products...</section>
+</main>
+
+<script>
+const API_KEY="d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
+const API_HOST="aliexpress-datahub.p.rapidapi.com";
+let currentPage=1, currentQuery="trending", allProducts=[];
+
+function toggleCategories(){
+  const tab=document.getElementById('categories-tab');
+  tab.style.display = (tab.style.display==='flex') ? 'none' : 'flex';
+}
+
+async function fetchProducts(query="trending", page=1){
+  const url=`https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=${page}`;
+  try{
+    const res=await fetch(url,{
+      method:"GET",
+      headers:{"x-rapidapi-key":API_KEY,"x-rapidapi-host":API_HOST}
+    });
+    const data=await res.json();
+    const items=data?.result?.resultList?.map(x=>x.item||x).filter(Boolean)||[];
+    if(page===1) allProducts=items; else allProducts=allProducts.concat(items);
+    displayProducts(allProducts);
+  }catch(e){console.error(e); if(page===1) document.getElementById("products").innerHTML="<p>Failed to load products.</p>";}
+}
+
+function displayProducts(items){
+  const container=document.getElementById("products");
+  container.innerHTML=items.map(item=>{
+    const title=item.title||"Unnamed Product";
+    const price=parseFloat(item.sku?.def?.promotionPrice??item.salePrice??0);
+    const img=item.image?`https:${item.image}`:"https://via.placeholder.com/200";
+    const link=item.itemUrl?`https:${item.itemUrl}`:"#";
+    return `<div class="product" data-price="${price}">
+      <a href="${link}" target="_blank">
+        <img src="${img}" alt="${title}" loading="lazy">
+        <div class="product-details">
+          <p>${title}</p>
+          <div class="price">$${price}</div>
+        </div>
+      </a>
+    </div>`;
+  }).join('');
+  updatePrice(document.getElementById("priceRange").value);
+  sortProducts(document.getElementById("sort").value);
+}
+
+function searchProducts(){
+  currentQuery=document.getElementById("query").value.trim()||"trending";
+  currentPage=1;
+  fetchProducts(currentQuery,currentPage);
+}
+
+function applyFilter(category){
+  document.getElementById("query").value=category;
+  searchProducts();
+}
+
+function updatePrice(value){
+  document.getElementById("priceValue").textContent=value;
+  document.querySelectorAll(".product").forEach(p=>{
+    const price=parseFloat(p.dataset.price)||0;
+    p.style.display=price<=value?"block":"none";
+  });
+}
+
+function sortProducts(type){
+  if(type==="default") return;
+  const container=document.getElementById("products");
+  Array.from(container.querySelectorAll(".product"))
+    .sort((a,b)=>type==="low"?parseFloat(a.dataset.price)-parseFloat(b.dataset.price):parseFloat(b.dataset.price)-parseFloat(a.dataset.price))
+    .forEach(p=>container.appendChild(p));
+}
+
+window.addEventListener("scroll",()=>{
+  if(window.innerHeight+window.scrollY>=document.body.offsetHeight-500){ currentPage++; fetchProducts(currentQuery,currentPage); }
+});
+
+// Initial load
+fetchProducts();
+</script>
+
+</body>
+</html>
