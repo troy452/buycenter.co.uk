@@ -106,58 +106,70 @@
 
   <div id="products">Loading products...</div>
 
-  <script>
-    const API_KEY = "d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
-    const API_HOST = "aliexpress-datahub.p.rapidapi.com";
+ <script>
+  const API_KEY = "d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
+  const API_HOST = "aliexpress-datahub.p.rapidapi.com";
 
-    async function fetchProducts(query = "trending") {
-      const url = `https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=1`;
+  async function fetchProducts(query = "trending") {
+    const url = `https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=1`;
 
-      const options = {
-        method: "GET",
-        headers: {
-          "x-rapidapi-key": API_KEY,
-          "x-rapidapi-host": API_HOST
-        }
-      };
-
-      try {
-        const res = await fetch(url, options);
-        const data = await res.json();
-        console.log(data);
-
-        if (!data.result || !data.result.resultList) {
-          document.getElementById("products").innerHTML = "<p>No products found.</p>";
-          return;
-        }
-
-        const items = data.result.resultList;
-        displayProducts(items);
-      } catch (error) {
-        console.error(error);
-        document.getElementById("products").innerHTML = "<p>Failed to load products. Try again later.</p>";
+    const options = {
+      method: "GET",
+      headers: {
+        "x-rapidapi-key": API_KEY,
+        "x-rapidapi-host": API_HOST
       }
-    }
+    };
 
-    function displayProducts(items) {
-      document.getElementById("products").innerHTML = items.map(item => `
-        <div class="product">
-          <a href="${item.product_detail_url}" target="_blank">
-            <img src="${item.image || item.product_main_image_url}" alt="${item.title || item.product_title}" />
-            <p>${item.title || item.product_title}</p>
-            <div class="price">$${item.sale_price || item.app_sale_price || 'N/A'}</div>
-          </a>
-        </div>
-      `).join('');
-    }
+    try {
+      const res = await fetch(url, options);
+      const data = await res.json();
+      console.log(data);
 
-    function searchProducts() {
-      const query = document.getElementById("query").value.trim();
-      fetchProducts(query || "trending");
-    }
+      // Extract product list correctly
+      const items = data?.result?.resultList?.map(x => x.item) || [];
 
-    fetchProducts(); // Load default products
-  </script>
+      if (!items.length) {
+        document.getElementById("products").innerHTML = "<p>No products found.</p>";
+        return;
+      }
+
+      displayProducts(items);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      document.getElementById("products").innerHTML =
+        "<p>Failed to load products. Try again later.</p>";
+    }
+  }
+
+  function displayProducts(items) {
+    document.getElementById("products").innerHTML = items
+      .map(item => {
+        const title = item.title || "Unnamed Product";
+        const price = item.sku?.def?.promotionPrice ?? "N/A";
+        const img = item.image ? `https:${item.image}` : "https://via.placeholder.com/200";
+        const link = item.itemUrl ? `https:${item.itemUrl}` : "#";
+        return `
+          <div class="product">
+            <a href="${link}" target="_blank">
+              <img src="${img}" alt="${title}" />
+              <p>${title}</p>
+              <div class="price">$${price}</div>
+            </a>
+          </div>
+        `;
+      })
+      .join("");
+  }
+
+  function searchProducts() {
+    const query = document.getElementById("query").value.trim();
+    fetchProducts(query || "trending");
+  }
+
+  // Load default products on startup
+  fetchProducts();
+</script>
 </body>
 </html>
 
