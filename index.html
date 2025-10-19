@@ -1,249 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="BuyCenter - Discover trending AliExpress products with great deals" />
-  <title>BuyCenter | AliExpress Deals</title>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      background: #f5f5f5;
-      color: #333;
-    }
-    header {
-      background: #e52e06;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-    #search-bar {
-      display: flex;
-      justify-content: center;
-      padding: 1rem;
-      gap: 0.5rem;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="BuyCenter - Discover trending AliExpress products with great deals" />
+<title>BuyCenter | AliExpress Deals</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    background: #f5f5f5;
+    color: #333;
+  }
+  header {
+    background: #e52e06;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 2rem;
+  }
+  #search-bar {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+  #search-bar input[type="text"] {
+    width: 300px;
+    padding: 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+  }
+  #search-bar button {
+    padding: 0.6rem 1rem;
+    border: none;
+    background: #e52e06;
+    color: white;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  #search-bar button:hover {
+    background: #cc2504;
+  }
+  #filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    margin: 1rem;
+    align-items: center;
+  }
+  #filters button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: #e52e06;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  #filters button:hover {
+    background: #cc2504;
+  }
+  #filters label {
+    font-size: 0.9rem;
+  }
+  #filters input[type="range"] {
+    cursor: pointer;
+  }
+  #filters select {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    outline: none;
+  }
+  #products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .product {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .product:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .product img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    transition: opacity 0.3s;
+  }
+  .product p {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    height: 40px;
+    overflow: hidden;
+  }
+  .price {
+    color: #e52e06;
+    font-weight: bold;
+    padding-bottom: 0.5rem;
+  }
+  @media (max-width: 600px) {
+    #search-bar, #filters {
+      flex-direction: column;
+      align-items: stretch;
     }
     #search-bar input[type="text"] {
-      width: 300px;
-      padding: 0.6rem;
-      border: 1px solid #ddd;
-      border-radius: 5px 0 0 5px;
-      outline: none;
+      width: 100%;
+      border-radius: 5px 5px 0 0;
     }
     #search-bar button {
-      padding: 0.6rem 1rem;
-      border: none;
-      background: #e52e06;
-      color: white;
-      border-radius: 0 5px 5px 0;
-      cursor: pointer;
-      transition: background 0.2s;
+      border-radius: 0 0 5px 5px;
     }
-    #search-bar button:hover {
-      background: #cc2504;
-    }
-    #filters {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      padding: 1rem;
-      background: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      border-radius: 10px;
-      margin: 1rem;
-      align-items: center;
-    }
-    #filters button {
-      padding: 0.5rem 1rem;
-      border: none;
-      background: #e52e06;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    #filters button:hover {
-      background: #cc2504;
-    }
-    #filters label {
-      font-size: 0.9rem;
-    }
-    #filters input[type="range"] {
-      cursor: pointer;
-    }
-    #filters select {
-      padding: 0.5rem;
-      border-radius: 5px;
-      border: 1px solid #ddd;
-      outline: none;
-    }
-    #products {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-      padding: 1rem;
-    }
-    .product {
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-align: center;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .product:hover {
-      transform: translateY(-5px) scale(1.03);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .product img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-    }
-    .product p {
-      font-size: 0.9rem;
-      padding: 0.5rem;
-      height: 40px;
-      overflow: hidden;
-    }
-    .price {
-      color: #e52e06;
-      font-weight: bold;
-      padding-bottom: 0.5rem;
-    }
-    @media (max-width: 600px) {
-      #search-bar, #filters {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      #search-bar input[type="text"] {
-        width: 100%;
-        border-radius: 5px 5px 0 0;
-      }
-      #search-bar button {
-        border-radius: 0 0 5px 5px;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <header>
-    <h1>BuyCenter - AliExpress Deals</h1>
-    <p>Find trending products from AliExpress!</p>
-  </header>
+<header>
+  <h1>BuyCenter - AliExpress Deals</h1>
+  <p>Discover trending products at great prices!</p>
+</header>
 
-  <div id="search-bar">
-    <input type="text" id="query" placeholder="Search AliExpress products..." />
-    <button onclick="searchProducts()">Search</button>
-  </div>
+<div id="search-bar">
+  <input type="text" id="query" placeholder="Search AliExpress products..." />
+  <button onclick="searchProducts()">Search</button>
+</div>
 
-  <div id="filters">
-    <button onclick="applyFilter('trending')">Trending</button>
-    <button onclick="applyFilter('electronics')">Electronics</button>
-    <button onclick="applyFilter('fashion')">Fashion</button>
-    <button onclick="applyFilter('home')">Home</button>
+<div id="filters">
+  <button onclick="applyFilter('trending')">Trending</button>
+  <button onclick="applyFilter('electronics')">Electronics</button>
+  <button onclick="applyFilter('fashion')">Fashion</button>
+  <button onclick="applyFilter('home')">Home</button>
 
-    <label for="priceRange">Max Price: $<span id="priceValue">100</span></label>
-    <input type="range" id="priceRange" min="1" max="1000" value="100" oninput="updatePrice(this.value)">
+  <label for="priceRange">Max Price: $<span id="priceValue">100</span></label>
+  <input type="range" id="priceRange" min="1" max="1000" value="100" oninput="updatePrice(this.value)">
 
-    <select id="sort" onchange="sortProducts(this.value)">
-      <option value="default">Sort by</option>
-      <option value="low">Price: Low to High</option>
-      <option value="high">Price: High to Low</option>
-    </select>
-  </div>
+  <select id="sort" onchange="sortProducts(this.value)">
+    <option value="default">Sort by</option>
+    <option value="low">Price: Low to High</option>
+    <option value="high">Price: High to Low</option>
+  </select>
+</div>
 
-  <div id="products">Loading products...</div>
+<div id="products">Loading products...</div>
 
-  <script>
-    const API_KEY = "d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
-    const API_HOST = "aliexpress-datahub.p.rapidapi.com";
+<script>
+const API_KEY = "d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
+const API_HOST = "aliexpress-datahub.p.rapidapi.com";
 
-    async function fetchProducts(query = "trending") {
-      const url = `https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=1`;
-      const options = {
-        method: "GET",
-        headers: {
-          "x-rapidapi-key": API_KEY,
-          "x-rapidapi-host": API_HOST
-        }
-      };
-      try {
-        const res = await fetch(url, options);
-        const data = await res.json();
-        const items = data?.result?.resultList?.map(x => x.item || x).filter(Boolean) || [];
-        if (!items.length) {
-          document.getElementById("products").innerHTML = "<p>No products found.</p>";
-          return;
-        }
-        displayProducts(items);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        document.getElementById("products").innerHTML =
-          "<p>Failed to load products. Try again later.</p>";
-      }
+let currentPage = 1;
+let currentQuery = "trending";
+let allProducts = [];
+
+async function fetchProducts(query = "trending", page = 1) {
+  const url = `https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=${page}`;
+  const options = {
+    method: "GET",
+    headers: {
+      "x-rapidapi-key": API_KEY,
+      "x-rapidapi-host": API_HOST
     }
+  };
+  try {
+    const res = await fetch(url, options);
+    const data = await res.json();
+    const items = data?.result?.resultList?.map(x => x.item || x).filter(Boolean) || [];
+    if (page === 1) allProducts = items;
+    else allProducts = allProducts.concat(items);
+    displayProducts(allProducts);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    if (page === 1) document.getElementById("products").innerHTML = "<p>Failed to load products. Try again later.</p>";
+  }
+}
 
-    function displayProducts(items) {
-      const container = document.getElementById("products");
-      container.innerHTML = items
-        .map(item => {
-          const title = item.title || "Unnamed Product";
-          const price = parseFloat(item.sku?.def?.promotionPrice ?? item.salePrice ?? 0);
-          const img = item.image ? `https:${item.image}` : "https://via.placeholder.com/200";
-          const link = item.itemUrl ? `https:${item.itemUrl}` : "#";
-          return `
-            <div class="product" data-price="${price}">
-              <a href="${link}" target="_blank">
-                <img src="${img}" alt="${title}" />
-                <p>${title}</p>
-                <div class="price">$${price}</div>
-              </a>
-            </div>
-          `;
-        })
-        .join('');
-    }
+function displayProducts(items) {
+  const container = document.getElementById("products");
+  container.innerHTML = items
+    .map(item => {
+      const title = item.title || "Unnamed Product";
+      const price = parseFloat(item.sku?.def?.promotionPrice ?? item.salePrice ?? 0);
+      const img = item.image ? `https:${item.image}` : "https://via.placeholder.com/200";
+      const link = item.itemUrl ? `https:${item.itemUrl}` : "#";
+      return `
+        <div class="product" data-price="${price}">
+          <a href="${link}" target="_blank">
+            <img src="${img}" alt="${title}" loading="lazy"/>
+            <p>${title}</p>
+            <div class="price">$${price}</div>
+          </a>
+        </div>
+      `;
+    })
+    .join('');
+  updatePrice(document.getElementById("priceRange").value);
+  sortProducts(document.getElementById("sort").value);
+}
 
-    function searchProducts() {
-      const query = document.getElementById("query").value.trim();
-      fetchProducts(query || "trending");
-    }
+function searchProducts() {
+  currentQuery = document.getElementById("query").value.trim() || "trending";
+  currentPage = 1;
+  fetchProducts(currentQuery, currentPage);
+}
 
-    function applyFilter(category) {
-      document.getElementById("query").value = category;
-      fetchProducts(category);
-    }
+function applyFilter(category) {
+  document.getElementById("query").value = category;
+  searchProducts();
+}
 
-    function updatePrice(value) {
-      document.getElementById("priceValue").textContent = value;
-      const products = document.querySelectorAll(".product");
-      products.forEach(p => {
-        const price = parseFloat(p.getAttribute("data-price")) || 0;
-        p.style.display = price <= value ? "block" : "none";
-      });
-    }
+function updatePrice(value) {
+  document.getElementById("priceValue").textContent = value;
+  const products = document.querySelectorAll(".product");
+  products.forEach(p => {
+    const price = parseFloat(p.getAttribute("data-price")) || 0;
+    p.style.display = price <= value ? "block" : "none";
+  });
+}
 
-    function sortProducts(type) {
-      const container = document.getElementById("products");
-      const products = Array.from(container.querySelectorAll(".product"));
-      products.sort((a, b) => {
-        const priceA = parseFloat(a.getAttribute("data-price")) || 0;
-        const priceB = parseFloat(b.getAttribute("data-price")) || 0;
-        return type === "low" ? priceA - priceB : priceB - priceA;
-      });
-      container.innerHTML = "";
-      products.forEach(p => container.appendChild(p));
-    }
+function sortProducts(type) {
+  if(type === "default") return;
+  const container = document.getElementById("products");
+  const products = Array.from(container.querySelectorAll(".product"));
+  products.sort((a, b) => {
+    const priceA = parseFloat(a.getAttribute("data-price")) || 0;
+    const priceB = parseFloat(b.getAttribute("data-price")) || 0;
+    return type === "low" ? priceA - priceB : priceB - priceA;
+  });
+  container.innerHTML = "";
+  products.forEach(p => container.appendChild(p));
+}
 
-    // Load default products
-    fetchProducts();
-  </script>
+// Infinite scroll
+window.addEventListener("scroll", () => {
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+    currentPage++;
+    fetchProducts(currentQuery, currentPage);
+  }
+});
+
+// Initial load
+fetchProducts();
+</script>
 </body>
 </html>
