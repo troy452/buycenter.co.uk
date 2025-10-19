@@ -7,9 +7,9 @@
   <title>BuyCenter | AliExpress Deals</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       margin: 0;
-      background: #f9f9f9;
+      background: #f5f5f5;
       color: #333;
     }
     header {
@@ -18,34 +18,70 @@
       text-align: center;
       padding: 1rem;
     }
-    h1 {
+    header h1 {
       margin: 0;
-      font-size: 1.8rem;
+      font-size: 2rem;
     }
     #search-bar {
       display: flex;
       justify-content: center;
       padding: 1rem;
-      background: white;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      gap: 0.5rem;
     }
-    input[type="text"] {
+    #search-bar input[type="text"] {
       width: 300px;
       padding: 0.6rem;
       border: 1px solid #ddd;
       border-radius: 5px 0 0 5px;
       outline: none;
     }
-    button {
+    #search-bar button {
       padding: 0.6rem 1rem;
       border: none;
       background: #e52e06;
       color: white;
       border-radius: 0 5px 5px 0;
       cursor: pointer;
+      transition: background 0.2s;
     }
-    button:hover {
+    #search-bar button:hover {
       background: #cc2504;
+    }
+    #filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      margin: 1rem;
+      align-items: center;
+    }
+    #filters button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #e52e06;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #filters button:hover {
+      background: #cc2504;
+    }
+    #filters label {
+      font-size: 0.9rem;
+    }
+    #filters input[type="range"] {
+      cursor: pointer;
+    }
+    #filters select {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      outline: none;
     }
     #products {
       display: grid;
@@ -57,12 +93,13 @@
       background: white;
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       text-align: center;
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .product:hover {
-      transform: scale(1.03);
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     .product img {
       width: 100%;
@@ -80,12 +117,25 @@
       font-weight: bold;
       padding-bottom: 0.5rem;
     }
+    @media (max-width: 600px) {
+      #search-bar, #filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      #search-bar input[type="text"] {
+        width: 100%;
+        border-radius: 5px 5px 0 0;
+      }
+      #search-bar button {
+        border-radius: 0 0 5px 5px;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>BuyCenter - AliExpress Deals</h1>
-    <p>Find the best trending products from AliExpress!</p>
+    <p>Find trending products from AliExpress!</p>
   </header>
 
   <div id="search-bar">
@@ -93,71 +143,107 @@
     <button onclick="searchProducts()">Search</button>
   </div>
 
+  <div id="filters">
+    <button onclick="applyFilter('trending')">Trending</button>
+    <button onclick="applyFilter('electronics')">Electronics</button>
+    <button onclick="applyFilter('fashion')">Fashion</button>
+    <button onclick="applyFilter('home')">Home</button>
+
+    <label for="priceRange">Max Price: $<span id="priceValue">100</span></label>
+    <input type="range" id="priceRange" min="1" max="1000" value="100" oninput="updatePrice(this.value)">
+
+    <select id="sort" onchange="sortProducts(this.value)">
+      <option value="default">Sort by</option>
+      <option value="low">Price: Low to High</option>
+      <option value="high">Price: High to Low</option>
+    </select>
+  </div>
+
   <div id="products">Loading products...</div>
 
- <script>
-  const API_KEY = "d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
-  const API_HOST = "aliexpress-datahub.p.rapidapi.com";
+  <script>
+    const API_KEY = "d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
+    const API_HOST = "aliexpress-datahub.p.rapidapi.com";
 
-  async function fetchProducts(query = "trending") {
-    const url = `https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=1`;
-
-    const options = {
-      method: "GET",
-      headers: {
-        "x-rapidapi-key": API_KEY,
-        "x-rapidapi-host": API_HOST
+    async function fetchProducts(query = "trending") {
+      const url = `https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=1`;
+      const options = {
+        method: "GET",
+        headers: {
+          "x-rapidapi-key": API_KEY,
+          "x-rapidapi-host": API_HOST
+        }
+      };
+      try {
+        const res = await fetch(url, options);
+        const data = await res.json();
+        const items = data?.result?.resultList?.map(x => x.item || x).filter(Boolean) || [];
+        if (!items.length) {
+          document.getElementById("products").innerHTML = "<p>No products found.</p>";
+          return;
+        }
+        displayProducts(items);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        document.getElementById("products").innerHTML =
+          "<p>Failed to load products. Try again later.</p>";
       }
-    };
-
-    try {
-      const res = await fetch(url, options);
-      const data = await res.json();
-      console.log(data);
-
-      // Extract product list correctly
-      const items = data?.result?.resultList?.map(x => x.item) || [];
-
-      if (!items.length) {
-        document.getElementById("products").innerHTML = "<p>No products found.</p>";
-        return;
-      }
-
-      displayProducts(items);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      document.getElementById("products").innerHTML =
-        "<p>Failed to load products. Try again later.</p>";
     }
-  }
 
-  function displayProducts(items) {
-    document.getElementById("products").innerHTML = items
-      .map(item => {
-        const title = item.title || "Unnamed Product";
-        const price = item.sku?.def?.promotionPrice ?? "N/A";
-        const img = item.image ? `https:${item.image}` : "https://via.placeholder.com/200";
-        const link = item.itemUrl ? `https:${item.itemUrl}` : "#";
-        return `
-          <div class="product">
-            <a href="${link}" target="_blank">
-              <img src="${img}" alt="${title}" />
-              <p>${title}</p>
-              <div class="price">$${price}</div>
-            </a>
-          </div>
-        `;
-      })
-      .join("");
-  }
+    function displayProducts(items) {
+      const container = document.getElementById("products");
+      container.innerHTML = items
+        .map(item => {
+          const title = item.title || "Unnamed Product";
+          const price = parseFloat(item.sku?.def?.promotionPrice ?? item.salePrice ?? 0);
+          const img = item.image ? `https:${item.image}` : "https://via.placeholder.com/200";
+          const link = item.itemUrl ? `https:${item.itemUrl}` : "#";
+          return `
+            <div class="product" data-price="${price}">
+              <a href="${link}" target="_blank">
+                <img src="${img}" alt="${title}" />
+                <p>${title}</p>
+                <div class="price">$${price}</div>
+              </a>
+            </div>
+          `;
+        })
+        .join('');
+    }
 
-  function searchProducts() {
-    const query = document.getElementById("query").value.trim();
-    fetchProducts(query || "trending");
-  }
+    function searchProducts() {
+      const query = document.getElementById("query").value.trim();
+      fetchProducts(query || "trending");
+    }
 
-  // Load default products on startup
-  fetchProducts();
-</script>
+    function applyFilter(category) {
+      document.getElementById("query").value = category;
+      fetchProducts(category);
+    }
+
+    function updatePrice(value) {
+      document.getElementById("priceValue").textContent = value;
+      const products = document.querySelectorAll(".product");
+      products.forEach(p => {
+        const price = parseFloat(p.getAttribute("data-price")) || 0;
+        p.style.display = price <= value ? "block" : "none";
+      });
+    }
+
+    function sortProducts(type) {
+      const container = document.getElementById("products");
+      const products = Array.from(container.querySelectorAll(".product"));
+      products.sort((a, b) => {
+        const priceA = parseFloat(a.getAttribute("data-price")) || 0;
+        const priceB = parseFloat(b.getAttribute("data-price")) || 0;
+        return type === "low" ? priceA - priceB : priceB - priceA;
+      });
+      container.innerHTML = "";
+      products.forEach(p => container.appendChild(p));
+    }
+
+    // Load default products
+    fetchProducts();
+  </script>
 </body>
 </html>
