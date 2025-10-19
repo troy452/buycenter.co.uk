@@ -9,7 +9,158 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
+      background: #f9f9f9;<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="BuyCenter - Discover trending AliExpress products and great deals" />
+  <title>BuyCenter | AliExpress Deals</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
       background: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background: #e52e06;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    #search-bar {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    input[type="text"] {
+      width: 300px;
+      padding: 0.6rem;
+      border: 1px solid #ddd;
+      border-radius: 5px 0 0 5px;
+      outline: none;
+    }
+    button {
+      padding: 0.6rem 1rem;
+      border: none;
+      background: #e52e06;
+      color: white;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #cc2504;
+    }
+    #products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .product {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .product:hover {
+      transform: scale(1.03);
+    }
+    .product img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .product p {
+      font-size: 0.9rem;
+      padding: 0.5rem;
+      height: 40px;
+      overflow: hidden;
+    }
+    .price {
+      color: #e52e06;
+      font-weight: bold;
+      padding-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BuyCenter - AliExpress Deals</h1>
+    <p>Find the best trending products from AliExpress!</p>
+  </header>
+
+  <div id="search-bar">
+    <input type="text" id="query" placeholder="Search AliExpress products..." />
+    <button onclick="searchProducts()">Search</button>
+  </div>
+
+  <div id="products">Loading products...</div>
+
+  <script>
+    const API_KEY = "d94adf1b6cmsh627c207e173a3e0p129a7fjsn20c9d926c0c1";
+    const API_HOST = "aliexpress-datahub.p.rapidapi.com";
+
+    async function fetchProducts(query = "trending") {
+      const url = `https://${API_HOST}/item_search_2?q=${encodeURIComponent(query)}&page=1`;
+
+      const options = {
+        method: "GET",
+        headers: {
+          "x-rapidapi-key": API_KEY,
+          "x-rapidapi-host": API_HOST
+        }
+      };
+
+      try {
+        const res = await fetch(url, options);
+        const data = await res.json();
+        console.log(data);
+
+        if (!data.result || !data.result.resultList) {
+          document.getElementById("products").innerHTML = "<p>No products found.</p>";
+          return;
+        }
+
+        const items = data.result.resultList;
+        displayProducts(items);
+      } catch (error) {
+        console.error(error);
+        document.getElementById("products").innerHTML = "<p>Failed to load products. Try again later.</p>";
+      }
+    }
+
+    function displayProducts(items) {
+      document.getElementById("products").innerHTML = items.map(item => `
+        <div class="product">
+          <a href="${item.product_detail_url}" target="_blank">
+            <img src="${item.image || item.product_main_image_url}" alt="${item.title || item.product_title}" />
+            <p>${item.title || item.product_title}</p>
+            <div class="price">$${item.sale_price || item.app_sale_price || 'N/A'}</div>
+          </a>
+        </div>
+      `).join('');
+    }
+
+    function searchProducts() {
+      const query = document.getElementById("query").value.trim();
+      fetchProducts(query || "trending");
+    }
+
+    fetchProducts(); // Load default products
+  </script>
+</body>
+</html>
+
       color: #333;
     }
     header {
