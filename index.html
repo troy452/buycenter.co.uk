@@ -7,52 +7,84 @@
   <style>
     body {
       font-family: "Inter", system-ui, sans-serif;
-      background: #f7f8fa;
+      background: #f9fafb;
       margin: 0;
       padding: 0;
       color: #222;
     }
+
     header {
       background: #ff4747;
       color: white;
-      padding: 1rem 2rem;
       text-align: center;
-      font-size: 1.5rem;
+      padding: 1rem;
+      font-size: 1.8rem;
       font-weight: 600;
+      letter-spacing: 0.5px;
     }
-    .search-bar {
+
+    .tabs {
       display: flex;
       justify-content: center;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 1rem auto;
-      max-width: 600px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 5;
     }
-    input {
-      width: 80%;
-      padding: 0.7rem;
-      border: 1px solid #ccc;
+
+    .tab {
+      padding: 1rem 2rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .tab.active {
+      border-bottom: 3px solid #ff4747;
+      color: #ff4747;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem;
+      background: #fff;
+      padding: 1rem;
       border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .filters select, .filters input {
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
       font-size: 1rem;
     }
+
     button {
       background: #ff4747;
       border: none;
       color: white;
-      padding: 0.7rem 1rem;
-      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 1rem;
+      font-weight: 600;
     }
+
     button:hover {
       background: #ff2e2e;
     }
+
     .products {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 1.5rem;
       padding: 2rem;
     }
+
     .card {
       background: white;
       border-radius: 12px;
@@ -60,18 +92,22 @@
       overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+
     .card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-4px);
       box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
     }
+
     .card img {
       width: 100%;
       height: 220px;
       object-fit: cover;
     }
+
     .card-content {
       padding: 1rem;
     }
+
     .card-content h3 {
       font-size: 1rem;
       font-weight: 600;
@@ -79,11 +115,13 @@
       height: 2.8rem;
       overflow: hidden;
     }
+
     .card-content p {
       color: #ff4747;
       font-weight: 700;
       margin: 0.5rem 0;
     }
+
     .card-content a {
       text-decoration: none;
       background: #ff4747;
@@ -93,49 +131,98 @@
       display: inline-block;
       margin-top: 0.5rem;
     }
+
     .loading {
       text-align: center;
       padding: 2rem;
-      font-size: 1.2rem;
-      color: #555;
+      font-size: 1.1rem;
+      color: #666;
     }
   </style>
 </head>
 <body>
   <header>🛍️ BuyCenter — AliExpress Live Deals</header>
 
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search trending products..." />
-    <button id="searchBtn">Search</button>
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" data-type="trending">🔥 Trending</div>
+    <div class="tab" data-type="top">🏆 Top Sellers</div>
+    <div class="tab" data-type="discount">💸 Big Discounts</div>
   </div>
 
+  <!-- Filters -->
+  <div class="filters">
+    <input type="text" id="searchInput" placeholder="Search products..." />
+    <select id="categorySelect">
+      <option value="">All Categories</option>
+      <option value="Electronics">Electronics</option>
+      <option value="Fashion">Fashion</option>
+      <option value="Beauty">Beauty</option>
+      <option value="Home">Home</option>
+      <option value="Toys">Toys</option>
+      <option value="Sports">Sports</option>
+    </select>
+    <input type="number" id="minPrice" placeholder="Min $" />
+    <input type="number" id="maxPrice" placeholder="Max $" />
+    <button id="filterBtn">Apply</button>
+  </div>
+
+  <!-- Product Grid -->
   <div id="products" class="products"></div>
   <div id="loading" class="loading">Loading products...</div>
 
   <script>
-    const workerEndpoint = "https://aliexpress-proxy.miralbenizi7.workers.dev/";
+    const endpoint = "https://aliexpress-proxy.miralbenizi7.workers.dev/";
+    let currentTab = "trending";
 
-    document.getElementById("searchBtn").addEventListener("click", () => {
-      const query = document.getElementById("searchInput").value.trim() || "trending";
-      fetchProducts(query);
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        currentTab = tab.dataset.type;
+        fetchProducts();
+      });
     });
 
-    async function fetchProducts(query = "trending") {
+    document.getElementById("filterBtn").addEventListener("click", () => fetchProducts());
+
+    async function fetchProducts() {
+      const query = document.getElementById("searchInput").value.trim() || currentTab;
+      const min = document.getElementById("minPrice").value;
+      const max = document.getElementById("maxPrice").value;
+      const category = document.getElementById("categorySelect").value;
+
       document.getElementById("loading").style.display = "block";
       document.getElementById("products").innerHTML = "";
 
       try {
-        const res = await fetch(`${workerEndpoint}?q=${encodeURIComponent(query)}`);
+        const res = await fetch(`${endpoint}?q=${encodeURIComponent(query)}`);
         const data = await res.json();
         document.getElementById("loading").style.display = "none";
 
-        if (!data.products || data.products.length === 0) {
+        if (!data.products) {
           document.getElementById("loading").innerText = "No products found.";
           return;
         }
 
+        let products = data.products;
+
+        // Filter by category
+        if (category) {
+          products = products.filter(p => p.title.toLowerCase().includes(category.toLowerCase()));
+        }
+
+        // Filter by price range
+        if (min) products = products.filter(p => parseFloat(p.price) >= parseFloat(min));
+        if (max) products = products.filter(p => parseFloat(p.price) <= parseFloat(max));
+
+        if (products.length === 0) {
+          document.getElementById("loading").innerText = "No products found with selected filters.";
+          return;
+        }
+
         const container = document.getElementById("products");
-        data.products.forEach((p) => {
+        products.forEach(p => {
           const card = document.createElement("div");
           card.className = "card";
           card.innerHTML = `
@@ -144,16 +231,17 @@
               <h3>${p.title}</h3>
               <p>$${p.price}</p>
               <a href="${p.link}" target="_blank">Buy Now</a>
-            </div>`;
+            </div>
+          `;
           container.appendChild(card);
         });
-      } catch (err) {
+      } catch (error) {
         document.getElementById("loading").innerText = "Error loading products.";
-        console.error("Error:", err);
+        console.error(error);
       }
     }
 
-    // Load default trending products on startup
+    // Initial load
     fetchProducts();
   </script>
 </body>
