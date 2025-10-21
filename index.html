@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BuyCenter - AliExpress Deals</title>
+  <title>BuyCenter — AliExpress Live Deals</title>
   <style>
     body {
       font-family: "Inter", system-ui, sans-serif;
@@ -20,101 +20,49 @@
       padding: 1rem;
       font-size: 1.8rem;
       font-weight: 600;
-      letter-spacing: 0.5px;
     }
 
-    .tabs {
-      display: flex;
-      justify-content: center;
-      background: #fff;
-      border-bottom: 1px solid #ddd;
-      position: sticky;
-      top: 0;
-      z-index: 5;
-    }
-
-    .tab {
-      padding: 1rem 2rem;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    .tab.active {
-      border-bottom: 3px solid #ff4747;
-      color: #ff4747;
-    }
-
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      margin: 1rem;
-      background: #fff;
-      padding: 1rem;
-      border-radius: 10px;
+    section {
+      margin: 2rem auto;
+      max-width: 1600px;
+      background: white;
+      border-radius: 14px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      padding: 1.5rem;
     }
 
-    .filters select, .filters input {
-      padding: 0.6rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
+    h2 {
+      font-size: 1.6rem;
+      margin: 0 0 1rem;
+      color: #ff4747;
+      text-align: center;
     }
 
-    button {
-      background: #ff4747;
-      border: none;
-      color: white;
-      padding: 0.6rem 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    button:hover {
-      background: #ff2e2e;
-    }
-
-    /* Product grid: 7 per row on large screens */
+    /* Grid: 7 products per row */
     .products {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: 1rem;
-      padding: 2rem;
       justify-items: center;
     }
 
     @media (max-width: 1400px) {
-      .products {
-        grid-template-columns: repeat(5, 1fr);
-      }
+      .products { grid-template-columns: repeat(5, 1fr); }
     }
-
     @media (max-width: 1024px) {
-      .products {
-        grid-template-columns: repeat(3, 1fr);
-      }
+      .products { grid-template-columns: repeat(3, 1fr); }
     }
-
     @media (max-width: 768px) {
-      .products {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .products { grid-template-columns: repeat(2, 1fr); }
     }
-
     @media (max-width: 480px) {
-      .products {
-        grid-template-columns: repeat(1, 1fr);
-      }
+      .products { grid-template-columns: repeat(1, 1fr); }
     }
 
     .card {
       background: white;
       border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       width: 100%;
@@ -123,7 +71,7 @@
 
     .card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 5px 12px rgba(0,0,0,0.15);
     }
 
     .card img {
@@ -172,85 +120,40 @@
 <body>
   <header>🛍️ BuyCenter — AliExpress Live Deals</header>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <div class="tab active" data-type="trending">🔥 Trending</div>
-    <div class="tab" data-type="top">🏆 Top Sellers</div>
-    <div class="tab" data-type="discount">💸 Big Discounts</div>
-  </div>
+  <div id="loading" class="loading">Loading deals...</div>
 
-  <!-- Filters -->
-  <div class="filters">
-    <input type="text" id="searchInput" placeholder="Search products..." />
-    <select id="categorySelect">
-      <option value="">All Categories</option>
-      <option value="Electronics">Electronics</option>
-      <option value="Fashion">Fashion</option>
-      <option value="Beauty">Beauty</option>
-      <option value="Home">Home</option>
-      <option value="Toys">Toys</option>
-      <option value="Sports">Sports</option>
-    </select>
-    <input type="number" id="minPrice" placeholder="Min $" />
-    <input type="number" id="maxPrice" placeholder="Max $" />
-    <button id="filterBtn">Apply</button>
-  </div>
+  <section id="trending-section">
+    <h2>🔥 Trending Products</h2>
+    <div class="products" id="trending"></div>
+  </section>
 
-  <!-- Product Grid -->
-  <div id="products" class="products"></div>
-  <div id="loading" class="loading">Loading products...</div>
+  <section id="top-section">
+    <h2>🏆 Top Sellers</h2>
+    <div class="products" id="top"></div>
+  </section>
+
+  <section id="discount-section">
+    <h2>💸 Big Discounts</h2>
+    <div class="products" id="discount"></div>
+  </section>
+
+  <section id="more-section">
+    <h2>🛒 More Great Deals</h2>
+    <div class="products" id="more"></div>
+  </section>
 
   <script>
     const endpoint = "https://aliexpress-proxy.miralbenizi7.workers.dev/";
-    let currentTab = "trending";
 
-    document.querySelectorAll(".tab").forEach(tab => {
-      tab.addEventListener("click", () => {
-        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
-        currentTab = tab.dataset.type;
-        fetchProducts();
-      });
-    });
-
-    document.getElementById("filterBtn").addEventListener("click", () => fetchProducts());
-
-    async function fetchProducts() {
-      const query = document.getElementById("searchInput").value.trim() || currentTab;
-      const min = document.getElementById("minPrice").value;
-      const max = document.getElementById("maxPrice").value;
-      const category = document.getElementById("categorySelect").value;
-
-      document.getElementById("loading").style.display = "block";
-      document.getElementById("products").innerHTML = "";
-
+    async function fetchProducts(query, elementId, limit = 14) {
       try {
         const res = await fetch(`${endpoint}?q=${encodeURIComponent(query)}`);
         const data = await res.json();
-        document.getElementById("loading").style.display = "none";
 
-        if (!data.products) {
-          document.getElementById("loading").innerText = "No products found.";
-          return;
-        }
+        if (!data.products) return;
 
-        let products = data.products.slice(0, 14); // show 14 products only
-
-        // Filter by category
-        if (category) {
-          products = products.filter(p => p.title.toLowerCase().includes(category.toLowerCase()));
-        }
-
-        // Filter by price range
-        if (min) products = products.filter(p => parseFloat(p.price) >= parseFloat(min));
-        if (max) products = products.filter(p => parseFloat(p.price) <= parseFloat(max));
-
-        if (products.length === 0) {
-          document.getElementById("loading").innerText = "No products found with selected filters.";
-          return;
-        }
-
-        const container = document.getElementById("products");
+        const products = data.products.slice(0, limit);
+        const container = document.getElementById(elementId);
         products.forEach(p => {
           const card = document.createElement("div");
           card.className = "card";
@@ -265,13 +168,20 @@
           container.appendChild(card);
         });
       } catch (error) {
-        document.getElementById("loading").innerText = "Error loading products.";
         console.error(error);
       }
     }
 
-    // Initial load
-    fetchProducts();
+    async function init() {
+      await fetchProducts("trending", "trending");
+      await fetchProducts("top sellers", "top");
+      await fetchProducts("discount", "discount");
+      await fetchProducts("latest", "more", 21);
+
+      document.getElementById("loading").style.display = "none";
+    }
+
+    init();
   </script>
 </body>
 </html>
