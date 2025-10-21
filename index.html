@@ -140,19 +140,19 @@
   <section id="more-section">
     <h2>🛒 More Great Deals</h2>
     <div class="products" id="more"></div>
+    <div id="loadMore" class="loading">Loading more deals...</div>
   </section>
 
   <script>
     const endpoint = "https://aliexpress-proxy.miralbenizi7.workers.dev/";
 
-    async function fetchProducts(query, elementId, limit = 14) {
+    async function fetchProducts(query, elementId, limit = 14, page = 1) {
       try {
-        const res = await fetch(`${endpoint}?q=${encodeURIComponent(query)}`);
+        const res = await fetch(`${endpoint}?q=${encodeURIComponent(query)}&page=${page}`);
         const data = await res.json();
+        if (!data.products) return [];
 
-        if (!data.products) return;
-
-        const products = data.products.slice(0, limit);
+        const products = limit ? data.products.slice(0, limit) : data.products;
         const container = document.getElementById(elementId);
         products.forEach(p => {
           const card = document.createElement("div");
@@ -167,8 +167,10 @@
           `;
           container.appendChild(card);
         });
+        return data.products.length;
       } catch (error) {
         console.error(error);
+        return 0;
       }
     }
 
@@ -176,10 +178,23 @@
       await fetchProducts("trending", "trending");
       await fetchProducts("top sellers", "top");
       await fetchProducts("discount", "discount");
-      await fetchProducts("latest", "more", 21);
-
+      await fetchProducts("latest", "more", 0, 1);
       document.getElementById("loading").style.display = "none";
     }
+
+    // Infinite scroll for "More Deals"
+    let currentPage = 2;
+    let loadingMore = false;
+
+    window.addEventListener("scroll", async () => {
+      const loadMoreDiv = document.getElementById("loadMore");
+      const rect = loadMoreDiv.getBoundingClientRect();
+      if (!loadingMore && rect.top < window.innerHeight) {
+        loadingMore = true;
+        const count = await fetchProducts("latest", "more", 0, currentPage++);
+        if (count > 0) loadingMore = false;
+      }
+    });
 
     init();
   </script>
