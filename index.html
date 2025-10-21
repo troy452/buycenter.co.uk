@@ -74,10 +74,11 @@
       <div id="discount-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
     </section>
 
-    <!-- Smart Balanced Section -->
+    <!-- Smart Mix Infinite -->
     <section id="smart-section" class="my-10">
       <h2 class="section-title">⚡ Smart Mix: Electronics & More</h2>
       <div id="smart-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+      <p id="smart-loading" class="text-center mt-4 text-gray-400 hidden">Loading more deals...</p>
     </section>
 
   </main>
@@ -88,112 +89,104 @@
 
   <script>
     const API_BASE = "https://aliexpress-proxy.miralbenizi7.workers.dev";
-
-    // ❌ Block unwanted items
     const blockedKeywords = [
-      "phone case", "case for", "screen protector", "tempered glass", "cover for",
+      "phone case", "case for", "screen protector", "tempered glass",
       "back cover", "protective film", "screen guard"
     ];
 
-    // ✅ Helper to filter out bad items
     function filterUnwanted(products) {
-      return products.filter(p =>
-        !blockedKeywords.some(bad =>
-          p.title.toLowerCase().includes(bad)
-        )
-      );
+      return products.filter(p => !blockedKeywords.some(bad =>
+        p.title.toLowerCase().includes(bad)
+      ));
     }
 
-    // Display products
     function displayProducts(products, containerId) {
       const grid = document.getElementById(containerId);
-      grid.innerHTML = "";
       products.forEach(p => {
         const item = document.createElement("div");
         item.className = "product-card rounded-lg p-2 shadow hover:shadow-lg text-center";
         item.innerHTML = `
-          <a href="${p.link}" target="_blank" class="block">
+          <a href="${p.link}" target="_blank">
             <img src="${p.image}" alt="${p.title}" class="w-full h-40 object-cover rounded-md mb-2">
-            <h3 class="text-sm font-semibold line-clamp-2 text-gray-100">${p.title}</h3>
+            <h3 class="text-sm font-semibold text-gray-100 line-clamp-2">${p.title}</h3>
             <p class="text-yellow-400 font-bold mt-1">$${p.price}</p>
           </a>`;
         grid.appendChild(item);
       });
     }
 
-    async function fetchAliExpressProducts(keyword, limit = 14) {
-      const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(keyword)}&page=1`);
+    async function fetchAliExpressProducts(keyword, page = 1, limit = 14) {
+      const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(keyword)}&page=${page}`);
       const data = await res.json();
       let products = data.products || [];
-      products = filterUnwanted(products);
-      return products.slice(0, limit);
+      return filterUnwanted(products).slice(0, limit);
     }
 
     async function loadAllSections() {
-      // TikTok Section
+      // Load TikTok
       try {
-        const tiktokRes = await fetch("https://raw.githubusercontent.com/troy452/buycenter.co.uk/refs/heads/main/tiktok-products.json");
-        const tiktokProducts = await tiktokRes.json();
+        const res = await fetch("https://raw.githubusercontent.com/troy452/buycenter.co.uk/refs/heads/main/tiktok-products.json");
+        const tiktokProducts = await res.json();
         displayProducts(filterUnwanted(tiktokProducts), "tiktok-grid");
-      } catch (e) {
+      } catch {
         document.getElementById("tiktok-error").classList.remove("hidden");
       }
 
-      // API-driven Sections
+      // Load API sections
       const [trending, topSellers, discounts] = await Promise.all([
         fetchAliExpressProducts("trending"),
         fetchAliExpressProducts("top gadgets"),
         fetchAliExpressProducts("discount sale")
       ]);
-
       displayProducts(trending, "trending-grid");
       displayProducts(topSellers, "top-sellers-grid");
       displayProducts(discounts, "discount-grid");
 
-      // Smart Balanced Section
-      loadSmartBalancedProducts();
+      // Start infinite Smart Mix
+      initInfiniteSmartMix();
     }
 
-    async function loadSmartBalancedProducts() {
+    // Infinite scroll Smart Mix
+    let smartPage = 1;
+    let smartLoading = false;
+
+    async function loadSmartPage() {
+      if (smartLoading) return;
+      smartLoading = true;
+      document.getElementById("smart-loading").classList.remove("hidden");
+
       try {
-        const res = await fetch(`${API_BASE}/?q=electronics&page=1`);
+        const res = await fetch(`${API_BASE}/?q=electronics&page=${smartPage}`);
         const data = await res.json();
-        let products = data.products || [];
+        let products = filterUnwanted(data.products || []);
 
-        products = filterUnwanted(products);
-
-        const techKeywords = [
-          "smart", "usb", "gadget", "device", "camera", "wireless", "headphones",
+        const techKeywords = ["smart", "usb", "device", "camera", "wireless", "headphones",
           "earbuds", "charger", "watch", "keyboard", "mouse", "projector", "tablet",
-          "powerbank", "adapter", "gaming", "bluetooth", "led", "drone", "phone",
-          "speaker", "controller", "robot", "tv", "display", "battery"
-        ];
-
-        const techProducts = products.filter(p =>
-          techKeywords.some(k => p.title.toLowerCase().includes(k))
-        );
-        const otherProducts = products.filter(p =>
-          !techKeywords.some(k => p.title.toLowerCase().includes(k))
-        );
+          "powerbank", "adapter", "gaming", "bluetooth", "led", "drone", "speaker", "controller"];
+        const tech = products.filter(p => techKeywords.some(k => p.title.toLowerCase().includes(k)));
+        const others = products.filter(p => !techKeywords.some(k => p.title.toLowerCase().includes(k)));
 
         const techCount = Math.floor(products.length * 0.7);
-        const otherCount = products.length - techCount;
-        const finalProducts = [
-          ...techProducts.slice(0, techCount),
-          ...otherProducts.slice(0, otherCount)
-        ].sort(() => Math.random() - 0.5);
-
-        displayProducts(finalProducts, "smart-grid");
+        const mix = [...tech.slice(0, techCount), ...others.slice(0, products.length - techCount)];
+        displayProducts(mix, "smart-grid");
+        smartPage++;
       } catch (err) {
-        document.getElementById("smart-grid").innerHTML =
-          `<p class="text-red-400">Failed to load smart products.</p>`;
+        console.error(err);
+      } finally {
+        document.getElementById("smart-loading").classList.add("hidden");
+        smartLoading = false;
       }
     }
 
-    // Auto Refresh (every 3 hours)
-    setInterval(loadAllSections, 1000 * 60 * 60 * 3);
+    function initInfiniteSmartMix() {
+      loadSmartPage();
+      window.addEventListener("scroll", () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 400) {
+          loadSmartPage();
+        }
+      });
+    }
 
-    // On load
     window.addEventListener("DOMContentLoaded", loadAllSections);
   </script>
 </body>
