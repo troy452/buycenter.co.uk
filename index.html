@@ -130,7 +130,7 @@
       const selected = [];
 
       // 70% electronics/gadgets, 30% random others
-      const electronics = filtered.filter(p => /smart|usb|camera|drone|lamp|device|tech|headset|speaker/i.test(p.title));
+      const electronics = filtered.filter(p => /sports|video|camera|photo|studio|kit|camcorder|digital|film|instant|drone|cage|replacement|cleaning|flash|softbox|rail|cable|power|console|handheld|gamepad|wheel|joystick|fpv|goggles|game|accessory|deal|music|mp3|mp4|battery|bag|cd|dvd|portable|audio|video|speaker|microphone|earphone|headphone|smart|watch|automation|remote|ebook|television|translator|tesla|megaphone|home|theatre|amplifier|tv|soundbar/i.test(p.title);
       const others = filtered.filter(p => !electronics.includes(p));
       const eCount = Math.floor(0.7 * filtered.length);
       selected.push(...electronics.slice(0, eCount), ...others.slice(0, filtered.length - eCount));
