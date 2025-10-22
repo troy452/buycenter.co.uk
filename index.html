@@ -5,53 +5,102 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BuyCenter – Best Deals & TikTok Products</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/AliExpress_logo.svg/512px-AliExpress_logo.svg.png" />
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: #fff;
+    }
+    .product-card:hover img {
+      transform: scale(1.05);
+    }
+    .product-card img {
+      transition: transform 0.3s ease;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
 
-  <!-- ✅ TikTok Products Header -->
-  <section id="tiktok-products" class="p-6 bg-gradient-to-r from-pink-500 to-purple-600 text-white">
-    <h2 class="text-3xl font-bold mb-4 text-center">🎵 TikTok Products</h2>
-    <div id="tiktok-row" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+<body class="text-gray-900">
+
+  <!-- 🌐 HEADER -->
+  <header class="bg-white shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-3">
+      <h1 class="text-2xl font-extrabold text-pink-600">BuyCenter</h1>
+      <input type="text" placeholder="Search for products..." class="border border-gray-300 rounded-full px-4 py-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-pink-500">
+      <nav class="space-x-6 text-gray-600 hidden md:flex">
+        <a href="#tiktok-products" class="hover:text-pink-600">TikTok</a>
+        <a href="#trending" class="hover:text-pink-600">Trending</a>
+        <a href="#top-sellers" class="hover:text-pink-600">Top Sellers</a>
+        <a href="#big-discounts" class="hover:text-pink-600">Discounts</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 🎵 TikTok Products Header -->
+  <section id="tiktok-products" class="bg-gradient-to-r from-pink-600 to-purple-600 text-white py-10">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl font-bold mb-6 text-center">🎵 TikTok Products</h2>
+      <div id="tiktok-row" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+    </div>
   </section>
 
-  <!-- ✅ Main Content -->
-  <div class="p-6 space-y-16">
+  <!-- 🛍️ MAIN CONTENT -->
+  <main class="max-w-7xl mx-auto p-6 space-y-20">
 
-    <!-- Trending -->
+    <!-- 🔥 Trending -->
     <section>
-      <h2 class="text-2xl font-bold mb-4">🔥 Trending Now</h2>
-      <div id="trending" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+      <h2 class="text-2xl font-bold mb-6 border-b pb-2 text-gray-800">🔥 Trending Now</h2>
+      <div id="trending" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
     </section>
 
-    <!-- Top Sellers -->
+    <!-- 🏆 Top Sellers -->
     <section>
-      <h2 class="text-2xl font-bold mb-4">🏆 Top Sellers</h2>
-      <div id="top-sellers" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+      <h2 class="text-2xl font-bold mb-6 border-b pb-2 text-gray-800">🏆 Top Sellers</h2>
+      <div id="top-sellers" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
     </section>
 
-    <!-- Big Discounts -->
+    <!-- 💰 Big Discounts -->
     <section>
-      <h2 class="text-2xl font-bold mb-4">💰 Big Discounts</h2>
-      <div id="big-discounts" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+      <h2 class="text-2xl font-bold mb-6 border-b pb-2 text-gray-800">💰 Big Discounts</h2>
+      <div id="big-discounts" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
     </section>
 
-    <!-- More Great Deals -->
+    <!-- 🛒 More Great Deals -->
     <section>
-      <h2 class="text-2xl font-bold mb-4">🛒 More Great Deals</h2>
-      <div id="more-deals" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+      <h2 class="text-2xl font-bold mb-6 border-b pb-2 text-gray-800">🛒 Smart Mix Deals</h2>
+      <div id="more-deals" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
     </section>
-  </div>
+  </main>
 
-  <footer class="text-center py-6 text-sm text-gray-500">
-    © BuyCenter 2025. All rights reserved.
+  <!-- ⚫ FOOTER -->
+  <footer class="bg-gray-900 text-gray-400 text-center py-6 mt-20">
+    <p>© 2025 BuyCenter. All Rights Reserved.</p>
   </footer>
 
-  <!-- ✅ Scripts -->
+  <!-- 🧠 SCRIPT -->
   <script>
   const API_BASE = "https://aliexpress-proxy.miralbenizi7.workers.dev/";
   const TIKTOK_URL = "https://raw.githubusercontent.com/troy452/buycenter.co.uk/refs/heads/main/tiktok-products.json";
 
-  // --- Fetch and Display Products Helper ---
+  // 🧩 Helper to Render Products
+  function renderProducts(container, products) {
+    products.forEach(p => {
+      if (/case|protector/i.test(p.title)) return; // Exclude phone cases/screen protectors
+      const card = document.createElement("div");
+      card.className = "product-card bg-white rounded-xl overflow-hidden shadow hover:shadow-xl transition border";
+      card.innerHTML = `
+        <a href="${p.link}" target="_blank">
+          <img src="${p.image}" alt="${p.title}" class="w-full h-48 object-cover" />
+          <div class="p-3">
+            <h3 class="text-sm font-medium line-clamp-2 mb-1">${p.title}</h3>
+            <p class="text-pink-600 font-bold">$${p.price}</p>
+          </div>
+        </a>`;
+      container.appendChild(card);
+    });
+  }
+
+  // 🛠 Load Products
   async function loadProducts(containerId, query, limit = 14) {
     const container = document.getElementById(containerId);
     try {
@@ -59,95 +108,64 @@
       const data = await res.json();
       const products = data.products?.slice(0, limit) || [];
       if (!products.length) {
-        container.innerHTML = "<p class='col-span-full text-center'>No products found.</p>";
+        container.innerHTML = "<p class='col-span-full text-center text-gray-500'>No products found.</p>";
         return;
       }
-      products.forEach(p => {
-        const card = document.createElement("div");
-        card.className = "bg-white rounded-2xl overflow-hidden shadow hover:shadow-lg transition";
-        card.innerHTML = `
-          <a href="${p.link}" target="_blank">
-            <img src="${p.image}" alt="${p.title}" class="w-full h-48 object-cover" />
-            <div class="p-3">
-              <h3 class="text-sm font-semibold line-clamp-2">${p.title}</h3>
-              <p class="text-pink-600 font-bold mt-1">$${p.price}</p>
-            </div>
-          </a>
-        `;
-        container.appendChild(card);
-      });
+      renderProducts(container, products);
     } catch (e) {
-      console.error("Load failed:", e);
+      console.error(e);
       container.innerHTML = "<p class='col-span-full text-center text-red-500'>⚠️ Failed to load.</p>";
     }
   }
 
-  // --- Infinite Deals Loader ---
+  // ♾️ Infinite Scroll for Smart Mix
   let page = 1;
   async function loadMoreDeals() {
     const container = document.getElementById("more-deals");
     try {
-      const res = await fetch(`${API_BASE}?q=deals&page=${page}`);
+      const res = await fetch(`${API_BASE}?q=electronics gadgets deals&page=${page}`);
       const data = await res.json();
-      const products = data.products || [];
-      if (!products.length) return;
-      products.forEach(p => {
-        const card = document.createElement("div");
-        card.className = "bg-white rounded-2xl overflow-hidden shadow hover:shadow-lg transition";
-        card.innerHTML = `
-          <a href="${p.link}" target="_blank">
-            <img src="${p.image}" alt="${p.title}" class="w-full h-48 object-cover" />
-            <div class="p-3">
-              <h3 class="text-sm font-semibold line-clamp-2">${p.title}</h3>
-              <p class="text-pink-600 font-bold mt-1">$${p.price}</p>
-            </div>
-          </a>
-        `;
-        container.appendChild(card);
-      });
+      const all = data.products || [];
+      const filtered = all.filter(p => !/case|protector/i.test(p.title));
+      const selected = [];
+
+      // 70% electronics/gadgets, 30% random others
+      const electronics = filtered.filter(p => /smart|usb|camera|gadget|drone|lamp|device|tech|headset|speaker/i.test(p.title));
+      const others = filtered.filter(p => !electronics.includes(p));
+      const eCount = Math.floor(0.7 * filtered.length);
+      selected.push(...electronics.slice(0, eCount), ...others.slice(0, filtered.length - eCount));
+
+      renderProducts(container, selected);
       page++;
     } catch (e) {
       console.error("More deals failed:", e);
     }
   }
 
-  // --- TikTok Products Loader ---
+  // 🎵 TikTok Products
   async function loadTikTokProducts() {
     const container = document.getElementById("tiktok-row");
     try {
       const res = await fetch(TIKTOK_URL);
       if (!res.ok) throw new Error("Failed to fetch TikTok products");
       const data = await res.json();
-      data.forEach(p => {
-        const card = document.createElement("div");
-        card.className = "bg-white text-black rounded-2xl shadow hover:shadow-xl transition overflow-hidden";
-        card.innerHTML = `
-          <a href="${p.link}" target="_blank">
-            <img src="${p.image}" alt="${p.title}" class="w-full h-48 object-cover" />
-            <div class="p-3">
-              <h3 class="text-sm font-semibold line-clamp-2">${p.title}</h3>
-              <p class="text-pink-600 font-bold mt-1">$${p.price}</p>
-            </div>
-          </a>
-        `;
-        container.appendChild(card);
-      });
+      renderProducts(container, data);
     } catch (e) {
       console.error("TikTok products failed:", e);
       container.innerHTML = "<p class='col-span-full text-center'>⚠️ TikTok products failed to load.</p>";
     }
   }
 
-  // --- Initial Loads ---
+  // 🚀 Initial Loads
   loadTikTokProducts();
   loadProducts("trending", "trending");
   loadProducts("top-sellers", "top sellers");
   loadProducts("big-discounts", "discount");
   loadMoreDeals();
 
-  // --- Infinite Scroll ---
+  // ♾️ Infinite Scroll Trigger
   window.addEventListener("scroll", () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 300) {
       loadMoreDeals();
     }
   });
