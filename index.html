@@ -123,14 +123,14 @@
   async function loadMoreDeals() {
     const container = document.getElementById("more-deals");
     try {
-      const res = await fetch(`${API_BASE}?q=electronics gadgets deals&page=${page}`);
+      const res = await fetch(`${API_BASE}?q=electronics deals&page=${page}`);
       const data = await res.json();
       const all = data.products || [];
       const filtered = all.filter(p => !/case|protector/i.test(p.title));
       const selected = [];
 
       // 70% electronics/gadgets, 30% random others
-      const electronics = filtered.filter(p => /smart|usb|camera|gadget|drone|lamp|device|tech|headset|speaker/i.test(p.title));
+      const electronics = filtered.filter(p => /smart|usb|camera|drone|lamp|device|tech|headset|speaker/i.test(p.title));
       const others = filtered.filter(p => !electronics.includes(p));
       const eCount = Math.floor(0.7 * filtered.length);
       selected.push(...electronics.slice(0, eCount), ...others.slice(0, filtered.length - eCount));
