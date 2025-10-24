@@ -5,7 +5,10 @@
   <meta name="ahrefs-site-verification" content="c5d1aa235ac52ffc2199166798533518a0c1e78aa0825e49aee4948df9e40b80">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>BuyCenter - Smart Shopping Deals</title>
+  <meta name="description" content="🛍️ BuyCenter.co.uk — Discover the Best AliExpress Deals & Top-Rated Products. Find trending gadgets, home essentials, and exclusive discounts curated by experts for smart UK shoppers.">
+
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     body {
@@ -51,6 +54,27 @@
 
   <main class="p-4 max-w-7xl mx-auto">
 
+    <!-- 🛍️ Description Section -->
+    <section class="bg-gray-800 p-6 rounded-xl mb-10 shadow">
+      <h2 class="text-2xl font-bold mb-4 text-yellow-400">🛍️ BuyCenter.co.uk — Discover the Best AliExpress Deals & Top-Rated Products</h2>
+      <p class="mb-4 text-gray-200">
+        Welcome to <strong>BuyCenter.co.uk</strong>, your ultimate destination for finding the best AliExpress products, top deals, and lowest prices online. 
+        We handpick high-quality gadgets, home essentials, fashion trends, and tech accessories — all from trusted AliExpress sellers.
+      </p>
+      <p class="mb-4 text-gray-200">
+        At BuyCenter, we do the research for you. Our team curates the latest trending items, compares prices and reviews, and highlights exclusive discounts so you can shop smarter and save more.
+      </p>
+      <ul class="list-disc list-inside space-y-1 text-gray-200">
+        <li>✅ Daily updated AliExpress offers</li>
+        <li>✅ Expert product recommendations</li>
+        <li>✅ Verified sellers and fast shipping options</li>
+        <li>✅ Easy browsing by category — electronics, home & garden, fashion, beauty, and more</li>
+      </ul>
+      <p class="mt-4 text-gray-100 font-semibold">
+        Shop confidently with <strong>BuyCenter.co.uk</strong> — your trusted AliExpress affiliate hub for smart shopping, best prices, and exclusive deals in the UK and beyond.
+      </p>
+    </section>
+
     <!-- TikTok Products -->
     <section id="tiktok-section" class="mb-10">
       <h2 class="section-title">🎬 TikTok Products</h2>
@@ -91,7 +115,6 @@
   <script>
     const API_BASE = "https://aliexpress-proxy.miralbenizi7.workers.dev";
 
-    // 🔄 Helper to shuffle arrays
     function shuffleArray(array) {
       return array
         .map(a => ({ sort: Math.random(), value: a }))
@@ -99,13 +122,10 @@
         .map(a => a.value);
     }
 
-    // 🧱 Helper to display products (with shuffle)
     function displayProducts(products, containerId) {
       const grid = document.getElementById(containerId);
       grid.innerHTML = "";
-
       const shuffled = shuffleArray(products);
-
       shuffled.forEach(p => {
         const item = document.createElement("div");
         item.className = "product-card rounded-lg p-2 shadow hover:shadow-lg text-center";
@@ -119,16 +139,13 @@
       });
     }
 
-    // 📦 Fetch AliExpress products
     async function fetchAliExpressProducts(keyword, limit = 14) {
       const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(keyword)}&page=1`);
       const data = await res.json();
       return data.products ? data.products.slice(0, limit) : [];
     }
 
-    // 🚀 Load all sections
     async function loadAllSections() {
-      // TikTok Section
       try {
         const tiktokRes = await fetch("https://raw.githubusercontent.com/troy452/buycenter.co.uk/refs/heads/main/tiktok-products.json");
         const tiktokProducts = await tiktokRes.json();
@@ -137,7 +154,6 @@
         document.getElementById("tiktok-error").classList.remove("hidden");
       }
 
-      // API-driven Sections
       const [trending, topSellers, discounts] = await Promise.all([
         fetchAliExpressProducts("trending"),
         fetchAliExpressProducts("top gadgets"),
@@ -148,11 +164,9 @@
       displayProducts(topSellers, "top-sellers-grid");
       displayProducts(discounts, "discount-grid");
 
-      // Smart Balanced Section
       loadSmartBalancedProducts();
     }
 
-    // ⚡ Smart balanced products
     async function loadSmartBalancedProducts() {
       try {
         const res = await fetch(`${API_BASE}/?q=electronics&page=1`);
@@ -187,10 +201,7 @@
       }
     }
 
-    // 🔁 Auto reshuffle every 3 hours (and refetch)
     setInterval(loadAllSections, 1000 * 60 * 60 * 3);
-
-    // ▶️ Initial load
     window.addEventListener("DOMContentLoaded", loadAllSections);
   </script>
 </body>
