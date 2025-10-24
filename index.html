@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <script src="https://analytics.ahrefs.com/analytics.js" data-key="/TdWzdsfmv8gSO6RdvFcaQ" async></script>
- <meta name="ahrefs-site-verification" content="c5d1aa235ac52ffc2199166798533518a0c1e78aa0825e49aee4948df9e40b80">
+  <meta name="ahrefs-site-verification" content="c5d1aa235ac52ffc2199166798533518a0c1e78aa0825e49aee4948df9e40b80">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BuyCenter - Smart Shopping Deals</title>
@@ -91,11 +91,22 @@
   <script>
     const API_BASE = "https://aliexpress-proxy.miralbenizi7.workers.dev";
 
-    // Helper to display products
+    // 🔄 Helper to shuffle arrays
+    function shuffleArray(array) {
+      return array
+        .map(a => ({ sort: Math.random(), value: a }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(a => a.value);
+    }
+
+    // 🧱 Helper to display products (with shuffle)
     function displayProducts(products, containerId) {
       const grid = document.getElementById(containerId);
       grid.innerHTML = "";
-      products.forEach(p => {
+
+      const shuffled = shuffleArray(products);
+
+      shuffled.forEach(p => {
         const item = document.createElement("div");
         item.className = "product-card rounded-lg p-2 shadow hover:shadow-lg text-center";
         item.innerHTML = `
@@ -108,12 +119,14 @@
       });
     }
 
+    // 📦 Fetch AliExpress products
     async function fetchAliExpressProducts(keyword, limit = 14) {
       const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(keyword)}&page=1`);
       const data = await res.json();
       return data.products ? data.products.slice(0, limit) : [];
     }
 
+    // 🚀 Load all sections
     async function loadAllSections() {
       // TikTok Section
       try {
@@ -139,6 +152,7 @@
       loadSmartBalancedProducts();
     }
 
+    // ⚡ Smart balanced products
     async function loadSmartBalancedProducts() {
       try {
         const res = await fetch(`${API_BASE}/?q=electronics&page=1`);
@@ -164,7 +178,7 @@
         const finalProducts = [
           ...techProducts.slice(0, techCount),
           ...otherProducts.slice(0, otherCount)
-        ].sort(() => Math.random() - 0.5);
+        ];
 
         displayProducts(finalProducts, "smart-grid");
       } catch (err) {
@@ -173,10 +187,10 @@
       }
     }
 
-    // Auto Refresh (every 3 hours)
+    // 🔁 Auto reshuffle every 3 hours (and refetch)
     setInterval(loadAllSections, 1000 * 60 * 60 * 3);
 
-    // On load
+    // ▶️ Initial load
     window.addEventListener("DOMContentLoaded", loadAllSections);
   </script>
 </body>
