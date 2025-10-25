@@ -121,8 +121,7 @@
         .sort((a, b) => a.sort - b.sort)
         .map(a => a.value);
     }
-console.log("TikTok products loaded:", tiktokProducts.length);
-    
+
     function displayProducts(products, containerId) {
       const grid = document.getElementById(containerId);
       grid.innerHTML = "";
