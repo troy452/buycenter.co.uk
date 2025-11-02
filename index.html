@@ -15,9 +15,32 @@
       background: #0f172a;
       color: #f8fafc;
       font-family: 'Inter', sans-serif;
+      /* Padding-top MUST match the height of the fixed banner (approx 50px) */
+      padding-top: 50px; 
+    }
+    /* Custom style for the affiliate banner */
+    #affiliate-banner {
+      /* Fixed position keeps it at the very top, Z-100 ensures it's above other elements */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000; 
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+    /* Style for the close button */
+    #closeBannerBtn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 2px 8px;
+      line-height: 1;
     }
     header {
       background: linear-gradient(90deg, #2563eb, #1e40af);
+      /* Since the banner is fixed, make the header sticky below the banner */
+      top: 50px; /* Offset the header by the banner's height */
     }
     .product-card {
       transition: all 0.3s ease;
@@ -43,7 +66,19 @@
 </head>
 <body>
 
-  <!-- Header -->
+  <div id="affiliate-banner" class="bg-yellow-400 text-gray-900 p-2 text-center text-sm sm:text-base relative">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-center sm:justify-between items-center space-y-2 sm:space-y-0 sm:space-x-4">
+      <span class="font-semibold flex items-center">
+        <span class="text-xl mr-2">🎁</span> Start streaming with **Opera Streaming** now!
+      </span>
+      <a href="https://singingfiles.com/show.php?l=0&u=2465402&id=73048" target="_blank" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-4 rounded-full transition duration-300 shadow-lg">
+        Enter Your Information Here
+      </a>
+    </div>
+    <button id="closeBannerBtn" class="bg-gray-700 hover:bg-gray-800 text-white rounded-full text-xs font-bold">
+      &times;
+    </button>
+  </div>
   <header class="shadow p-4 flex flex-col md:flex-row justify-between items-center sticky top-0 z-10 text-white">
     <h1 class="text-2xl font-bold">BuyCenter</h1>
     <div class="flex items-center mt-2 md:mt-0 w-full md:w-auto">
@@ -54,7 +89,6 @@
 
   <main class="p-4 max-w-7xl mx-auto">
 
-    <!-- 🛍️ Description Section -->
     <section class="bg-gray-800 p-6 rounded-xl mb-10 shadow">
       <h2 class="text-2xl font-bold mb-4 text-yellow-400">🛍️ BuyCenter.co.uk — Discover the Best AliExpress Deals & Top-Rated Products</h2>
       <p class="mb-4 text-gray-200">
@@ -75,32 +109,27 @@
       </p>
     </section>
 
-    <!-- TikTok Products -->
     <section id="tiktok-section" class="mb-10">
       <h2 class="section-title">🎬 TikTok Products</h2>
       <div id="tiktok-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
       <p id="tiktok-error" class="text-red-400 hidden">⚠️ TikTok products failed to load.</p>
     </section>
 
-    <!-- Trending -->
     <section id="trending-section" class="mb-10">
       <h2 class="section-title">🔥 Trending Now</h2>
       <div id="trending-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
     </section>
 
-    <!-- Top Sellers -->
     <section id="top-sellers-section" class="mb-10">
       <h2 class="section-title">🏆 Top Sellers</h2>
       <div id="top-sellers-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
     </section>
 
-    <!-- Big Discounts -->
     <section id="discount-section" class="mb-10">
       <h2 class="section-title">💰 Big Discounts</h2>
       <div id="discount-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
     </section>
 
-    <!-- Smart Balanced Section -->
     <section id="smart-section" class="my-10">
       <h2 class="section-title">⚡ Smart Mix: Electronics & More</h2>
       <div id="smart-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
@@ -200,6 +229,28 @@
           `<p class="text-red-400">Failed to load smart products.</p>`;
       }
     }
+    
+    // 🔔 BANNER DISMISSAL SCRIPT 🔔
+    document.addEventListener("DOMContentLoaded", function() {
+        const closeBtn = document.getElementById('closeBannerBtn');
+        const banner = document.getElementById('affiliate-banner');
+        const body = document.body;
+        const header = document.querySelector('header');
+
+        if (closeBtn && banner) {
+            closeBtn.addEventListener('click', function() {
+                // Hide the banner
+                banner.style.display = 'none';
+
+                // Re-adjust the body and header positioning
+                body.style.paddingTop = '0';
+                if (header) {
+                    header.style.top = '0';
+                }
+            });
+        }
+    });
+    // 🔔 END BANNER DISMISSAL SCRIPT 🔔
 
     setInterval(loadAllSections, 1000 * 60 * 60 * 3);
     window.addEventListener("DOMContentLoaded", loadAllSections);
