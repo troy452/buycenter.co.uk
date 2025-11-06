@@ -1,21 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://buycenter.co.uk/</loc>
+    <loc>https://buycenter.co.uk/blog.html</loc>
     <lastmod>2025-11-06</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://buycenter.co.uk/about.html</loc>
+    <loc>https://buycenter.co.uk/post-aliexpress-best-tech.html</loc>
     <lastmod>2025-11-06</lastmod>
-    <changefreq>yearly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://buycenter.co.uk/contact.html</loc>
+    <loc>https://buycenter.co.uk/post-smart-shopping-tips.html</loc>
     <lastmod>2025-11-06</lastmod>
-    <changefreq>yearly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-</urlset>
