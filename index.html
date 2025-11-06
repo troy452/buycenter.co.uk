@@ -1,34 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ✅ Ahrefs Verification -->
   <script src="https://analytics.ahrefs.com/analytics.js" data-key="/TdWzdsfmv8gSO6RdvFcaQ" async></script>
   <meta name="ahrefs-site-verification" content="c5d1aa235ac52ffc2199166798533518a0c1e78aa0825e49aee4948df9e40b80">
+
+  <!-- ✅ Meta & Title -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>BuyCenter - Smart Shopping Deals</title>
-  <meta name="description" content="🛍️ BuyCenter.co.uk — Discover the Best AliExpress Deals & Top-Rated Products. Find trending gadgets, home essentials, and exclusive discounts curated by experts for smart UK shoppers.">
+  <title>BuyCenter — Smart Shopping Deals & AliExpress Discounts</title>
+  <meta name="description" content="🛍️ BuyCenter.co.uk — Discover trending AliExpress deals, best products, and exclusive discounts. Find top gadgets, home essentials, and smart shopping offers curated for UK users." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://buycenter.co.uk/" />
 
+  <!-- ✅ Open Graph -->
+  <meta property="og:title" content="BuyCenter — Smart Shopping Deals & AliExpress Discounts" />
+  <meta property="og:description" content="Find the best AliExpress deals and smart shopping offers. Curated gadgets, home items, and trending products updated daily for UK shoppers." />
+  <meta property="og:image" content="https://buycenter.co.uk/preview.jpg" />
+  <meta property="og:url" content="https://buycenter.co.uk/" />
+  <meta property="og:type" content="website" />
+
+  <!-- ✅ Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- ✅ Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <!-- ✅ Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "BuyCenter",
+    "url": "https://buycenter.co.uk/",
+    "description": "BuyCenter.co.uk — Discover the best AliExpress deals and top-rated smart shopping products in the UK.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "BuyCenter"
+    }
+  }
+  </script>
+
+  <!-- ✅ TailwindCSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- ✅ Custom Styles -->
   <style>
     body {
       background: #0f172a;
       color: #f8fafc;
       font-family: 'Inter', sans-serif;
-      /* Padding-top MUST match the height of the fixed banner (approx 50px) */
-      padding-top: 50px; 
+      padding-top: 50px;
     }
-    /* Custom style for the affiliate banner */
     #affiliate-banner {
-      /* Fixed position keeps it at the very top, Z-100 ensures it's above other elements */
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      z-index: 1000; 
+      z-index: 1000;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     }
-    /* Style for the close button */
     #closeBannerBtn {
       position: absolute;
       right: 10px;
@@ -39,8 +70,7 @@
     }
     header {
       background: linear-gradient(90deg, #2563eb, #1e40af);
-      /* Since the banner is fixed, make the header sticky below the banner */
-      top: 50px; /* Offset the header by the banner's height */
+      top: 50px;
     }
     .product-card {
       transition: all 0.3s ease;
@@ -64,21 +94,22 @@
     }
   </style>
 </head>
-<body>
 
+<body>
+  <!-- ✅ Affiliate Banner -->
   <div id="affiliate-banner" class="bg-yellow-400 text-gray-900 p-2 text-center text-sm sm:text-base relative">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-center sm:justify-between items-center space-y-2 sm:space-y-0 sm:space-x-4">
       <span class="font-semibold flex items-center">
-        <span class="text-xl mr-2">🎁</span> Start streaming with **Opera Streaming** now!
+        <span class="text-xl mr-2">🎁</span> Start streaming with Opera Streaming now!
       </span>
       <a href="https://singingfiles.com/show.php?l=0&u=2465402&id=73048" target="_blank" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-4 rounded-full transition duration-300 shadow-lg">
         Enter Your Information Here
       </a>
     </div>
-    <button id="closeBannerBtn" class="bg-gray-700 hover:bg-gray-800 text-white rounded-full text-xs font-bold">
-      &times;
-    </button>
+    <button id="closeBannerBtn" class="bg-gray-700 hover:bg-gray-800 text-white rounded-full text-xs font-bold">&times;</button>
   </div>
+
+  <!-- ✅ Header -->
   <header class="shadow p-4 flex flex-col md:flex-row justify-between items-center sticky top-0 z-10 text-white">
     <h1 class="text-2xl font-bold">BuyCenter</h1>
     <div class="flex items-center mt-2 md:mt-0 w-full md:w-auto">
@@ -87,8 +118,8 @@
     </div>
   </header>
 
+  <!-- ✅ Main -->
   <main class="p-4 max-w-7xl mx-auto">
-
     <section class="bg-gray-800 p-6 rounded-xl mb-10 shadow">
       <h2 class="text-2xl font-bold mb-4 text-yellow-400">🛍️ BuyCenter.co.uk — Discover the Best AliExpress Deals & Top-Rated Products</h2>
       <p class="mb-4 text-gray-200">
@@ -109,6 +140,7 @@
       </p>
     </section>
 
+    <!-- ✅ Product Sections -->
     <section id="tiktok-section" class="mb-10">
       <h2 class="section-title">🎬 TikTok Products</h2>
       <div id="tiktok-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
@@ -134,22 +166,18 @@
       <h2 class="section-title">⚡ Smart Mix: Electronics & More</h2>
       <div id="smart-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
     </section>
-
   </main>
 
+  <!-- ✅ Footer -->
   <footer class="text-center p-6 text-sm">
-    © 2025 BuyCenter — Powered by AliExpress API
+    <p>Affiliate Disclosure: BuyCenter may earn a commission from qualifying purchases.</p>
+    <p>© 2025 BuyCenter.co.uk — Powered by AliExpress API</p>
   </footer>
 
+  <!-- ✅ JS -->
   <script>
     const API_BASE = "https://aliexpress-proxy.miralbenizi7.workers.dev";
-
-    function shuffleArray(array) {
-      return array
-        .map(a => ({ sort: Math.random(), value: a }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(a => a.value);
-    }
+    const shuffleArray = (arr) => arr.map(a => ({ sort: Math.random(), value: a })).sort((a, b) => a.sort - b.sort).map(a => a.value);
 
     function displayProducts(products, containerId) {
       const grid = document.getElementById(containerId);
@@ -179,7 +207,7 @@
         const tiktokRes = await fetch("https://raw.githubusercontent.com/troy452/buycenter.co.uk/refs/heads/main/tiktok-products.json");
         const tiktokProducts = await tiktokRes.json();
         displayProducts(tiktokProducts, "tiktok-grid");
-      } catch (e) {
+      } catch {
         document.getElementById("tiktok-error").classList.remove("hidden");
       }
 
@@ -201,56 +229,30 @@
         const res = await fetch(`${API_BASE}/?q=electronics&page=1`);
         const data = await res.json();
         const products = data.products || [];
-
-        const techKeywords = [
-          "smart", "usb", "gadget", "device", "camera", "wireless", "headphones",
-          "earbuds", "charger", "watch", "keyboard", "mouse", "projector", "tablet",
-          "powerbank", "adapter", "gaming", "bluetooth", "led", "drone", "phone",
-          "speaker", "controller", "robot", "tv", "display", "battery"
-        ];
-
-        const techProducts = products.filter(p =>
-          techKeywords.some(k => p.title.toLowerCase().includes(k))
-        );
-        const otherProducts = products.filter(p =>
-          !techKeywords.some(k => p.title.toLowerCase().includes(k))
-        );
-
-        const techCount = Math.floor(products.length * 0.7);
-        const otherCount = products.length - techCount;
-        const finalProducts = [
-          ...techProducts.slice(0, techCount),
-          ...otherProducts.slice(0, otherCount)
-        ];
-
-        displayProducts(finalProducts, "smart-grid");
-      } catch (err) {
-        document.getElementById("smart-grid").innerHTML =
-          `<p class="text-red-400">Failed to load smart products.</p>`;
+        const techKeywords = ["smart", "usb", "gadget", "device", "camera", "wireless", "headphones", "earbuds", "charger", "watch", "keyboard", "mouse", "projector", "tablet", "powerbank", "adapter", "gaming", "bluetooth", "led", "drone", "phone", "speaker", "controller", "robot", "tv", "display", "battery"];
+        const tech = products.filter(p => techKeywords.some(k => p.title.toLowerCase().includes(k)));
+        const other = products.filter(p => !techKeywords.some(k => p.title.toLowerCase().includes(k)));
+        const final = [...tech.slice(0, Math.floor(products.length * 0.7)), ...other.slice(0, Math.floor(products.length * 0.3))];
+        displayProducts(final, "smart-grid");
+      } catch {
+        document.getElementById("smart-grid").innerHTML = `<p class="text-red-400">Failed to load smart products.</p>`;
       }
     }
-    
-    // 🔔 BANNER DISMISSAL SCRIPT 🔔
-    document.addEventListener("DOMContentLoaded", function() {
-        const closeBtn = document.getElementById('closeBannerBtn');
-        const banner = document.getElementById('affiliate-banner');
-        const body = document.body;
-        const header = document.querySelector('header');
 
-        if (closeBtn && banner) {
-            closeBtn.addEventListener('click', function() {
-                // Hide the banner
-                banner.style.display = 'none';
-
-                // Re-adjust the body and header positioning
-                body.style.paddingTop = '0';
-                if (header) {
-                    header.style.top = '0';
-                }
-            });
-        }
+    // ✅ Banner dismissal
+    document.addEventListener("DOMContentLoaded", () => {
+      const closeBtn = document.getElementById('closeBannerBtn');
+      const banner = document.getElementById('affiliate-banner');
+      const body = document.body;
+      const header = document.querySelector('header');
+      if (closeBtn && banner) {
+        closeBtn.addEventListener('click', () => {
+          banner.style.display = 'none';
+          body.style.paddingTop = '0';
+          if (header) header.style.top = '0';
+        });
+      }
     });
-    // 🔔 END BANNER DISMISSAL SCRIPT 🔔
 
     setInterval(loadAllSections, 1000 * 60 * 60 * 3);
     window.addEventListener("DOMContentLoaded", loadAllSections);
