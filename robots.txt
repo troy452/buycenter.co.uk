@@ -1,4 +1,19 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.buycenter.co.uk/sitemap.xml
+# Prevent indexing of system or temporary files
+Disallow: /tmp/
+Disallow: /cgi-bin/
+
+# Sitemap location
+Sitemap: https://buycenter.co.uk/sitemap.xml
+
+# Additional clarity for bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: AhrefsBot
+Allow: /
