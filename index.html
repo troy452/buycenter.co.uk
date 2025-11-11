@@ -93,6 +93,11 @@
       background: #1e293b;
       color: #cbd5e1;
     }
+    #affiliate-offers {
+      background: #1e293b;
+      padding: 1.5rem;
+      border-radius: 1rem;
+    }
   </style>
 </head>
 
@@ -168,6 +173,13 @@
     <section id="smart-section" class="my-10">
       <h2 class="section-title">⚡ Smart Mix: Electronics & More</h2>
       <div id="smart-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+    </section>
+
+    <!-- ✅ NEW: CPAGrip Affiliate Offers -->
+    <section id="affiliate-offers" class="mb-10">
+      <h2 class="section-title">💸 Exclusive Affiliate Offers</h2>
+      <div id="offers-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+      <p id="offers-error" class="text-red-400 hidden mt-2">⚠️ Offers failed to load. Please try again later.</p>
     </section>
 
     <!-- ✅ SEO Section -->
@@ -252,6 +264,7 @@
       displayProducts(discounts, "discount-grid");
 
       loadSmartBalancedProducts();
+      loadAffiliateOffers(); // 👈 Load CPAGrip offers
     }
 
     async function loadSmartBalancedProducts() {
@@ -266,6 +279,32 @@
         displayProducts(final, "smart-grid");
       } catch {
         document.getElementById("smart-grid").innerHTML = `<p class="text-red-400">Failed to load smart products.</p>`;
+      }
+    }
+
+    // ✅ New: Load CPAGrip Offers
+    async function loadAffiliateOffers() {
+      try {
+        const res = await fetch("/offers.php");
+        const data = await res.json();
+        if (!data.offers || data.offers.length === 0) throw new Error();
+
+        const grid = document.getElementById("offers-grid");
+        grid.innerHTML = "";
+
+        data.offers.forEach(o => {
+          const card = document.createElement("div");
+          card.className = "product-card rounded-lg p-3 shadow text-center";
+          card.innerHTML = `
+            <a href="${o.link}" target="_blank" class="block hover:opacity-90 transition">
+              <img src="${o.image}" alt="${o.title}" class="w-full h-40 object-cover rounded-md mb-2">
+              <h3 class="text-sm font-semibold text-gray-100 line-clamp-2">${o.title}</h3>
+              <p class="text-yellow-400 mt-1 font-bold">Earn up to £${o.payout}</p>
+            </a>`;
+          grid.appendChild(card);
+        });
+      } catch {
+        document.getElementById("offers-error").classList.remove("hidden");
       }
     }
 
