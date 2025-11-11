@@ -219,7 +219,11 @@
   <!-- ✅ JS -->
   <script>
     const API_BASE = "https://aliexpress-proxy.miralbenizi7.workers.dev";
-    const shuffleArray = (arr) => arr.map(a => ({ sort: Math.random(), value: a })).sort((a, b) => a.sort - b.sort).map(a => a.value);
+    const AFFILIATE_API = "https://buycenter-cpagrip-feed.miralbenizi7.workers.dev/";
+
+    const shuffleArray = (arr) => arr.map(a => ({ sort: Math.random(), value: a }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(a => a.value);
 
     function displayProducts(products, containerId) {
       const grid = document.getElementById(containerId);
@@ -244,6 +248,31 @@
       return data.products ? data.products.slice(0, limit) : [];
     }
 
+    async function loadAffiliateOffers() {
+      try {
+        const res = await fetch(AFFILIATE_API);
+        const data = await res.json();
+        if (!data.offers || data.offers.length === 0) throw new Error();
+
+        const grid = document.getElementById("offers-grid");
+        grid.innerHTML = "";
+
+        data.offers.forEach(o => {
+          const card = document.createElement("div");
+          card.className = "product-card rounded-lg p-3 shadow text-center";
+          card.innerHTML = `
+            <a href="${o.link}" target="_blank" class="block hover:opacity-90 transition">
+              <img src="${o.image}" alt="${o.title}" class="w-full h-40 object-cover rounded-md mb-2">
+              <h3 class="text-sm font-semibold text-gray-100 line-clamp-2">${o.title}</h3>
+              <p class="text-yellow-400 mt-1 font-bold">Earn up to £${o.payout || "0.00"}</p>
+            </a>`;
+          grid.appendChild(card);
+        });
+      } catch {
+        document.getElementById("offers-error").classList.remove("hidden");
+      }
+    }
+
     async function loadAllSections() {
       try {
         const tiktokRes = await fetch("https://raw.githubusercontent.com/troy452/buycenter.co.uk/refs/heads/main/tiktok-products.json");
@@ -264,7 +293,7 @@
       displayProducts(discounts, "discount-grid");
 
       loadSmartBalancedProducts();
-      loadAffiliateOffers(); // 👈 Load CPAGrip offers
+      loadAffiliateOffers();
     }
 
     async function loadSmartBalancedProducts() {
@@ -282,33 +311,6 @@
       }
     }
 
-    // ✅ New: Load CPAGrip Offers
-    async function loadAffiliateOffers() {
-      try {
-        const res = await fetch("/offers.php");
-        const data = await res.json();
-        if (!data.offers || data.offers.length === 0) throw new Error();
-
-        const grid = document.getElementById("offers-grid");
-        grid.innerHTML = "";
-
-        data.offers.forEach(o => {
-          const card = document.createElement("div");
-          card.className = "product-card rounded-lg p-3 shadow text-center";
-          card.innerHTML = `
-            <a href="${o.link}" target="_blank" class="block hover:opacity-90 transition">
-              <img src="${o.image}" alt="${o.title}" class="w-full h-40 object-cover rounded-md mb-2">
-              <h3 class="text-sm font-semibold text-gray-100 line-clamp-2">${o.title}</h3>
-              <p class="text-yellow-400 mt-1 font-bold">Earn up to £${o.payout}</p>
-            </a>`;
-          grid.appendChild(card);
-        });
-      } catch {
-        document.getElementById("offers-error").classList.remove("hidden");
-      }
-    }
-
-    // ✅ Banner dismissal
     document.addEventListener("DOMContentLoaded", () => {
       const closeBtn = document.getElementById('closeBannerBtn');
       const banner = document.getElementById('affiliate-banner');
