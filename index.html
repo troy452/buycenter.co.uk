@@ -1,124 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ✅ Ahrefs Verification -->
-  <script src="https://analytics.ahrefs.com/analytics.js" data-key="/TdWzdsfmv8gSO6RdvFcaQ" async></script>
-  <meta name="ahrefs-site-verification" content="c5d1aa235ac52ffc2199166798533518a0c1e78aa0825e49aee4948df9e40b80">
-
-  <!-- ✅ SEO Meta & Title -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BuyCenter.co.uk — Best AliExpress UK Deals, Discounts & Trending Finds</title>
-  <meta name="description" content="Discover the best AliExpress UK deals, trending gadgets, home essentials, and exclusive discounts. BuyCenter curates verified offers for smart UK shoppers — updated daily!">
-  <meta name="keywords" content="AliExpress UK deals, AliExpress discounts, UK gadget deals, trending AliExpress products, AliExpress UK offers, BuyCenter reviews, smart shopping UK">
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://buycenter.co.uk/" />
-
-  <!-- ✅ Open Graph -->
-  <meta property="og:title" content="BuyCenter — AliExpress UK Deals & Smart Shopping Offers" />
-  <meta property="og:description" content="Browse top-rated AliExpress products and UK-exclusive discounts curated by BuyCenter. Save more on trending gadgets and home items." />
-  <meta property="og:image" content="https://buycenter.co.uk/preview.jpg" />
-  <meta property="og:url" content="https://buycenter.co.uk/" />
-  <meta property="og:type" content="website" />
-
-  <!-- ✅ Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-
-  <!-- ✅ Favicon -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-
-  <!-- ✅ Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "BuyCenter",
-    "url": "https://buycenter.co.uk/",
-    "description": "BuyCenter.co.uk — Discover the best AliExpress deals and top-rated smart shopping products in the UK.",
-    "publisher": {
-      "@type": "Organization",
-      "name": "BuyCenter"
-    }
-  }
-  </script>
-
-  <!-- ✅ TailwindCSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
-  <!-- ✅ Custom Styles -->
   <style>
-    body {
-      background: #0f172a;
-      color: #f8fafc;
-      font-family: 'Inter', sans-serif;
-      padding-top: 50px;
-    }
-    #affiliate-banner {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-    }
-    #closeBannerBtn {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      padding: 2px 8px;
-      line-height: 1;
-    }
-    header {
-      background: linear-gradient(90deg, #2563eb, #1e40af);
-      top: 50px;
-    }
-    .product-card {
-      transition: all 0.3s ease;
-      background: #1e293b;
-    }
-    .product-card:hover {
-      transform: translateY(-4px);
-      background: #334155;
-    }
-    .section-title {
-      font-size: 1.7rem;
-      font-weight: 700;
-      margin: 1.5rem 0;
-      border-left: 6px solid #3b82f6;
-      padding-left: 10px;
-      color: #fff;
-    }
-    footer {
-      background: #1e293b;
-      color: #cbd5e1;
-    }
-    #affiliate-offers {
-      background: #1e293b;
-      padding: 1.5rem;
-      border-radius: 1rem;
+    body { background: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+    header { background: linear-gradient(90deg, #2563eb, #1e40af); }
+    .product-card { background: #1e293b; transition: all 0.3s ease; }
+    .product-card:hover { background: #334155; transform: translateY(-4px); }
+    footer { background: #1e293b; color: #cbd5e1; }
+    .section-title { font-size: 1.4rem; font-weight: 700; border-left: 6px solid #3b82f6; padding-left: 10px; margin-bottom: 1rem; }
+    #affiliate-sidebar { background: #1e293b; border-radius: 1rem; padding: 1rem; }
+    #offers-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 1024px) {
+      #offers-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 
-<body>
-  <!-- ✅ Affiliate Banner -->
-  <div id="affiliate-banner" class="bg-yellow-400 text-gray-900 p-2 text-center text-sm sm:text-base relative">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-center sm:justify-between items-center space-y-2 sm:space-y-0 sm:space-x-4">
-      <span class="font-semibold flex items-center">
-        <span class="text-xl mr-2">🎁</span> Start streaming with Opera Streaming now!
-      </span>
-      <a href="https://singingfiles.com/show.php?l=0&u=2465402&id=73048" target="_blank" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-4 rounded-full transition duration-300 shadow-lg">
-        Enter Your Information Here
-      </a>
-    </div>
-    <button id="closeBannerBtn" class="bg-gray-700 hover:bg-gray-800 text-white rounded-full text-xs font-bold">&times;</button>
-  </div>
-
+<body class="pt-16">
   <!-- ✅ Header -->
-  <header class="shadow p-4 flex flex-col md:flex-row justify-between items-center sticky top-0 z-10 text-white">
+  <header class="p-4 flex justify-between items-center text-white shadow sticky top-0 z-10">
     <h1 class="text-2xl font-bold">BuyCenter</h1>
-    <nav class="flex flex-wrap justify-center mt-2 md:mt-0 space-x-4">
+    <nav class="space-x-4">
       <a href="/" class="hover:text-yellow-400">Home</a>
       <a href="/blog.html" class="hover:text-yellow-400">Blog</a>
       <a href="/about.html" class="hover:text-yellow-400">About</a>
@@ -127,93 +33,53 @@
   </header>
 
   <!-- ✅ Main -->
-  <main class="p-4 max-w-7xl mx-auto">
-    <section class="bg-gray-800 p-6 rounded-xl mb-10 shadow">
-      <h2 class="text-2xl font-bold mb-4 text-yellow-400">🛍️ BuyCenter.co.uk — Discover the Best AliExpress Deals & Top-Rated Products</h2>
-      <p class="mb-4 text-gray-200">
-        Welcome to <strong>BuyCenter.co.uk</strong>, your ultimate destination for finding the best AliExpress products, top deals, and lowest prices online. 
-        We handpick high-quality gadgets, home essentials, fashion trends, and tech accessories — all from trusted AliExpress sellers.
-      </p>
-      <p class="mb-4 text-gray-200">
-        Looking for today’s best <strong>AliExpress UK discounts</strong>? Our experts curate trending items daily — helping UK shoppers find smart, verified deals on AliExpress.
-      </p>
-      <ul class="list-disc list-inside space-y-1 text-gray-200">
-        <li>✅ Daily updated AliExpress offers</li>
-        <li>✅ Expert product recommendations</li>
-        <li>✅ Verified sellers and fast shipping options</li>
-        <li>✅ Easy browsing by category — electronics, home & garden, fashion, beauty, and more</li>
-      </ul>
-      <p class="mt-4 text-gray-100 font-semibold">
-        Shop confidently with <strong>BuyCenter.co.uk</strong> — your trusted AliExpress affiliate hub for smart shopping, best prices, and exclusive deals in the UK.
-      </p>
-    </section>
-
-    <!-- ✅ Product Sections -->
-    <section id="tiktok-section" class="mb-10">
-      <h2 class="section-title">🎬 TikTok Products</h2>
-      <div id="tiktok-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
-      <p id="tiktok-error" class="text-red-400 hidden">⚠️ TikTok products failed to load.</p>
-    </section>
-
-    <section id="trending-section" class="mb-10">
-      <h2 class="section-title">🔥 Trending Now</h2>
-      <div id="trending-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
-    </section>
-
-    <section id="top-sellers-section" class="mb-10">
-      <h2 class="section-title">🏆 Top Sellers</h2>
-      <div id="top-sellers-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
-    </section>
-
-    <section id="discount-section" class="mb-10">
-      <h2 class="section-title">💰 Big Discounts</h2>
-      <div id="discount-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
-    </section>
-
-    <section id="smart-section" class="my-10">
-      <h2 class="section-title">⚡ Smart Mix: Electronics & More</h2>
-      <div id="smart-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
-    </section>
-
-    <!-- ✅ NEW: CPAGrip Affiliate Offers -->
-    <section id="affiliate-offers" class="mb-10">
+  <main class="max-w-7xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- ✅ Left Sidebar: Affiliate Offers -->
+    <aside id="affiliate-sidebar" class="lg:col-span-1 order-2 lg:order-1">
       <h2 class="section-title">💸 Exclusive Affiliate Offers</h2>
-      <div id="offers-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
-      <p id="offers-error" class="text-red-400 hidden mt-2">⚠️ Offers failed to load. Please try again later.</p>
-    </section>
+      <div id="offers-grid"></div>
+      <p id="offers-error" class="text-red-400 hidden mt-2 text-sm">⚠️ Offers failed to load. Please try again later.</p>
+    </aside>
 
-    <!-- ✅ SEO Section -->
-    <section class="text-center max-w-3xl mx-auto mt-10">
-      <h2 class="text-yellow-400 text-2xl font-bold mb-3">Why UK Shoppers Trust BuyCenter</h2>
-      <p class="text-gray-300">
-        BuyCenter.co.uk curates verified AliExpress products and exclusive UK deals, helping you shop smarter. 
-        Our team tracks daily price drops, trending tech, and top-rated sellers so you can find quality products at unbeatable prices.
-      </p>
-      <ul class="list-disc list-inside text-gray-300 text-left max-w-xl mx-auto mt-4">
-        <li>✅ Daily updated AliExpress UK offers</li>
-        <li>✅ Expert-curated product selections</li>
-        <li>✅ Exclusive discounts for UK shoppers</li>
-        <li>✅ 100% verified affiliate links — no spam</li>
-      </ul>
-    </section>
+    <!-- ✅ Main Content Area -->
+    <section class="lg:col-span-3 order-1 lg:order-2 space-y-10">
+      <div class="bg-gray-800 p-6 rounded-xl shadow">
+        <h2 class="text-2xl font-bold mb-4 text-yellow-400">🛍️ Discover the Best AliExpress Deals & Top-Rated Products</h2>
+        <p class="text-gray-300 mb-4">Welcome to <strong>BuyCenter.co.uk</strong>, your go-to source for the best AliExpress deals, trending gadgets, and exclusive UK discounts.</p>
+      </div>
 
-    <!-- ✅ Blog Section -->
-    <section class="text-center mt-10">
-      <h2 class="text-yellow-400 text-xl font-semibold mb-3">From the BuyCenter Blog</h2>
-      <p class="text-gray-400 mb-4">Read our latest guides on AliExpress shopping tips and trending UK products.</p>
-      <p><a href="/blog.html" class="text-blue-400 hover:underline">Visit the Blog →</a></p>
+      <section id="tiktok-section">
+        <h2 class="section-title">🎬 TikTok Products</h2>
+        <div id="tiktok-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4"></div>
+        <p id="tiktok-error" class="text-red-400 hidden">⚠️ TikTok products failed to load.</p>
+      </section>
+
+      <section id="trending-section">
+        <h2 class="section-title">🔥 Trending Now</h2>
+        <div id="trending-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+      </section>
+
+      <section id="top-sellers-section">
+        <h2 class="section-title">🏆 Top Sellers</h2>
+        <div id="top-sellers-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+      </section>
+
+      <section id="discount-section">
+        <h2 class="section-title">💰 Big Discounts</h2>
+        <div id="discount-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+      </section>
+
+      <section id="smart-section">
+        <h2 class="section-title">⚡ Smart Mix: Electronics & More</h2>
+        <div id="smart-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+      </section>
     </section>
   </main>
 
   <!-- ✅ Footer -->
-  <footer class="text-center p-6 text-sm">
-    <p>
-      <a href="/about.html" class="hover:underline">About</a> | 
-      <a href="/contact.html" class="hover:underline">Contact</a> | 
-      <a href="/blog.html" class="hover:underline">Blog</a>
-    </p>
+  <footer class="text-center p-6 mt-10 text-sm">
     <p>Affiliate Disclosure: BuyCenter may earn a commission from qualifying purchases.</p>
-    <p>© 2025 BuyCenter.co.uk — Smart Shopping Deals. Powered by AliExpress API</p>
+    <p>© 2025 BuyCenter.co.uk — Smart Shopping Deals.</p>
   </footer>
 
   <!-- ✅ JS -->
@@ -228,10 +94,9 @@
     function displayProducts(products, containerId) {
       const grid = document.getElementById(containerId);
       grid.innerHTML = "";
-      const shuffled = shuffleArray(products);
-      shuffled.forEach(p => {
+      shuffleArray(products).forEach(p => {
         const item = document.createElement("div");
-        item.className = "product-card rounded-lg p-2 shadow hover:shadow-lg text-center";
+        item.className = "product-card rounded-lg p-2 shadow text-center";
         item.innerHTML = `
           <a href="${p.link}" target="_blank" class="block">
             <img src="${p.image}" alt="${p.title}" class="w-full h-40 object-cover rounded-md mb-2">
@@ -256,15 +121,14 @@
 
         const grid = document.getElementById("offers-grid");
         grid.innerHTML = "";
-
-        data.offers.forEach(o => {
+        data.offers.slice(0, 6).forEach(o => {
           const card = document.createElement("div");
           card.className = "product-card rounded-lg p-3 shadow text-center";
           card.innerHTML = `
             <a href="${o.link}" target="_blank" class="block hover:opacity-90 transition">
-              <img src="${o.image}" alt="${o.title}" class="w-full h-40 object-cover rounded-md mb-2">
+              <img src="${o.image}" alt="${o.title}" class="w-full h-32 object-cover rounded-md mb-2">
               <h3 class="text-sm font-semibold text-gray-100 line-clamp-2">${o.title}</h3>
-              <p class="text-yellow-400 mt-1 font-bold">Earn up to £${o.payout || "0.00"}</p>
+              <p class="text-yellow-400 mt-1 font-bold">Earn £${o.payout || "0.00"}</p>
             </a>`;
           grid.appendChild(card);
         });
@@ -301,31 +165,15 @@
         const res = await fetch(`${API_BASE}/?q=electronics&page=1`);
         const data = await res.json();
         const products = data.products || [];
-        const techKeywords = ["smart", "usb", "gadget", "device", "camera", "wireless", "headphones", "earbuds", "charger", "watch", "keyboard", "mouse", "projector", "tablet", "powerbank", "adapter", "gaming", "bluetooth", "led", "drone", "phone", "speaker", "controller", "robot", "tv", "display", "battery"];
+        const techKeywords = ["smart","usb","gadget","device","camera","wireless","headphones","charger","watch","gaming"];
         const tech = products.filter(p => techKeywords.some(k => p.title.toLowerCase().includes(k)));
-        const other = products.filter(p => !techKeywords.some(k => p.title.toLowerCase().includes(k)));
-        const final = [...tech.slice(0, Math.floor(products.length * 0.7)), ...other.slice(0, Math.floor(products.length * 0.3))];
+        const final = [...tech.slice(0, 10)];
         displayProducts(final, "smart-grid");
       } catch {
         document.getElementById("smart-grid").innerHTML = `<p class="text-red-400">Failed to load smart products.</p>`;
       }
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const closeBtn = document.getElementById('closeBannerBtn');
-      const banner = document.getElementById('affiliate-banner');
-      const body = document.body;
-      const header = document.querySelector('header');
-      if (closeBtn && banner) {
-        closeBtn.addEventListener('click', () => {
-          banner.style.display = 'none';
-          body.style.paddingTop = '0';
-          if (header) header.style.top = '0';
-        });
-      }
-    });
-
-    setInterval(loadAllSections, 1000 * 60 * 60 * 3);
     window.addEventListener("DOMContentLoaded", loadAllSections);
   </script>
 </body>
