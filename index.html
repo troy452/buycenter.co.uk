@@ -3,101 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BuyCenter | Pro AliExpress Affiliate</title>
+  <title>BuyCenter | Curated Essentials</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
-    body { background: #0b0f1a; color: #e2e8f0; font-family: 'Inter', sans-serif; }
-    .sidebar-item { @apply flex items-center p-3 rounded-lg hover:bg-gray-800 cursor-pointer transition text-gray-400 hover:text-white; }
-    .product-card { background: #161e2d; border: 1px solid #1e293b; transition: all 0.3s ease; }
-    .product-card:hover { border-color: #3b82f6; transform: translateY(-4px); }
-    .loading-skeleton { background: linear-gradient(90deg, #1e293b 25%, #2d3748 50%, #1e293b 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; }
-    @keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    :root { --bg: #ffffff; --text: #000000; --accent: #f3f4f6; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; }
+    
+    /* Luxury Grid Styling */
+    .product-card { position: relative; overflow: hidden; background: #fff; transition: opacity 0.3s; }
+    .product-card img { filter: multiply(1.1); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    .product-card:hover img { transform: scale(1.05); }
+    
+    /* "Save" Button Overlay */
+    .save-btn { opacity: 0; position: absolute; top: 1rem; right: 1rem; transition: opacity 0.2s; z-index: 10; }
+    .product-card:hover .save-btn { opacity: 1; }
+    
+    /* Infinite Scroll & Loader */
+    #loader { border-top-color: #000; }
+    .skeleton { background: #f3f4f6; }
+
+    /* Custom Scrollbar for Boutique Feel */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #fff; }
+    ::-webkit-scrollbar-thumb { background: #000; }
   </style>
 </head>
-<body class="pt-16">
+<body class="pt-24">
 
-  <header class="fixed top-0 w-full bg-[#0b0f1a]/80 backdrop-blur-md border-b border-gray-800 z-50">
-    <div class="max-w-[1600px] mx-auto flex items-center justify-between p-4 gap-4">
-      <h1 class="text-2xl font-black text-blue-500 cursor-pointer tracking-tighter" onclick="navigate('/')">BUYCENTER</h1>
-      <div class="flex-1 max-w-2xl relative">
-        <input type="text" id="search-input" placeholder="Search 100 million+ products..." 
-               class="w-full bg-gray-900 border border-gray-700 rounded-xl py-2.5 px-5 focus:ring-2 focus:ring-blue-500 outline-none">
-        <button onclick="handleSearch()" class="absolute right-4 top-3 text-gray-500">🔍</button>
+  <header class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <h1 class="text-xl font-bold tracking-tighter cursor-pointer" onclick="navigate('/')">BUYCENTER</h1>
+      
+      <div class="flex-1 max-w-sm mx-10 hidden md:block">
+        <input type="text" id="search-input" placeholder="Search curated finds..." 
+               class="w-full bg-gray-50 border-none rounded-full py-2 px-6 text-sm focus:ring-1 focus:ring-black outline-none">
       </div>
+
+      <nav class="flex items-center space-x-8 text-xs font-bold uppercase tracking-widest">
+        <span class="cursor-pointer hover:opacity-50" onclick="navigate('/?cat=minimalist')">New</span>
+        <span class="cursor-pointer hover:opacity-50" onclick="navigate('/?cat=tech')">Tech</span>
+        <span class="cursor-pointer hover:opacity-50" onclick="showWishlist()">Saved (<span id="wish-count">0</span>)</span>
+      </nav>
     </div>
   </header>
 
-  <div class="max-w-[1600px] mx-auto flex">
-    
-    <aside class="w-64 hidden lg:block p-4 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto border-r border-gray-800">
-      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 px-3">Categories</h3>
-      <nav class="space-y-1">
-        <div class="sidebar-item" onclick="navigate('/?cat=electronics')">🔌 Electronics</div>
-        <div class="sidebar-item" onclick="navigate('/?cat=computer+office')">💻 Computer & Office</div>
-        <div class="sidebar-item" onclick="navigate('/?cat=home+appliances')">🏠 Home & Garden</div>
-        <div class="sidebar-item" onclick="navigate('/?cat=fashion')">👕 Fashion & Clothing</div>
-        <div class="sidebar-item" onclick="navigate('/?cat=toys+kids')">🧸 Toys & Kids</div>
-        <div class="sidebar-item" onclick="navigate('/?cat=automobiles')">🚗 Automobiles</div>
-        <div class="sidebar-item" onclick="navigate('/?cat=beauty')">💄 Health & Beauty</div>
-        <div class="sidebar-item" onclick="navigate('/?cat=sports')">⚽ Sports & Outdoors</div>
-      </nav>
-    </aside>
+  <main class="max-w-7xl mx-auto px-6">
+    <div id="page-info" class="mb-12">
+      <h2 id="main-title" class="text-4xl font-light tracking-tight">Curation 01</h2>
+    </div>
 
-    <main class="flex-1 p-6">
-      <div id="page-header" class="mb-8">
-        <h2 id="main-title" class="text-3xl font-bold">Recommended For You</h2>
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16">
       </div>
 
-      <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-        </div>
-
-      <div id="scroll-anchor" class="h-20 flex items-center justify-center mt-10">
-        <div id="loader" class="hidden animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-      </div>
-    </main>
-  </div>
+    <div id="scroll-anchor" class="h-40 flex items-center justify-center">
+      <div id="loader" class="hidden animate-spin rounded-full h-6 w-6 border-2 border-gray-200"></div>
+    </div>
+  </main>
 
   <script>
     const API_BASE = "https://aliexpress-proxy.miralbenizi7.workers.dev";
     let currentPage = 1;
-    let currentQuery = "trending";
+    let currentQuery = "minimalist aesthetic";
     let isLoading = false;
-    let hasMore = true;
+    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 
-    // --- 1. CORE ENGINE ---
     async function router() {
       const params = new URLSearchParams(window.location.search);
-      const cat = params.get('cat');
       const s = params.get('s');
+      const cat = params.get('cat');
       
-      // Reset state for new view
       currentPage = 1;
-      hasMore = true;
-      currentQuery = s || cat || "trending";
-      
-      document.getElementById('main-title').innerText = s ? `Results for "${s}"` : (cat ? cat.toUpperCase() : "Recommended For You");
-      document.getElementById('product-grid').innerHTML = ""; // Clear existing
-      
-      await loadMoreProducts();
+      currentQuery = s || cat || "minimalist aesthetic";
+      document.getElementById('main-title').innerText = s ? `Results: ${s}` : (cat ? cat : "Selected Essentials");
+      document.getElementById('product-grid').innerHTML = "";
+      updateWishCount();
+      await loadMore();
     }
 
-    async function loadMoreProducts() {
-      if (isLoading || !hasMore) return;
+    async function loadMore() {
+      if (isLoading) return;
       isLoading = true;
       document.getElementById('loader').classList.remove('hidden');
 
       try {
         const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(currentQuery)}&page=${currentPage}`);
         const data = await res.json();
-        
-        if (data.products && data.products.length > 0) {
+        if (data.products) {
           renderProducts(data.products);
           currentPage++;
-        } else {
-          hasMore = false;
         }
-      } catch (err) {
-        console.error("Fetch error:", err);
       } finally {
         isLoading = false;
         document.getElementById('loader').classList.add('hidden');
@@ -107,48 +102,53 @@
     function renderProducts(products) {
       const grid = document.getElementById('product-grid');
       products.forEach(p => {
+        const isSaved = wishlist.find(item => item.id === p.id);
         const div = document.createElement('div');
-        div.className = "product-card rounded-xl overflow-hidden flex flex-col";
+        div.className = "product-card group";
         div.innerHTML = `
-          <a href="${p.link}" target="_blank" class="flex-1">
-            <div class="aspect-square bg-gray-800 overflow-hidden">
-                <img src="${p.image}" class="w-full h-full object-cover" loading="lazy">
+          <button onclick="toggleWishlist('${p.id}', '${p.title}', '${p.image}', '${p.link}', '${p.price}')" 
+                  class="save-btn bg-white p-2 rounded-full shadow-sm hover:scale-110 transition">
+            <svg class="w-5 h-5 ${isSaved ? 'fill-black' : 'fill-none'} stroke-black" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 000-7.78z"></path></svg>
+          </button>
+          <a href="${p.link}" target="_blank">
+            <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-4">
+              <img src="${p.image}" class="w-full h-full object-cover mix-blend-multiply" loading="lazy">
             </div>
-            <div class="p-3">
-              <h3 class="text-xs text-gray-300 line-clamp-2 mb-2 leading-relaxed h-8">${p.title}</h3>
-              <div class="flex items-baseline gap-2">
-                <span class="text-xl font-black text-white">$${p.price}</span>
-                <span class="text-[10px] text-blue-400 bg-blue-400/10 px-1.5 rounded uppercase font-bold">Free Shipping</span>
-              </div>
-            </div>
+            <h3 class="text-sm font-medium text-gray-900 mb-1 truncate">${p.title}</h3>
+            <p class="text-sm text-gray-400">$${p.price}</p>
           </a>
         `;
         grid.appendChild(div);
       });
     }
 
-    // --- 2. INFINITE SCROLL OBSERVER ---
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !isLoading) {
-        loadMoreProducts();
-      }
-    }, { threshold: 0.1 });
+    // --- Wishlist Logic (No Database) ---
+    function toggleWishlist(id, title, image, link, price) {
+      const idx = wishlist.findIndex(item => item.id === id);
+      if (idx > -1) wishlist.splice(idx, 1);
+      else wishlist.push({id, title, image, link, price});
+      
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      updateWishCount();
+      event.preventDefault(); // Stop click-through
+    }
 
+    function updateWishCount() {
+      document.getElementById('wish-count').innerText = wishlist.length;
+    }
+
+    function showWishlist() {
+        document.getElementById('main-title').innerText = "Saved Items";
+        document.getElementById('product-grid').innerHTML = "";
+        renderProducts(wishlist);
+        window.history.pushState({}, '', '/?view=saved');
+    }
+
+    // Intersection Observer
+    const observer = new IntersectionObserver(e => { if(e[0].isIntersecting) loadMore(); });
     observer.observe(document.getElementById('scroll-anchor'));
 
-    // --- 3. NAVIGATION ---
-    function navigate(url) {
-      window.history.pushState({}, '', url);
-      router();
-      window.scrollTo(0, 0);
-    }
-
-    function handleSearch() {
-      const q = document.getElementById('search-input').value;
-      if (q) navigate(`/?s=${encodeURIComponent(q)}`);
-    }
-
-    document.getElementById('search-input').onkeypress = (e) => { if(e.key === 'Enter') handleSearch(); };
+    function navigate(url) { window.history.pushState({}, '', url); router(); window.scrollTo(0,0); }
     window.onpopstate = router;
     window.onload = router;
   </script>
