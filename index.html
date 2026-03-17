@@ -3,25 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BuyCenter | Minimalist Tech & Hacks</title>
+  <title>BuyCenter | Curated Tech & Life Hacks</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root { --bg: #ffffff; --text: #111111; --card-bg: #f9f9fb; }
     body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
     
-    /* Curation Grid Styling */
     .product-card { background: var(--card-bg); transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1); border: 1px solid transparent; }
     .product-card:hover { background: #f1f1f5; border-color: #eee; transform: translateY(-4px); }
     .product-image { mix-blend-multiply: multiply; transition: transform 0.8s ease; max-height: 280px; }
     
-    /* Clean Buttons */
     .save-btn { position: absolute; top: 1.5rem; right: 1.5rem; z-index: 10; background: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); cursor: pointer; border: none; }
     .trending-label { position: absolute; top: 1.5rem; left: 1.5rem; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #3b82f6; background: rgba(59, 130, 246, 0.08); padding: 4px 10px; border-radius: 20px; }
 
     header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid #f0f0f0; }
     .nav-link { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: #888; cursor: pointer; transition: color 0.3s; }
-    .nav-link:hover, .nav-link.active { color: #000; }
+    .nav-link:hover { color: #000; }
   </style>
 </head>
 <body class="pt-24">
@@ -31,14 +29,15 @@
       <h1 class="text-xl font-bold tracking-[0.25em] cursor-pointer" onclick="navigate('/')">BUYCENTER</h1>
       
       <nav class="hidden md:flex items-center space-x-10">
-        <span class="nav-link" onclick="navigate('/?cat=tiktok+gadgets')">Viral</span>
-        <span class="nav-link" onclick="navigate('/?cat=tech+hacks')">Hacks</span>
-        <span class="nav-link" onclick="navigate('/?cat=desk+setup')">Essentials</span>
+        <span class="nav-link" onclick="navigate('/?cat=tiktok+viral')">TikTok Hits</span>
+        <span class="nav-link" onclick="navigate('/?cat=tech+hacks')">Life Hacks</span>
+        <span class="nav-link" onclick="navigate('/?cat=minimalist+desk')">Tech Gear</span>
         <span class="nav-link border-l pl-10" onclick="showWishlist()">Saved (<span id="wish-count">0</span>)</span>
       </nav>
 
-      <div class="flex items-center md:hidden">
-        <button onclick="showWishlist()" class="text-xs font-bold">SAVED (<span id="wish-count-mob">0</span>)</button>
+      <div class="flex items-center space-x-4">
+        <input type="text" id="search-input" placeholder="Search..." class="bg-gray-100 rounded-full py-1.5 px-4 text-xs outline-none focus:ring-1 focus:ring-black hidden sm:block">
+        <button onclick="showWishlist()" class="md:hidden text-xs font-bold">SAVED (<span id="wish-count-mob">0</span>)</button>
       </div>
     </div>
   </header>
@@ -46,41 +45,80 @@
   <main class="max-w-[1440px] mx-auto px-8">
     <div class="mb-16 pt-10">
       <h2 id="main-title" class="text-5xl font-light tracking-tighter italic">The Selection</h2>
-      <p id="item-count" class="text-[10px] uppercase tracking-[0.2em] text-gray-400 mt-4">Discovering new trends...</p>
+      <p id="item-count" class="text-[10px] uppercase tracking-[0.2em] text-gray-400 mt-4">Curating live trends...</p>
     </div>
 
-    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
-      </div>
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12"></div>
 
     <div id="scroll-anchor" class="h-80 flex flex-col items-center justify-center">
       <div id="loader" class="h-6 w-6 border-2 border-black border-t-transparent rounded-full animate-spin mb-4"></div>
-      <p id="status-msg" class="text-[10px] uppercase tracking-widest text-gray-400">Scanning AliExpress...</p>
+      <p id="status-msg" class="text-[10px] uppercase tracking-widest text-gray-400">Scanning Marketplace...</p>
     </div>
   </main>
 
   <script>
-  // --- Updated renderProducts Function with Safety Filter ---
-
-const blacklist = [
-    "sexy", "adult", "erotic", "massage", "vibrator", "lingerie", 
-    "bra", "panties", "underwear", "bikini", "condom", "pleasure",
-    "stimulator", "toy for men", "toy for women", "fetish", "penis",
-    "vagina", "anal", "masturbat", "orgasm", "clitoris"
-];
-
-function renderProducts(products) {
-    const grid = document.getElementById('product-grid');
+    const API_BASE = "https://aliexpress-proxy.miralbenizi7.workers.dev";
+    const blacklist = ["sexy", "adult", "erotic", "vibrator", "lingerie", "bra", "panties", "underwear", "bikini", "condom", "pleasure", "penis", "vagina", "anal", "masturbat"];
     
-    // 1. Filter out the unwanted products
-    const cleanProducts = products.filter(p => {
-        const title = p.title.toLowerCase();
-        // Returns true only if the title contains ZERO blacklisted words
-        return !blacklist.some(word => title.includes(word));
-    });
+    let currentPage = 1;
+    let currentQuery = "minimalist tech gadgets";
+    let isLoading = false;
+    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    const seenIds = new Set();
 
-    // 2. Map the clean products to the HTML grid
-    cleanProducts.forEach(p => {
-        const isSaved = wishlist.some(item => item.id === p.id);
+    async function router() {
+      const params = new URLSearchParams(window.location.search);
+      const s = params.get('s');
+      const cat = params.get('cat');
+      
+      currentPage = 1;
+      seenIds.clear();
+      document.getElementById('product-grid').innerHTML = "";
+      
+      if (cat) currentQuery = cat.replace('+', ' ');
+      else if (s) currentQuery = s;
+      else currentQuery = "viral tech hacks";
+
+      document.getElementById('main-title').innerText = cat || s ? (cat || s).replace('+', ' ') : "The Selection";
+      updateWishCount();
+      await loadMore();
+    }
+
+    async function loadMore() {
+      if (isLoading) return;
+      isLoading = true;
+      document.getElementById('loader').classList.remove('hidden');
+
+      try {
+        const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(currentQuery)}&page=${currentPage}`);
+        const data = await res.json();
+        const products = data.products || data.items || [];
+
+        if (products.length > 0) {
+          const cleanItems = products.filter(p => {
+              const title = p.title.toLowerCase();
+              return !blacklist.some(word => title.includes(word)) && !seenIds.has(p.id);
+          });
+
+          cleanItems.forEach(p => seenIds.add(p.id));
+          renderProducts(cleanItems);
+          currentPage++;
+        } else {
+          document.getElementById('status-msg').innerText = "Curation Complete";
+        }
+      } catch (e) {
+        document.getElementById('status-msg').innerText = "Network Busy. Retrying...";
+      } finally {
+        isLoading = false;
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('item-count').innerText = `${seenIds.size} Curated Finds`;
+      }
+    }
+
+    function renderProducts(products) {
+      const grid = document.getElementById('product-grid');
+      products.forEach(p => {
+        const isSaved = wishlist.some(i => i.id === p.id);
         const div = document.createElement('div');
         div.className = "product-card group relative p-8 flex flex-col justify-between";
         div.innerHTML = `
@@ -88,23 +126,49 @@ function renderProducts(products) {
           <button onclick="toggleWishlist('${p.id}', '${encodeURIComponent(p.title)}', '${p.image}', '${p.link}', '${p.price}')" class="save-btn">
             <svg class="w-4 h-4 ${isSaved ? 'fill-black' : 'fill-none'} stroke-black" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 000-7.78z"></path></svg>
           </button>
-          <a href="${p.link}" target="_blank" class="block">
-            <div class="aspect-square flex items-center justify-center mb-10">
+          <a href="${p.link}" target="_blank">
+            <div class="aspect-square flex items-center justify-center mb-10 overflow-hidden">
               <img src="${p.image}" class="product-image object-contain w-full h-full" loading="lazy">
             </div>
             <div class="space-y-3">
-              <h3 class="text-[12px] font-medium leading-relaxed uppercase tracking-wider text-gray-500 line-clamp-2">${p.title}</h3>
+              <h3 class="text-[11px] font-medium uppercase tracking-wider text-gray-400 line-clamp-2">${p.title}</h3>
               <p class="text-lg font-light tracking-tighter text-black">$${p.price}</p>
             </div>
           </a>
         `;
         grid.appendChild(div);
-    });
+      });
+    }
 
-    // Update count display
-    const visibleItems = document.querySelectorAll('.product-card').length;
-    document.getElementById('item-count').innerText = `${visibleItems} Curated Items Found`;
-}
+    function toggleWishlist(id, title, image, link, price) {
+      const idx = wishlist.findIndex(i => i.id === id);
+      if (idx > -1) wishlist.splice(idx, 1);
+      else wishlist.push({id, title: decodeURIComponent(title), image, link, price});
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      updateWishCount();
+      event.preventDefault();
+    }
+
+    function updateWishCount() {
+      const count = wishlist.length;
+      document.getElementById('wish-count').innerText = count;
+      document.getElementById('wish-count-mob').innerText = count;
+    }
+
+    function showWishlist() {
+      document.getElementById('main-title').innerText = "Saved Finds";
+      document.getElementById('product-grid').innerHTML = "";
+      renderProducts(wishlist);
+      document.getElementById('scroll-anchor').classList.add('hidden');
+    }
+
+    const observer = new IntersectionObserver(e => { if (e[0].isIntersecting && !isLoading) loadMore(); }, { threshold: 0.1 });
+    observer.observe(document.getElementById('scroll-anchor'));
+
+    function navigate(url) { window.history.pushState({}, '', url); document.getElementById('scroll-anchor').classList.remove('hidden'); router(); window.scrollTo(0,0); }
+    document.getElementById('search-input').addEventListener('keypress', e => { if(e.key === 'Enter') navigate('/?s=' + encodeURIComponent(e.target.value)); });
+    window.onpopstate = router;
+    window.onload = router;
   </script>
 </body>
 </html>
