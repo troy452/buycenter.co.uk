@@ -3,178 +3,150 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BuyCenter.co.uk — Best AliExpress UK Deals, Discounts & Trending Finds</title>
+  <title>BuyCenter | Smart AliExpress Shopping</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     body { background: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
-    header { background: linear-gradient(90deg, #2563eb, #1e40af); }
-    .product-card { background: #1e293b; transition: all 0.3s ease; }
-    .product-card:hover { background: #334155; transform: translateY(-4px); }
-    footer { background: #1e293b; color: #cbd5e1; }
-    .section-title { font-size: 1.4rem; font-weight: 700; border-left: 6px solid #3b82f6; padding-left: 10px; margin-bottom: 1rem; }
-    #affiliate-sidebar { background: #1e293b; border-radius: 1rem; padding: 1rem; }
-    #offers-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-    @media (min-width: 1024px) {
-      #offers-grid { grid-template-columns: 1fr; }
-    }
+    .nav-link { @apply hover:text-blue-400 transition; cursor: pointer; }
+    .product-card { background: #1e293b; transition: transform 0.2s; }
+    .product-card:hover { transform: translateY(-5px); }
+    .section-title { font-size: 1.5rem; font-weight: bold; border-left: 4px solid #3b82f6; padding-left: 12px; margin-bottom: 20px; }
+    #page-content { min-height: 70vh; }
   </style>
 </head>
+<body class="pt-20">
 
-<body class="pt-16">
-  <!-- ✅ Header -->
-  <header class="p-4 flex justify-between items-center text-white shadow sticky top-0 z-10">
-    <h1 class="text-2xl font-bold">BuyCenter</h1>
-    <nav class="space-x-4">
-      <a href="/" class="hover:text-yellow-400">Home</a>
-      <a href="/blog.html" class="hover:text-yellow-400">Blog</a>
-      <a href="/about.html" class="hover:text-yellow-400">About</a>
-      <a href="/contact.html" class="hover:text-yellow-400">Contact</a>
-    </nav>
-  </header>
-
-  <!-- ✅ Main -->
-  <main class="max-w-7xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
-    <!-- ✅ Left Sidebar: Affiliate Offers -->
-    <aside id="affiliate-sidebar" class="lg:col-span-1 order-2 lg:order-1">
-      <h2 class="section-title">💸 Exclusive Affiliate Offers</h2>
-      <div id="offers-grid"></div>
-      <p id="offers-error" class="text-red-400 hidden mt-2 text-sm">⚠️ Offers failed to load. Please try again later.</p>
-    </aside>
-
-    <!-- ✅ Main Content Area -->
-    <section class="lg:col-span-3 order-1 lg:order-2 space-y-10">
-      <div class="bg-gray-800 p-6 rounded-xl shadow">
-        <h2 class="text-2xl font-bold mb-4 text-yellow-400">🛍️ Discover the Best AliExpress Deals & Top-Rated Products</h2>
-        <p class="text-gray-300 mb-4">Welcome to <strong>BuyCenter.co.uk</strong>, your go-to source for the best AliExpress deals, trending gadgets, and exclusive UK discounts.</p>
+  <header class="fixed top-0 w-full bg-gray-900 border-b border-gray-800 z-50 p-4">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <h1 class="text-2xl font-black text-blue-500 cursor-pointer" onclick="navigate('/')">BuyCenter</h1>
+      
+      <div class="flex-1 max-w-md relative">
+        <input type="text" id="search-input" placeholder="Search gadgets, home, fashion..." 
+               class="w-full bg-gray-800 border border-gray-700 rounded-full py-2 px-5 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button onclick="handleSearch()" class="absolute right-3 top-2 text-gray-400">🔍</button>
       </div>
 
-      <section id="tiktok-section">
-        <h2 class="section-title">🎬 TikTok Products</h2>
-        <div id="tiktok-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4"></div>
-        <p id="tiktok-error" class="text-red-400 hidden">⚠️ TikTok products failed to load.</p>
-      </section>
+      <nav class="space-x-6 hidden md:flex">
+        <span class="nav-link" onclick="navigate('/')">Home</span>
+        <span class="nav-link" onclick="navigate('/?cat=electronics')">Electronics</span>
+        <span class="nav-link" onclick="navigate('/?cat=home+gadgets')">Home</span>
+        <span class="nav-link" onclick="navigate('/?cat=deals')">Flash Deals</span>
+      </nav>
+    </div>
+  </header>
 
-      <section id="trending-section">
-        <h2 class="section-title">🔥 Trending Now</h2>
-        <div id="trending-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-      </section>
+  <main id="page-content" class="max-w-7xl mx-auto p-4"></main>
 
-      <section id="top-sellers-section">
-        <h2 class="section-title">🏆 Top Sellers</h2>
-        <div id="top-sellers-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-      </section>
-
-      <section id="discount-section">
-        <h2 class="section-title">💰 Big Discounts</h2>
-        <div id="discount-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-      </section>
-
-      <section id="smart-section">
-        <h2 class="section-title">⚡ Smart Mix: Electronics & More</h2>
-        <div id="smart-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-      </section>
-    </section>
-  </main>
-
-  <!-- ✅ Footer -->
-  <footer class="text-center p-6 mt-10 text-sm">
-    <p>Affiliate Disclosure: BuyCenter may earn a commission from qualifying purchases.</p>
-    <p>© 2025 BuyCenter.co.uk — Smart Shopping Deals.</p>
+  <footer class="bg-gray-900 text-center p-10 mt-20 border-t border-gray-800 text-sm text-gray-500">
+    <p>© 2026 BuyCenter.co.uk — Affiliate Disclosure: We earn from qualifying purchases.</p>
   </footer>
 
-  <!-- ✅ JS -->
   <script>
     const API_BASE = "https://aliexpress-proxy.miralbenizi7.workers.dev";
-    const AFFILIATE_API = "https://buycenter-cpagrip-feed.miralbenizi7.workers.dev/";
 
-    const shuffleArray = (arr) => arr.map(a => ({ sort: Math.random(), value: a }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(a => a.value);
+    // --- 1. ROUTER SYSTEM ---
+    async function router() {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get('cat');
+      const search = params.get('s');
+      const productId = params.get('id');
+      const content = document.getElementById('page-content');
+      
+      content.innerHTML = `<div class="text-center py-20 text-blue-400 animate-pulse text-xl">Loading BuyCenter Deals...</div>`;
+
+      if (productId) {
+        renderProductPage(productId);
+      } else if (search || cat) {
+        renderGalleryPage(search || cat);
+      } else {
+        renderHomePage();
+      }
+    }
+
+    function navigate(url) {
+      window.history.pushState({}, '', url);
+      router();
+    }
+
+    // --- 2. PAGE RENDERERS ---
+
+    async function renderHomePage() {
+      const content = document.getElementById('page-content');
+      content.innerHTML = `
+        <section class="mb-12 text-center py-10 bg-blue-900 rounded-3xl">
+          <h2 class="text-4xl font-bold mb-2">The Best of AliExpress, Simplified.</h2>
+          <p class="text-blue-200">Hand-picked trending items and exclusive UK discounts.</p>
+        </section>
+        <h2 class="section-title">🔥 Trending Now</h2>
+        <div id="home-grid" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+      `;
+      const products = await fetchProducts("trending");
+      displayProducts(products, "home-grid");
+    }
+
+    async function renderGalleryPage(query) {
+      const content = document.getElementById('page-content');
+      content.innerHTML = `
+        <h2 class="section-title text-capitalize">Results for: ${query}</h2>
+        <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6"></div>
+      `;
+      const products = await fetchProducts(query, 20);
+      displayProducts(products, "gallery-grid");
+    }
+
+    async function renderProductPage(id) {
+        // Here you'd fetch specific ID data. For a static affiliate site, 
+        // usually we redirect directly to Ali, but we can build a "Bridge Page" here.
+        const content = document.getElementById('page-content');
+        content.innerHTML = `
+            <div class="grid md:grid-cols-2 gap-10 p-10 bg-gray-800 rounded-3xl">
+                <div class="bg-gray-700 h-96 rounded-xl animate-pulse"></div>
+                <div class="space-y-6">
+                    <h1 class="text-3xl font-bold">Loading Product Details...</h1>
+                    <p class="text-yellow-400 text-2xl font-bold italic">Fetching best price...</p>
+                    <button class="w-full bg-blue-600 py-4 rounded-xl font-bold">Redirecting to AliExpress...</button>
+                </div>
+            </div>`;
+        // In a simple affiliate site, usually clicking the grid goes straight to Ali.
+        // If you want a real detail page, you need an API that supports GetProductById.
+    }
+
+    // --- 3. UTILITIES ---
+
+    async function fetchProducts(keyword, limit = 12) {
+      try {
+        const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(keyword)}&page=1`);
+        const data = await res.json();
+        return data.products ? data.products.slice(0, limit) : [];
+      } catch (e) { return []; }
+    }
 
     function displayProducts(products, containerId) {
       const grid = document.getElementById(containerId);
-      grid.innerHTML = "";
-      shuffleArray(products).forEach(p => {
-        const item = document.createElement("div");
-        item.className = "product-card rounded-lg p-2 shadow text-center";
-        item.innerHTML = `
-          <a href="${p.link}" target="_blank" class="block">
-            <img src="${p.image}" alt="${p.title}" class="w-full h-40 object-cover rounded-md mb-2">
-            <h3 class="text-sm font-semibold line-clamp-2 text-gray-100">${p.title}</h3>
-            <p class="text-yellow-400 font-bold mt-1">$${p.price}</p>
-          </a>`;
-        grid.appendChild(item);
-      });
+      grid.innerHTML = products.map(p => `
+        <div class="product-card rounded-xl overflow-hidden p-3 shadow-lg flex flex-col">
+          <img src="${p.image}" class="w-full h-48 object-cover rounded-lg mb-3">
+          <h3 class="text-sm font-medium line-clamp-2 h-10 mb-2">${p.title}</h3>
+          <div class="mt-auto flex justify-between items-center">
+            <span class="text-yellow-400 font-bold">$${p.price}</span>
+            <a href="${p.link}" target="_blank" class="bg-blue-600 text-xs px-3 py-1 rounded-full font-bold hover:bg-blue-500">BUY</a>
+          </div>
+        </div>
+      `).join('');
     }
 
-    async function fetchAliExpressProducts(keyword, limit = 14) {
-      const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(keyword)}&page=1`);
-      const data = await res.json();
-      return data.products ? data.products.slice(0, limit) : [];
+    function handleSearch() {
+      const query = document.getElementById('search-input').value;
+      if (query) navigate(`/?s=${encodeURIComponent(query)}`);
     }
 
-    async function loadAffiliateOffers() {
-      try {
-        const res = await fetch(AFFILIATE_API);
-        const data = await res.json();
-        if (!data.offers || data.offers.length === 0) throw new Error();
+    // Listen for Enter key on search
+    document.getElementById('search-input')?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleSearch();
+    });
 
-        const grid = document.getElementById("offers-grid");
-        grid.innerHTML = "";
-        data.offers.slice(0, 6).forEach(o => {
-          const card = document.createElement("div");
-          card.className = "product-card rounded-lg p-3 shadow text-center";
-          card.innerHTML = `
-            <a href="${o.link}" target="_blank" class="block hover:opacity-90 transition">
-              <img src="${o.image}" alt="${o.title}" class="w-full h-32 object-cover rounded-md mb-2">
-              <h3 class="text-sm font-semibold text-gray-100 line-clamp-2">${o.title}</h3>
-              <p class="text-yellow-400 mt-1 font-bold">Earn £${o.payout || "0.00"}</p>
-            </a>`;
-          grid.appendChild(card);
-        });
-      } catch {
-        document.getElementById("offers-error").classList.remove("hidden");
-      }
-    }
-
-    async function loadAllSections() {
-      try {
-        const tiktokRes = await fetch("https://raw.githubusercontent.com/troy452/buycenter.co.uk/refs/heads/main/tiktok-products.json");
-        const tiktokProducts = await tiktokRes.json();
-        displayProducts(tiktokProducts, "tiktok-grid");
-      } catch {
-        document.getElementById("tiktok-error").classList.remove("hidden");
-      }
-
-      const [trending, topSellers, discounts] = await Promise.all([
-        fetchAliExpressProducts("trending"),
-        fetchAliExpressProducts("top gadgets"),
-        fetchAliExpressProducts("discount sale")
-      ]);
-
-      displayProducts(trending, "trending-grid");
-      displayProducts(topSellers, "top-sellers-grid");
-      displayProducts(discounts, "discount-grid");
-
-      loadSmartBalancedProducts();
-      loadAffiliateOffers();
-    }
-
-    async function loadSmartBalancedProducts() {
-      try {
-        const res = await fetch(`${API_BASE}/?q=electronics&page=1`);
-        const data = await res.json();
-        const products = data.products || [];
-        const techKeywords = ["smart","usb","gadget","device","camera","wireless","headphones","charger","watch","gaming"];
-        const tech = products.filter(p => techKeywords.some(k => p.title.toLowerCase().includes(k)));
-        const final = [...tech.slice(0, 10)];
-        displayProducts(final, "smart-grid");
-      } catch {
-        document.getElementById("smart-grid").innerHTML = `<p class="text-red-400">Failed to load smart products.</p>`;
-      }
-    }
-
-    window.addEventListener("DOMContentLoaded", loadAllSections);
+    window.onpopstate = router;
+    window.onload = router;
   </script>
 </body>
 </html>
