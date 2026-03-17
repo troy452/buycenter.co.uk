@@ -3,144 +3,190 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BuyCenter | Curated Tech & Life Hacks</title>
+  <title>BuyCenter | Minimalist Tech & Hacks</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #ffffff; --text: #0a0a0a; --soft-gray: #f9f9fb; }
-    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; }
+    :root { --bg: #ffffff; --text: #111111; --card-bg: #f9f9fb; }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
     
-    /* The "Boutique" Card */
-    .product-card { position: relative; background: var(--soft-gray); border-radius: 2px; transition: all 0.4s ease; }
-    .product-card:hover { background: #f1f1f4; }
-    .product-image { mix-blend-multiply: multiply; transition: transform 0.5s ease; }
-    .product-card:hover .product-image { transform: scale(1.02); }
+    /* Curation Grid Styling */
+    .product-card { background: var(--card-bg); transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1); border: 1px solid transparent; }
+    .product-card:hover { background: #f1f1f5; border-color: #eee; transform: translateY(-4px); }
+    .product-image { mix-blend-multiply: multiply; transition: transform 0.8s ease; max-height: 280px; }
     
-    /* Minimalist Save Button */
-    .save-btn { position: absolute; top: 1.5rem; right: 1.5rem; z-index: 20; background: white; border-radius: 50%; width: 35px; height: 35px; display: flex; items-center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; border: none; }
-    
-    /* Trending Badge */
-    .trending-tag { position: absolute; top: 1.5rem; left: 1.5rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #3b82f6; background: rgba(59, 130, 246, 0.1); padding: 4px 8px; border-radius: 4px; }
+    /* Clean Buttons */
+    .save-btn { position: absolute; top: 1.5rem; right: 1.5rem; z-index: 10; background: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); cursor: pointer; border: none; }
+    .trending-label { position: absolute; top: 1.5rem; left: 1.5rem; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #3b82f6; background: rgba(59, 130, 246, 0.08); padding: 4px 10px; border-radius: 20px; }
 
-    /* Custom Header Glassmorphism */
-    header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
+    header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid #f0f0f0; }
+    .nav-link { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: #888; cursor: pointer; transition: color 0.3s; }
+    .nav-link:hover, .nav-link.active { color: #000; }
   </style>
 </head>
-<body class="pt-28">
+<body class="pt-24">
 
-  <header class="fixed top-0 w-full z-50 border-b border-gray-100">
-    <div class="max-w-[1400px] mx-auto px-8 py-5 flex items-center justify-between">
-      <div class="flex items-center space-x-12">
-        <h1 class="text-xl font-bold tracking-[0.2em] cursor-pointer" onclick="navigate('/')">BUYCENTER</h1>
-        <nav class="hidden lg:flex space-x-8 text-[11px] font-bold uppercase tracking-widest text-gray-500">
-          <span class="cursor-pointer hover:text-black transition" onclick="navigate('/?cat=tiktok+viral')">TikTok Hits</span>
-          <span class="cursor-pointer hover:text-black transition" onclick="navigate('/?cat=tech+hacks')">Tech Hacks</span>
-          <span class="cursor-pointer hover:text-black transition" onclick="navigate('/?cat=minimalist+setup')">Setups</span>
-        </nav>
-      </div>
+  <header class="fixed top-0 w-full z-50">
+    <div class="max-w-[1440px] mx-auto px-8 py-6 flex items-center justify-between">
+      <h1 class="text-xl font-bold tracking-[0.25em] cursor-pointer" onclick="navigate('/')">BUYCENTER</h1>
+      
+      <nav class="hidden md:flex items-center space-x-10">
+        <span class="nav-link" onclick="navigate('/?cat=tiktok+gadgets')">Viral</span>
+        <span class="nav-link" onclick="navigate('/?cat=tech+hacks')">Hacks</span>
+        <span class="nav-link" onclick="navigate('/?cat=desk+setup')">Essentials</span>
+        <span class="nav-link border-l pl-10" onclick="showWishlist()">Saved (<span id="wish-count">0</span>)</span>
+      </nav>
 
-      <div class="flex items-center space-x-6">
-        <div class="relative hidden sm:block">
-          <input type="text" id="search-input" placeholder="Search trends..." 
-                 class="bg-gray-100 border-none rounded-full py-2 px-6 text-xs w-48 focus:w-64 transition-all focus:ring-1 focus:ring-black outline-none">
-        </div>
-        <button onclick="showWishlist()" class="text-[11px] font-bold uppercase tracking-widest">
-          Saved (<span id="wish-count">0</span>)
-        </button>
+      <div class="flex items-center md:hidden">
+        <button onclick="showWishlist()" class="text-xs font-bold">SAVED (<span id="wish-count-mob">0</span>)</button>
       </div>
     </div>
   </header>
 
-  <main class="max-w-[1400px] mx-auto px-8">
-    <div class="mb-16">
-      <p id="page-subtitle" class="text-[10px] font-bold uppercase tracking-[0.3em] text-blue-500 mb-2">Curated Trends</p>
-      <h2 id="main-title" class="text-4xl font-light tracking-tight">Daily Discovery</h2>
+  <main class="max-w-[1440px] mx-auto px-8">
+    <div class="mb-16 pt-10">
+      <h2 id="main-title" class="text-5xl font-light tracking-tighter italic">The Selection</h2>
+      <p id="item-count" class="text-[10px] uppercase tracking-[0.2em] text-gray-400 mt-4">Discovering new trends...</p>
     </div>
 
-    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
       </div>
 
-    <div id="scroll-anchor" class="h-60 flex items-center justify-center">
-      <div id="loader" class="hidden h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+    <div id="scroll-anchor" class="h-80 flex flex-col items-center justify-center">
+      <div id="loader" class="h-6 w-6 border-2 border-black border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p id="status-msg" class="text-[10px] uppercase tracking-widest text-gray-400">Scanning AliExpress...</p>
     </div>
   </main>
 
   <script>
     const API_BASE = "https://aliexpress-proxy.miralbenizi7.workers.dev";
-let currentPage = 1;
-let currentQuery = "minimalist desk tech";
-let isLoading = false;
-let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    let currentPage = 1;
+    let currentQuery = "trending tech gadgets";
+    let isLoading = false;
+    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    const seenIds = new Set(); // To prevent the "Same 10 products" loop
 
-// 1. Array of "Mixer" keywords to force the API to find new results
-const mixers = ["", "best", "2026", "trending", "new", "top", "premium", "viral"];
+    async function router() {
+      const params = new URLSearchParams(window.location.search);
+      const s = params.get('s');
+      const cat = params.get('cat');
+      
+      currentPage = 1;
+      seenIds.clear();
+      document.getElementById('product-grid').innerHTML = "";
+      document.getElementById('status-msg').innerText = "Scanning AliExpress...";
+      
+      if (cat) currentQuery = cat.replace('+', ' ');
+      else if (s) currentQuery = s;
+      else currentQuery = "minimalist tech hacks viral";
 
-async function loadMore() {
-  if (isLoading) return;
-  isLoading = true;
-  document.getElementById('loader').classList.remove('hidden');
-
-  try {
-    // Pick a mixer based on the page number to rotate results
-    const mixer = mixers[currentPage % mixers.length];
-    const randomizedQuery = `${mixer} ${currentQuery}`.trim();
-
-    const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(randomizedQuery)}&page=${currentPage}`);
-    const data = await res.json();
-    
-    // Check if we actually got products
-    if (data.products && data.products.length > 0) {
-      // ✅ FIX: Filter out duplicates if the API sends the same item again
-      const existingIds = Array.from(document.querySelectorAll('.product-card')).map(el => el.dataset.id);
-      const uniqueProducts = data.products.filter(p => !existingIds.includes(String(p.id)));
-
-      if (uniqueProducts.length > 0) {
-        renderProducts(uniqueProducts);
-        currentPage++;
-      } else {
-        // If all 10 were duplicates, try the next page immediately
-        currentPage++;
-        loadMore(); 
-      }
-    } else {
-      // If no products found, stop loading
-      document.getElementById('scroll-anchor').innerHTML = "<p class='text-xs text-gray-400'>End of curation.</p>";
+      document.getElementById('main-title').innerText = cat || s ? (cat || s).replace('+', ' ') : "The Selection";
+      updateWishCount();
+      await loadMore();
     }
-  } catch (err) {
-    console.error("Fetch error:", err);
-  } finally {
-    isLoading = false;
-    document.getElementById('loader').classList.add('hidden');
-  }
-}
 
-function renderProducts(products) {
-  const grid = document.getElementById('product-grid');
-  products.forEach(p => {
-    const isSaved = wishlist.find(item => item.id === p.id);
-    const div = document.createElement('div');
-    // ✅ Add data-id to help the duplicate filter
-    div.setAttribute('data-id', p.id); 
-    div.className = "product-card group p-6";
-    div.innerHTML = `
-      <div class="trending-tag">Trending</div>
-      <button onclick="toggleWishlist('${p.id}', '${encodeURIComponent(p.title)}', '${p.image}', '${p.link}', '${p.price}')" 
-              class="save-btn">
-        <svg class="w-4 h-4 ${isSaved ? 'fill-black' : 'fill-none'} stroke-black" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 000-7.78z"></path></svg>
-      </button>
-      <a href="${p.link}" target="_blank">
-        <div class="aspect-square flex items-center justify-center mb-8">
-          <img src="${p.image}" class="product-image max-h-full object-contain" loading="lazy">
-        </div>
-        <div class="space-y-2">
-          <h3 class="text-[13px] font-medium text-gray-900 leading-snug line-clamp-2">${p.title}</h3>
-          <p class="text-[13px] font-bold text-gray-400 tracking-wider">$${p.price}</p>
-        </div>
-      </a>
-    `;
-    grid.appendChild(div);
-  });
-}
+    async function loadMore() {
+      if (isLoading) return;
+      isLoading = true;
+      document.getElementById('loader').classList.remove('hidden');
+
+      try {
+        // We use a "Page Mixer" to ensure different results are fetched
+        const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(currentQuery)}&page=${currentPage}`);
+        const data = await res.json();
+        
+        const products = data.products || data.items || [];
+
+        if (products.length > 0) {
+          const newItems = products.filter(p => !seenIds.has(p.id));
+          newItems.forEach(p => seenIds.add(p.id));
+          
+          if (newItems.length > 0) {
+            renderProducts(newItems);
+            currentPage++;
+          } else {
+            // If all 10 were duplicates, jump to next page automatically
+            currentPage++;
+            if(currentPage < 10) await loadMore(); 
+          }
+        } else {
+          document.getElementById('status-msg').innerText = "End of Selection";
+          document.getElementById('loader').classList.add('hidden');
+        }
+      } catch (e) {
+        document.getElementById('status-msg').innerText = "Connection Error. Refreshing...";
+        console.error(e);
+      } finally {
+        isLoading = false;
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('item-count').innerText = `${seenIds.size} Curated Items Found`;
+      }
+    }
+
+    function renderProducts(products) {
+      const grid = document.getElementById('product-grid');
+      products.forEach(p => {
+        const isSaved = wishlist.some(item => item.id === p.id);
+        const div = document.createElement('div');
+        div.className = "product-card group relative p-8 flex flex-col justify-between";
+        div.innerHTML = `
+          <div class="trending-label">Trending</div>
+          <button onclick="toggleWishlist('${p.id}', '${encodeURIComponent(p.title)}', '${p.image}', '${p.link}', '${p.price}')" class="save-btn">
+            <svg class="w-4 h-4 ${isSaved ? 'fill-black' : 'fill-none'} stroke-black" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 000-7.78z"></path></svg>
+          </button>
+          <a href="${p.link}" target="_blank" class="block">
+            <div class="aspect-square flex items-center justify-center mb-10">
+              <img src="${p.image}" class="product-image object-contain w-full h-full" loading="lazy">
+            </div>
+            <div class="space-y-3">
+              <h3 class="text-[12px] font-medium leading-relaxed uppercase tracking-wider text-gray-500 line-clamp-2">${p.title}</h3>
+              <p class="text-lg font-light tracking-tighter text-black">$${p.price}</p>
+            </div>
+          </a>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    function toggleWishlist(id, title, image, link, price) {
+      const idx = wishlist.findIndex(i => i.id === id);
+      if (idx > -1) wishlist.splice(idx, 1);
+      else wishlist.push({id, title: decodeURIComponent(title), image, link, price});
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      updateWishCount();
+      event.preventDefault();
+      router(); // Refresh view if on wishlist page
+    }
+
+    function updateWishCount() {
+      const count = wishlist.length;
+      document.getElementById('wish-count').innerText = count;
+      document.getElementById('wish-count-mob').innerText = count;
+    }
+
+    function showWishlist() {
+      window.history.pushState({}, '', '/?view=saved');
+      document.getElementById('main-title').innerText = "Saved Finds";
+      document.getElementById('product-grid').innerHTML = "";
+      renderProducts(wishlist);
+      document.getElementById('scroll-anchor').classList.add('hidden');
+    }
+
+    // Infinite Scroll
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && !isLoading) loadMore();
+    }, { threshold: 0.1 });
+    observer.observe(document.getElementById('scroll-anchor'));
+
+    function navigate(url) {
+      window.history.pushState({}, '', url);
+      document.getElementById('scroll-anchor').classList.remove('hidden');
+      router();
+      window.scrollTo(0,0);
+    }
+
+    window.onpopstate = router;
+    window.onload = router;
   </script>
 </body>
 </html>
