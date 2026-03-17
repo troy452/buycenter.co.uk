@@ -67,97 +67,80 @@
 
   <script>
     const API_BASE = "https://aliexpress-proxy.miralbenizi7.workers.dev";
-    let currentPage = 1;
-    let currentQuery = "minimalist desk tech";
-    let isLoading = false;
-    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+let currentPage = 1;
+let currentQuery = "minimalist desk tech";
+let isLoading = false;
+let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 
-    async function router() {
-      const params = new URLSearchParams(window.location.search);
-      const s = params.get('s');
-      const cat = params.get('cat');
-      
-      currentPage = 1;
-      // Targeted queries for the "Viral" feel
-      if (cat === 'tiktok+viral') currentQuery = "tiktok viral gadgets";
-      else if (cat === 'tech+hacks') currentQuery = "innovative tech life hacks";
-      else if (cat === 'minimalist+setup') currentQuery = "minimalist desk setup accessories";
-      else currentQuery = s || "curated tech gadgets";
+// 1. Array of "Mixer" keywords to force the API to find new results
+const mixers = ["", "best", "2026", "trending", "new", "top", "premium", "viral"];
 
-      document.getElementById('main-title').innerText = s ? `Results: ${s}` : (cat ? cat.replace('+', ' ') : "Daily Discovery");
-      document.getElementById('product-grid').innerHTML = "";
-      updateWishCount();
-      await loadMore();
-    }
+async function loadMore() {
+  if (isLoading) return;
+  isLoading = true;
+  document.getElementById('loader').classList.remove('hidden');
 
-    async function loadMore() {
-      if (isLoading) return;
-      isLoading = true;
-      document.getElementById('loader').classList.remove('hidden');
+  try {
+    // Pick a mixer based on the page number to rotate results
+    const mixer = mixers[currentPage % mixers.length];
+    const randomizedQuery = `${mixer} ${currentQuery}`.trim();
 
-      try {
-        const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(currentQuery)}&page=${currentPage}`);
-        const data = await res.json();
-        if (data.products) {
-          renderProducts(data.products);
-          currentPage++;
-        }
-      } finally {
-        isLoading = false;
-        document.getElementById('loader').classList.add('hidden');
-      }
-    }
-
-    function renderProducts(products) {
-      const grid = document.getElementById('product-grid');
-      products.forEach(p => {
-        const isSaved = wishlist.find(item => item.id === p.id);
-        const div = document.createElement('div');
-        div.className = "product-card group p-6";
-        div.innerHTML = `
-          <div class="trending-tag">Trending</div>
-          <button onclick="toggleWishlist('${p.id}', '${encodeURIComponent(p.title)}', '${p.image}', '${p.link}', '${p.price}')" 
-                  class="save-btn">
-            <svg class="w-4 h-4 ${isSaved ? 'fill-black' : 'fill-none'} stroke-black" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 000-7.78z"></path></svg>
-          </button>
-          <a href="${p.link}" target="_blank">
-            <div class="aspect-square flex items-center justify-center mb-8">
-              <img src="${p.image}" class="product-image max-h-full object-contain" loading="lazy">
-            </div>
-            <div class="space-y-2">
-              <h3 class="text-[13px] font-medium text-gray-900 leading-snug line-clamp-2">${p.title}</h3>
-              <p class="text-[13px] font-bold text-gray-400 tracking-wider">$${p.price}</p>
-            </div>
-          </a>
-        `;
-        grid.appendChild(div);
-      });
-    }
-
-    function toggleWishlist(id, title, image, link, price) {
-      const idx = wishlist.findIndex(item => item.id === id);
-      if (idx > -1) wishlist.splice(idx, 1);
-      else wishlist.push({id, title: decodeURIComponent(title), image, link, price});
-      localStorage.setItem('wishlist', JSON.stringify(wishlist));
-      updateWishCount();
-      event.preventDefault();
-    }
-
-    function updateWishCount() { document.getElementById('wish-count').innerText = wishlist.length; }
+    const res = await fetch(`${API_BASE}/?q=${encodeURIComponent(randomizedQuery)}&page=${currentPage}`);
+    const data = await res.json();
     
-    function showWishlist() {
-        document.getElementById('main-title').innerText = "Saved Finds";
-        document.getElementById('product-grid').innerHTML = "";
-        renderProducts(wishlist);
-        window.history.pushState({}, '', '/?view=saved');
+    // Check if we actually got products
+    if (data.products && data.products.length > 0) {
+      // ✅ FIX: Filter out duplicates if the API sends the same item again
+      const existingIds = Array.from(document.querySelectorAll('.product-card')).map(el => el.dataset.id);
+      const uniqueProducts = data.products.filter(p => !existingIds.includes(String(p.id)));
+
+      if (uniqueProducts.length > 0) {
+        renderProducts(uniqueProducts);
+        currentPage++;
+      } else {
+        // If all 10 were duplicates, try the next page immediately
+        currentPage++;
+        loadMore(); 
+      }
+    } else {
+      // If no products found, stop loading
+      document.getElementById('scroll-anchor').innerHTML = "<p class='text-xs text-gray-400'>End of curation.</p>";
     }
+  } catch (err) {
+    console.error("Fetch error:", err);
+  } finally {
+    isLoading = false;
+    document.getElementById('loader').classList.add('hidden');
+  }
+}
 
-    const observer = new IntersectionObserver(e => { if(e[0].isIntersecting) loadMore(); });
-    observer.observe(document.getElementById('scroll-anchor'));
-
-    function navigate(url) { window.history.pushState({}, '', url); router(); window.scrollTo(0,0); }
-    window.onpopstate = router;
-    window.onload = router;
+function renderProducts(products) {
+  const grid = document.getElementById('product-grid');
+  products.forEach(p => {
+    const isSaved = wishlist.find(item => item.id === p.id);
+    const div = document.createElement('div');
+    // ✅ Add data-id to help the duplicate filter
+    div.setAttribute('data-id', p.id); 
+    div.className = "product-card group p-6";
+    div.innerHTML = `
+      <div class="trending-tag">Trending</div>
+      <button onclick="toggleWishlist('${p.id}', '${encodeURIComponent(p.title)}', '${p.image}', '${p.link}', '${p.price}')" 
+              class="save-btn">
+        <svg class="w-4 h-4 ${isSaved ? 'fill-black' : 'fill-none'} stroke-black" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 000-7.78z"></path></svg>
+      </button>
+      <a href="${p.link}" target="_blank">
+        <div class="aspect-square flex items-center justify-center mb-8">
+          <img src="${p.image}" class="product-image max-h-full object-contain" loading="lazy">
+        </div>
+        <div class="space-y-2">
+          <h3 class="text-[13px] font-medium text-gray-900 leading-snug line-clamp-2">${p.title}</h3>
+          <p class="text-[13px] font-bold text-gray-400 tracking-wider">$${p.price}</p>
+        </div>
+      </a>
+    `;
+    grid.appendChild(div);
+  });
+}
   </script>
 </body>
 </html>
