@@ -38,5 +38,21 @@ const allProducts = [
     description: "The ultimate travel companion! This 22-in-1 Busy Cube offers a variety of sensory activities to keep toddlers engaged while developing fine motor skills and problem-solving abilities on the go.",
     images: ["Montessori/10.png", "Montessori/11.png", "Montessori/12.png"],
     buyLink: "https://s.click.aliexpress.com/e/_c4t56PAj"
+ ];
+
+const educationalArticles = [
+  {
+    id: "art-1",
+    title: "The Magic of Montessori: Why Less is More",
+    excerpt: "Learn why simple wood and tactile toys beat flashing lights for long-term focus and cognitive growth.",
+    content: "Montessori education emphasizes independence and respect for a child’s natural psychological development. Unlike electronic toys that 'do the playing for the child,' Montessori toys require the child to engage physically. This builds stronger neural connections and longer attention spans.",
+    image: "Montessori/article-1.avif"
+  },
+  {
+    id: "art-2",
+    title: "Developing Fine Motor Skills Through Play",
+    excerpt: "From zipping to twisting, discover how busy boards prepare little hands for writing and life.",
+    content: "Fine motor skills involve the use of small muscles in the hands and wrists. Tools like Busy Boards and Cubes provide safe environments for children to practice 'pincer grips' and coordination, which are foundational for holding pencils and buttoning clothes later in life.",
+    image: "Montessori/article-2.avif"
   }
 ];
