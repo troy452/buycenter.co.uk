@@ -2,6 +2,23 @@
 const allProducts = [
   {
     id: 1,
+    category: "Montessori",
+    title: "Educational Montessori Toy: Multi-Layer Track Adventure",
+    price: "49.66",
+    description: "An interactive brain-building game featuring a multi-layer rail rolling ball model. Designed to enhance motor skills and logical thinking for children through engaging, hands-on play.",
+    images: [
+      "Montessori/1.jpg", // Make sure the filenames match exactly
+      "Montessori/2.jpg",
+      "Montessori/3.jpg",
+      "Montessori/4.jpg"
+    ],
+    buyLink: "https://s.click.aliexpress.com/e/_c3nfADV1"
+  }
+  // You can add the next product here...
+];// products.js
+const allProducts = [
+  {
+    id: 1,
     category: "STEM",
     title: "Magnetic Solar System Kit",
     price: "34.99",
