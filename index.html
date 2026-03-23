@@ -4,139 +4,167 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>BuyCenter Kids | Premium Montessori & STEM Learning Toys</title>
-  <meta name="description" content="Shop curated Montessori toys and STEM kits. Our educational toys are hand-picked for quality and developmental value. Helping children learn through play.">
+  <title>BuyCenter Kids | Premium Educational Montessori & STEM Toys</title>
+  <meta name="description" content="Shop curated Montessori toys and STEM kits at BuyCenter Kids. High-quality educational toys for toddlers and children, designed for sensory play and early learning.">
   
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
   
   <style>
-    :root { --primary: #FF6B6B; --secondary: #4ECDC4; --bg: #F7F9FC; --text: #2D3436; }
-    body { background: var(--bg); color: var(--text); font-family: 'Quicksand', sans-serif; }
+    :root { --primary: #FF6B6B; --secondary: #4ECDC4; --bg: #F8FAFC; --text: #1E293B; }
+    body { background: var(--bg); color: var(--text); font-family: 'Quicksand', sans-serif; -webkit-font-smoothing: antialiased; }
     
-    .product-card { background: white; border-radius: 2rem; transition: 0.3s; border: 2px solid transparent; cursor: pointer; }
-    .product-card:hover { transform: translateY(-5px); border-color: var(--secondary); shadow: 0 15px 30px rgba(0,0,0,0.05); }
+    /* Playful Product Cards */
+    .toy-card { background: white; border-radius: 2.5rem; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 2px solid #f1f5f9; cursor: pointer; position: relative; }
+    .toy-card:hover { transform: translateY(-10px); border-color: var(--secondary); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); }
     
-    header { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 2px solid #edf2f7; }
+    header { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border-bottom: 2px solid #f1f5f9; }
     
+    /* Modal Styles */
     #modal { display: none; position: fixed; inset: 0; background: white; z-index: 1000; overflow-y: auto; }
-    .btn-buy { background: var(--primary); color: white; border-radius: 1rem; padding: 1rem; font-weight: 700; display: block; text-align: center; }
+    .btn-action { background: var(--text); color: white; border-radius: 1.25rem; padding: 1.25rem; font-weight: 700; text-align: center; transition: 0.3s; width: 100%; display: block; }
+    .btn-action:hover { background: var(--primary); transform: scale(1.02); box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
     
-    .thumb { width: 60px; height: 60px; border-radius: 10px; cursor: pointer; border: 2px solid #eee; }
-    .thumb.active { border-color: var(--secondary); }
-    
-    /* Loading Spinner */
-    .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--secondary); border-radius: 50%; width: 40px; height: 40px; animate: spin 1s linear infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .thumb { width: 70px; height: 70px; border-radius: 15px; cursor: pointer; border: 3px solid #f1f5f9; object-fit: cover; }
+    .thumb.active { border-color: var(--secondary); transform: scale(1.05); }
+
+    .price-tag { color: var(--primary); font-size: 1.75rem; font-weight: 800; }
+    .disclaimer { font-size: 10px; color: #94a3b8; margin-top: 1rem; font-style: italic; }
+
+    /* Age Badge */
+    .age-badge { position: absolute; top: 1.5rem; left: 1.5rem; z-index: 10; background: white; padding: 4px 12px; border-radius: 99px; font-size: 10px; font-weight: 800; border: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
   </style>
 </head>
 <body class="pt-24">
 
   <header class="fixed top-0 w-full z-50">
-    <div class="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="max-w-[1280px] mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center space-x-2 cursor-pointer" onclick="window.location.reload()">
-        <span class="text-2xl">🚀</span>
-        <h1 class="text-xl font-bold tracking-tighter">BUYCENTER <span class="text-red-500">KIDS</span></h1>
+        <span class="text-3xl">🧸</span>
+        <h1 class="text-xl font-bold tracking-tighter uppercase">BUYCENTER <span class="text-red-500">KIDS</span></h1>
       </div>
-      <nav class="hidden md:flex space-x-6 text-sm font-bold uppercase tracking-widest">
-        <span class="cursor-pointer hover:text-blue-500" onclick="filterCat('All')">Shop All</span>
-        <span class="cursor-pointer hover:text-blue-500" onclick="filterCat('Montessori')">Montessori</span>
-        <span class="cursor-pointer hover:text-blue-500" onclick="filterCat('STEM')">STEM</span>
+      <nav class="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-[0.2em]">
+        <span class="cursor-pointer hover:text-red-500 transition" onclick="filterCat('All')">Shop All</span>
+        <span class="cursor-pointer hover:text-red-500 transition" onclick="filterCat('Montessori')">Montessori</span>
+        <span class="cursor-pointer hover:text-red-500 transition" onclick="filterCat('STEM')">STEM</span>
       </nav>
-      <input type="text" id="search" placeholder="Search toys..." class="bg-gray-100 rounded-full px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-200">
+      <input type="text" id="search" placeholder="Search toys..." class="bg-gray-100 rounded-full px-6 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-200 w-40 lg:w-64">
     </div>
   </header>
 
-  <main class="max-w-[1200px] mx-auto px-6 py-10">
-    <h2 id="title" class="text-5xl font-bold mb-2">The Playroom</h2>
-    <p id="count" class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-10 text-secondary">Checking the shelves...</p>
+  <main class="max-w-[1280px] mx-auto px-6 py-12">
+    <div class="mb-16">
+      <h2 id="view-title" class="text-5xl md:text-7xl font-bold mb-4 tracking-tight">The Playroom</h2>
+      <p id="item-count" class="text-secondary font-bold text-xs uppercase tracking-[0.3em]">Curating the best for your kids...</p>
+    </div>
 
-    <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-      <div id="main-loader" class="col-span-full flex flex-col items-center py-20">
-        <div class="loader mb-4"></div>
-        <p>Loading your toys...</p>
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+      <div id="loader" class="col-span-full flex flex-col items-center py-32">
+        <div class="animate-bounce text-4xl mb-4">🎨</div>
+        <p class="font-bold text-gray-400 uppercase tracking-widest text-xs">Opening the toy box...</p>
       </div>
     </div>
   </main>
 
   <div id="modal">
-    <div class="max-w-[1000px] mx-auto px-6 py-20 relative">
-      <button onclick="closeModal()" class="absolute top-10 right-10 text-4xl">&times;</button>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+    <div class="max-w-[1100px] mx-auto px-6 py-16 relative">
+      <button onclick="closeModal()" class="fixed top-8 right-8 text-5xl font-light text-gray-300 hover:text-black transition">&times;</button>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mt-10">
         <div>
-          <img id="m-img" src="" class="w-full aspect-square object-contain bg-gray-50 rounded-3xl p-6 mb-4">
-          <div id="m-thumbs" class="flex flex-wrap gap-2 justify-center"></div>
+          <div class="aspect-square bg-gray-50 rounded-[3rem] overflow-hidden border-4 border-white shadow-inner">
+            <img id="modal-img" src="" class="w-full h-full object-contain p-8">
+          </div>
+          <div id="modal-thumbs" class="flex flex-wrap gap-3 justify-center"></div>
         </div>
+
         <div class="flex flex-col justify-center">
-          <span id="m-cat" class="text-blue-500 font-bold uppercase text-xs mb-2"></span>
-          <h2 id="m-title" class="text-3xl font-bold mb-4"></h2>
-          <p id="m-price" class="text-2xl text-red-500 font-bold mb-6"></p>
-          <p id="m-desc" class="text-gray-600 leading-relaxed mb-8 bg-blue-50 p-4 rounded-2xl"></p>
-          <a id="m-link" href="#" target="_blank" class="btn-buy shadow-lg">View on AliExpress</a>
+          <span id="modal-cat" class="text-secondary font-black uppercase text-[10px] tracking-widest mb-2"></span>
+          <h2 id="modal-title" class="text-4xl md:text-5xl font-bold mb-4 leading-tight"></h2>
+          <div class="price-tag mb-6" id="modal-price"></div>
+          
+          <div class="bg-blue-50 p-8 rounded-[2.5rem] mb-8">
+            <h4 class="font-bold mb-2 text-blue-900 flex items-center">
+              <span class="mr-2">💡</span> Recommended Play:
+            </h4>
+            <p id="modal-desc" class="text-blue-800 leading-relaxed"></p>
+          </div>
+          
+          <a id="modal-link" href="#" target="_blank" class="btn-action shadow-2xl">VIEW ON STORE</a>
+          <p class="disclaimer text-center">Note: Prices and availability are subject to change on the merchant site.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="products.js"></script>
-
   <script>
-    // 1. BULLETPROOF LOADER: Wait for the file to be ready
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        if (typeof allProducts !== 'undefined') {
-          render(allProducts);
-        } else {
-          document.getElementById('grid').innerHTML = `
-            <div class="col-span-full text-center py-20">
-              <p class="text-red-500 font-bold">Error: products.js not found.</p>
-              <p class="text-sm text-gray-500 mt-2">Make sure products.js is in the same folder as index.html and starts with: <br> <code>const allProducts = [...];</code></p>
-            </div>`;
-        }
-      }, 500); // Small delay to ensure file registration
-    });
+    // Forces a fresh load of products.js every time to avoid caching issues
+    const script = document.createElement('script');
+    script.src = "products.js?v=" + new Date().getTime(); 
+    document.head.appendChild(script);
 
-    function render(data) {
-      const grid = document.getElementById('grid');
+    script.onload = () => {
+      if (typeof allProducts !== 'undefined') {
+        renderGrid(allProducts);
+      } else {
+        document.getElementById('product-grid').innerHTML = `
+          <div class="col-span-full text-center py-20 bg-red-50 rounded-3xl">
+            <p class="text-red-500 font-bold">Error: products.js not found.</p>
+            <p class="text-xs text-gray-400 mt-2">Ensure the file is in the same folder as index.html.</p>
+          </div>`;
+      }
+    };
+
+    function renderGrid(products) {
+      const grid = document.getElementById('product-grid');
       grid.innerHTML = "";
-      data.forEach(p => {
-        const div = document.createElement('div');
-        div.className = "product-card p-4 shadow-sm";
-        div.onclick = () => openModal(p.id);
-        div.innerHTML = `
-          <div class="aspect-square mb-4 rounded-2xl overflow-hidden bg-white">
-            <img src="${p.images[0]}" class="w-full h-full object-contain p-2">
+      
+      products.forEach(p => {
+        const card = document.createElement('div');
+        card.className = "toy-card p-5";
+        card.onclick = () => openModal(p.id);
+        
+        card.innerHTML = `
+          <div class="age-badge">AGES ${p.age}</div>
+          <div class="aspect-square mb-6 rounded-[2rem] overflow-hidden bg-white">
+            <img src="./${p.images[0]}" class="w-full h-full object-contain p-4" onerror="this.src='https://placehold.co/400?text=Image+Loading...'">
           </div>
-          <p class="text-[10px] font-bold text-blue-400 uppercase">${p.category}</p>
-          <h3 class="font-bold text-sm line-clamp-2 h-10 mb-2">${p.title}</h3>
-          <p class="text-lg font-bold text-red-500">$${p.price}</p>
+          <div class="px-2">
+            <span class="text-[9px] font-black text-secondary uppercase tracking-widest">${p.category}</span>
+            <h3 class="font-bold text-gray-800 text-sm line-clamp-2 h-10 mt-1 mb-4 leading-snug">${p.title}</h3>
+            <div class="flex justify-between items-end">
+               <p class="text-2xl font-extrabold text-red-500">$${p.price}</p>
+               <span class="bg-gray-100 text-[10px] font-bold py-2 px-4 rounded-full">DETAILS</span>
+            </div>
+          </div>
         `;
-        grid.appendChild(div);
+        grid.appendChild(card);
       });
-      document.getElementById('count').innerText = `${data.length} Toys Available`;
-      document.getElementById('main-loader').style.display = 'none';
+      document.getElementById('item-count').innerText = `${products.length} Educational Tools Found`;
+      const loader = document.getElementById('loader');
+      if(loader) loader.style.display = 'none';
     }
 
     function openModal(id) {
       const p = allProducts.find(x => x.id === id);
-      document.getElementById('m-title').innerText = p.title;
-      document.getElementById('m-price').innerText = `$${p.price}`;
-      document.getElementById('m-desc').innerText = p.description;
-      document.getElementById('m-cat').innerText = p.category;
-      document.getElementById('m-link').href = p.buyLink;
-      document.getElementById('m-img').src = p.images[0];
+      document.getElementById('modal-title').innerText = p.title;
+      document.getElementById('modal-price').innerText = `$${p.price}`;
+      document.getElementById('modal-desc').innerHTML = `<strong>Ages: ${p.age}</strong><br><br>${p.description}`;
+      document.getElementById('modal-cat').innerText = p.category;
+      document.getElementById('modal-link').href = p.buyLink;
+      document.getElementById('modal-img').src = `./${p.images[0]}`;
       
-      const thumbs = document.getElementById('m-thumbs');
+      const thumbs = document.getElementById('modal-thumbs');
       thumbs.innerHTML = p.images.map((img, i) => `
-        <img src="${img}" class="thumb ${i===0?'active':''}" onclick="setMainImg(this, '${img}')">
+        <img src="./${img}" class="thumb ${i===0?'active':''}" onclick="setImg(this, './${img}')" onerror="this.style.display='none'">
       `).join('');
 
       document.getElementById('modal').style.display = 'block';
       document.body.style.overflow = 'hidden';
     }
 
-    function setMainImg(el, src) {
-      document.getElementById('m-img').src = src;
+    function setImg(el, src) {
+      document.getElementById('modal-img').src = src;
       document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
     }
@@ -148,14 +176,14 @@
 
     function filterCat(cat) {
       const filtered = cat === 'All' ? allProducts : allProducts.filter(x => x.category === cat);
-      render(filtered);
-      document.getElementById('title').innerText = cat === 'All' ? "The Playroom" : cat;
+      renderGrid(filtered);
+      document.getElementById('view-title').innerText = cat === 'All' ? "The Playroom" : cat;
     }
 
     document.getElementById('search').addEventListener('input', (e) => {
       const q = e.target.value.toLowerCase();
       const s = allProducts.filter(x => x.title.toLowerCase().includes(q) || x.category.toLowerCase().includes(q));
-      render(s);
+      renderGrid(s);
     });
   </script>
 </body>
