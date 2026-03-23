@@ -38,6 +38,7 @@ const allProducts = [
     description: "The ultimate travel companion! This 22-in-1 Busy Cube offers a variety of sensory activities to keep toddlers engaged while developing fine motor skills and problem-solving abilities on the go.",
     images: ["Montessori/10.png", "Montessori/11.png", "Montessori/12.png"],
     buyLink: "https://s.click.aliexpress.com/e/_c4t56PAj"
+      }
  ];
 
 const educationalArticles = [
