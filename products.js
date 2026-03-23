@@ -77,7 +77,7 @@ const allProducts = [
     title: "Magical Track Train | 3D Building Rails STEM Toy",
     price: "34.15",
     description: "A USB rechargeable magical train set with up to 123 pieces. This 3D building kit encourages spatial reasoning and creative engineering for future builders.",
-    images: ["Montessori/24.png", "Montessori/25.png", "Montessori/26.png"],
+    images: ["Montessori/24.png", "Montessori/25.png", "Montessori/26.png", "Montessori/27.png"],
     buyLink: "https://s.click.aliexpress.com/e/_c3mQa5qx",
     new: true
   }
