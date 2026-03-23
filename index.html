@@ -1,30 +1,142 @@
-<script src="products.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BuyCenter Kids | Educational Montessori & STEM Toys</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #ffffff; --text: #111111; --accent: #3b82f6; --card-bg: #f9f9fb; }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+    
+    /* Product Card Styling */
+    .product-card { background: var(--card-bg); transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); border: 1px solid #eee; cursor: pointer; }
+    .product-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.03); border-color: #ddd; }
+    .product-image { transition: transform 0.6s ease; }
+    .product-card:hover .product-image { transform: scale(1.05); }
 
-<script>
-    // These functions now use the data from products.js
+    /* Navigation */
+    header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid #f0f0f0; }
+    .nav-link { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #999; cursor: pointer; transition: 0.3s; }
+    .nav-link:hover, .nav-link.active { color: var(--text); }
+
+    /* Modal (Product Detail View) */
+    #modal { display: none; position: fixed; inset: 0; background: #fff; z-index: 100; overflow-y: auto; }
+    .thumb { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; cursor: pointer; border: 2px solid transparent; opacity: 0.6; transition: 0.3s; }
+    .thumb.active { border-color: var(--text); opacity: 1; }
+    
+    .buy-btn { background: var(--text); color: white; transition: transform 0.2s; }
+    .buy-btn:hover { transform: scale(1.02); background: #333; }
+
+    /* Custom Scrollbar for Thumbnails */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="pt-24">
+
+  <header class="fixed top-0 w-full z-50">
+    <div class="max-w-[1440px] mx-auto px-6 py-5 flex items-center justify-between">
+      <h1 class="text-xl font-bold tracking-[0.3em] cursor-pointer" onclick="filterByCategory('All')">BUYCENTER KIDS</h1>
+      
+      <nav class="hidden md:flex items-center space-x-8">
+        <span class="nav-link" onclick="filterByCategory('All')">Shop All</span>
+        <span class="nav-link" onclick="filterByCategory('Montessori')">Montessori</span>
+        <span class="nav-link" onclick="filterByCategory('STEM')">STEM</span>
+        <span class="nav-link" onclick="filterByCategory('Creative')">Creative</span>
+      </nav>
+
+      <div class="flex items-center space-x-4">
+        <input type="text" id="search-input" placeholder="Search toys..." 
+               class="bg-gray-100 rounded-full py-2 px-5 text-sm outline-none focus:ring-2 focus:ring-blue-100 w-40 lg:w-64 transition-all">
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-[1440px] mx-auto px-6 pb-20">
+    <div class="pt-12 mb-12">
+      <h2 id="view-title" class="text-5xl md:text-7xl font-light tracking-tighter">The Playroom</h2>
+      <div class="flex items-center justify-between mt-6 border-b pb-6">
+        <p id="item-count" class="text-[10px] uppercase tracking-[0.2em] text-gray-400">Loading curation...</p>
+      </div>
+    </div>
+
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      </div>
+  </main>
+
+  <div id="modal">
+    <div class="max-w-[1200px] mx-auto px-6 py-12 md:py-24 relative">
+      <button onclick="closeModal()" class="fixed top-8 right-8 text-4xl font-light z-50">&times;</button>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+        <div class="space-y-6">
+          <div class="aspect-square bg-gray-50 rounded-3xl overflow-hidden">
+            <img id="modal-main-img" src="" class="w-full h-full object-contain p-4">
+          </div>
+          <div id="modal-thumbnails" class="flex space-x-4 overflow-x-auto no-scrollbar pb-2">
+            </div>
+        </div>
+
+        <div class="flex flex-col justify-center">
+          <span id="modal-cat" class="text-blue-600 font-bold uppercase tracking-widest text-xs mb-4"></span>
+          <h2 id="modal-title" class="text-4xl md:text-5xl font-bold leading-tight mb-6"></h2>
+          <p id="modal-price" class="text-3xl font-light mb-8 text-gray-900"></p>
+          <div class="prose prose-sm mb-10 text-gray-500 leading-relaxed">
+            <p id="modal-desc"></p>
+          </div>
+          <a id="modal-link" href="#" target="_blank" class="buy-btn text-center py-5 rounded-2xl font-bold text-lg shadow-xl">Get it on AliExpress</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="products.js"></script>
+
+  <script>
+    let activeProducts = [];
+
+    // Initialize the page
+    window.onload = () => {
+      if (typeof allProducts !== 'undefined') {
+        activeProducts = allProducts;
+        renderGrid(allProducts);
+      } else {
+        document.getElementById('product-grid').innerHTML = "<p class='col-span-full text-center py-20'>Error: products.js not found.</p>";
+      }
+    };
+
+    // Render the grid
     function renderGrid(products) {
       const grid = document.getElementById('product-grid');
-      grid.innerHTML = ""; // Clear current view
-      
+      grid.innerHTML = "";
+
+      if(products.length === 0) {
+        grid.innerHTML = "<p class='col-span-full text-center py-20 text-gray-400'>No toys found in this category.</p>";
+        return;
+      }
+
       products.forEach(p => {
         const div = document.createElement('div');
-        div.className = "product-card p-6 rounded-3xl";
+        div.className = "product-card p-6 rounded-[2.5rem]";
         div.onclick = () => openModal(p.id);
         div.innerHTML = `
-          <div class="aspect-square mb-6 overflow-hidden rounded-2xl bg-gray-100">
-            <img src="${p.images[0]}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+          <div class="aspect-square mb-6 overflow-hidden rounded-[1.8rem] bg-white">
+            <img src="${p.images[0]}" class="product-image w-full h-full object-contain p-2" alt="${p.title}">
           </div>
-          <div class="space-y-2">
-            <span class="text-[10px] font-bold text-blue-500 uppercase tracking-widest">${p.category}</span>
-            <h3 class="text-lg font-bold truncate">${p.title}</h3>
-            <p class="text-xl font-light">$${p.price}</p>
+          <div class="space-y-3">
+            <span class="text-[9px] font-bold text-blue-500 uppercase tracking-[0.2em]">${p.category}</span>
+            <h3 class="text-sm font-bold leading-snug line-clamp-2 h-10">${p.title}</h3>
+            <p class="text-xl font-light text-black">$${p.price}</p>
           </div>
         `;
         grid.appendChild(div);
       });
-      document.getElementById('item-count').innerText = `${products.length} Curated Tools`;
+
+      document.getElementById('item-count').innerText = `${products.length} Educational Tools Found`;
     }
 
+    // Modal Control
     function openModal(id) {
       const p = allProducts.find(item => item.id === id);
       if(!p) return;
@@ -38,19 +150,18 @@
       const mainImg = document.getElementById('modal-main-img');
       mainImg.src = p.images[0];
 
-      // Generate Thumbnails for multiple pictures
       const thumbs = document.getElementById('modal-thumbnails');
       thumbs.innerHTML = p.images.map((img, i) => `
-        <img src="${img}" class="thumbnail ${i===0?'active':''}" onclick="updateMainImg(this, '${img}')">
+        <img src="${img}" class="thumb ${i===0?'active':''}" onclick="updateMainImg(this, '${img}')">
       `).join('');
 
       document.getElementById('modal').style.display = 'block';
-      document.body.style.overflow = 'hidden'; // Stop background scrolling
+      document.body.style.overflow = 'hidden';
     }
 
     function updateMainImg(el, src) {
       document.getElementById('modal-main-img').src = src;
-      document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
     }
 
@@ -59,18 +170,22 @@
       document.body.style.overflow = 'auto';
     }
 
-    function filterCategory(cat) {
-      const filtered = allProducts.filter(p => p.category === cat);
+    // Filtering & Search
+    function filterByCategory(cat) {
+      const filtered = cat === 'All' ? allProducts : allProducts.filter(p => p.category === cat);
       renderGrid(filtered);
-      document.getElementById('main-title').innerText = cat;
+      document.getElementById('view-title').innerText = cat === 'All' ? "The Playroom" : cat;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Initialize the store
-    window.onload = () => {
-      if (typeof allProducts !== 'undefined') {
-        renderGrid(allProducts);
-      } else {
-        console.error("products.js not found!");
-      }
-    };
-</script>
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const searched = allProducts.filter(p => 
+        p.title.toLowerCase().includes(query) || 
+        p.category.toLowerCase().includes(query)
+      );
+      renderGrid(searched);
+    });
+  </script>
+</body>
+</html>
