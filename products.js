@@ -30,6 +30,16 @@ const allProducts = [
     buyLink: "https://s.click.aliexpress.com/e/_c45YKcmn"
   },
   {
+    id: 3,
+    category: "Montessori",
+    age: "2-3 Years",
+    title: "Wooden Stick Pulling Game | Boost Thinking Ability Patience Recognition",
+    price: "17.75",
+    description: "Two players Stick Plulling Game When the disc touch the table you lose.",
+    images: ["Montessori/13.png", "Montessori/14.png", "Montessori/15.png"],
+    buyLink: "https://s.click.aliexpress.com/e/_c2JW5Tm7"
+  },
+  {
     id: 4,
     category: "Montessori",
     age: "18m+ Months",
