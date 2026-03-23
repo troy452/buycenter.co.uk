@@ -33,13 +33,17 @@
 
     /* Age Badge */
     .age-badge { position: absolute; top: 1.5rem; left: 1.5rem; z-index: 10; background: white; padding: 4px 12px; border-radius: 99px; font-size: 10px; font-weight: 800; border: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    
+    /* Banner Aspect Ratio Utility */
+    .aspect-banner { position: relative; width: 100%; padding-top: 55.81%; /* (1536 / 2752) * 100 */ }
+    .aspect-banner img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
   </style>
 </head>
-<body class="pt-24">
+<body class="pt-20">
 
   <header class="fixed top-0 w-full z-50">
     <div class="max-w-[1280px] mx-auto px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center space-x-2 cursor-pointer" onclick="window.location.reload()">
+      <div class="flex items-center space-x-2 cursor-pointer" onclick="window.location.href='/'">
         <span class="text-3xl">🧸</span>
         <h1 class="text-xl font-bold tracking-tighter uppercase">BUYCENTER <span class="text-red-500">KIDS</span></h1>
       </div>
@@ -52,16 +56,20 @@
     </div>
   </header>
 
+  <div class="w-full aspect-banner mt-4 md:mt-2">
+    <img src="./banner.jpg" alt="BuyCenter Kids Curated Montessori Playroom Banner">
+  </div>
+
   <main class="max-w-[1280px] mx-auto px-6 py-12">
     <div class="mb-16">
       <h2 id="view-title" class="text-5xl md:text-7xl font-bold mb-4 tracking-tight">The Playroom</h2>
-      <p id="item-count" class="text-secondary font-bold text-xs uppercase tracking-[0.3em]">Curating the best for your kids...</p>
+      <p id="item-count" class="text-secondary font-bold text-xs uppercase tracking-[0.3em]">Opening the toy box...</p>
     </div>
 
     <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
       <div id="loader" class="col-span-full flex flex-col items-center py-32">
         <div class="animate-bounce text-4xl mb-4">🎨</div>
-        <p class="font-bold text-gray-400 uppercase tracking-widest text-xs">Opening the toy box...</p>
+        <p class="font-bold text-gray-400 uppercase tracking-widest text-xs">Curating the fun...</p>
       </div>
     </div>
   </main>
@@ -98,7 +106,7 @@
   </div>
 
   <script>
-    // Forces a fresh load of products.js every time to avoid caching issues
+    // Force fresh load of products.js
     const script = document.createElement('script');
     script.src = "products.js?v=" + new Date().getTime(); 
     document.head.appendChild(script);
@@ -110,7 +118,6 @@
         document.getElementById('product-grid').innerHTML = `
           <div class="col-span-full text-center py-20 bg-red-50 rounded-3xl">
             <p class="text-red-500 font-bold">Error: products.js not found.</p>
-            <p class="text-xs text-gray-400 mt-2">Ensure the file is in the same folder as index.html.</p>
           </div>`;
       }
     };
