@@ -4,206 +4,140 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>BuyCenter Kids | Best Educational Montessori & STEM Toys for Curious Minds</title>
-  <meta name="description" content="Discover a curated collection of high-quality Montessori toys, STEM kits, and educational adventure games. Help your child learn through play with our hand-picked selection of interactive toys designed for cognitive development and fun.">
-  <meta name="keywords" content="Montessori toys, STEM toys for kids, educational games, learning toys, BuyCenter Kids, childhood development">
-
+  <title>BuyCenter Kids | Premium Montessori & STEM Learning Toys</title>
+  <meta name="description" content="Shop curated Montessori toys and STEM kits. Our educational toys are hand-picked for quality and developmental value. Helping children learn through play.">
+  
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
   
   <style>
-    :root { 
-      --primary: #FF6B6B; /* Soft Coral */
-      --secondary: #4ECDC4; /* Pastel Teal */
-      --accent: #FFE66D; /* Sunny Yellow */
-      --text: #2D3436; 
-      --bg: #F7F9FC;
-    }
+    :root { --primary: #FF6B6B; --secondary: #4ECDC4; --bg: #F7F9FC; --text: #2D3436; }
+    body { background: var(--bg); color: var(--text); font-family: 'Quicksand', sans-serif; }
     
-    body { 
-      background: var(--bg); 
-      color: var(--text); 
-      font-family: 'Quicksand', sans-serif; /* Rounder, friendlier font */
-    }
-
-    /* Soft, Bouncy UI */
-    .product-card { 
-      background: #ffffff; 
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-      border-radius: 2rem;
-      border: 3px solid transparent;
-    }
-    .product-card:hover { 
-      transform: scale(1.03); 
-      border-color: var(--secondary);
-      box-shadow: 0 20px 30px rgba(78, 205, 196, 0.15);
-    }
-
-    .nav-pill {
-      padding: 8px 20px;
-      border-radius: 99px;
-      font-weight: 700;
-      transition: 0.2s;
-      cursor: pointer;
-    }
-    .nav-pill:hover { background: var(--secondary); color: white; }
-
-    /* Modal Styling */
-    #modal { 
-      display: none; 
-      position: fixed; 
-      inset: 0; 
-      background: rgba(255,255,255,0.98); 
-      z-index: 1000; 
-      overflow-y: auto; 
-    }
+    .product-card { background: white; border-radius: 2rem; transition: 0.3s; border: 2px solid transparent; cursor: pointer; }
+    .product-card:hover { transform: translateY(-5px); border-color: var(--secondary); shadow: 0 15px 30px rgba(0,0,0,0.05); }
     
-    .btn-buy {
-      background: var(--primary);
-      color: white;
-      border-radius: 1rem;
-      padding: 1.25rem;
-      font-weight: 800;
-      box-shadow: 0 10px 0 #ee5253; /* 3D effect button */
-      transition: 0.1s;
-    }
-    .btn-buy:active { transform: translateY(4px); box-shadow: 0 6px 0 #ee5253; }
-
-    .thumb-img {
-      width: 70px; height: 70px; border-radius: 12px; cursor: pointer; 
-      border: 3px solid #eee; transition: 0.2s;
-    }
-    .thumb-img.active { border-color: var(--secondary); }
-
-    .search-bar {
-      border: 2px solid #eee;
-      border-radius: 99px;
-      transition: 0.3s;
-    }
-    .search-bar:focus { border-color: var(--secondary); outline: none; }
+    header { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 2px solid #edf2f7; }
+    
+    #modal { display: none; position: fixed; inset: 0; background: white; z-index: 1000; overflow-y: auto; }
+    .btn-buy { background: var(--primary); color: white; border-radius: 1rem; padding: 1rem; font-weight: 700; display: block; text-align: center; }
+    
+    .thumb { width: 60px; height: 60px; border-radius: 10px; cursor: pointer; border: 2px solid #eee; }
+    .thumb.active { border-color: var(--secondary); }
+    
+    /* Loading Spinner */
+    .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--secondary); border-radius: 50%; width: 40px; height: 40px; animate: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body class="pt-24">
 
-  <header class="fixed top-0 w-full z-50 bg-white shadow-sm">
-    <div class="max-w-[1280px] mx-auto px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center space-x-2 cursor-pointer" onclick="location.reload()">
-        <span class="text-2xl">🎨</span>
-        <h1 class="text-2xl font-extrabold tracking-tight text-gray-800">BUYCENTER <span class="text-red-400">KIDS</span></h1>
+  <header class="fixed top-0 w-full z-50">
+    <div class="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-2 cursor-pointer" onclick="window.location.reload()">
+        <span class="text-2xl">🚀</span>
+        <h1 class="text-xl font-bold tracking-tighter">BUYCENTER <span class="text-red-500">KIDS</span></h1>
       </div>
-      
-      <nav class="hidden md:flex items-center space-x-2">
-        <span class="nav-pill" onclick="filterByCategory('All')">Everything</span>
-        <span class="nav-pill" onclick="filterByCategory('Montessori')">Montessori</span>
-        <span class="nav-pill" onclick="filterByCategory('STEM')">STEM & Science</span>
-        <span class="nav-pill" onclick="filterByCategory('Creative')">Art & Play</span>
+      <nav class="hidden md:flex space-x-6 text-sm font-bold uppercase tracking-widest">
+        <span class="cursor-pointer hover:text-blue-500" onclick="filterCat('All')">Shop All</span>
+        <span class="cursor-pointer hover:text-blue-500" onclick="filterCat('Montessori')">Montessori</span>
+        <span class="cursor-pointer hover:text-blue-500" onclick="filterCat('STEM')">STEM</span>
       </nav>
-
-      <div class="flex items-center">
-        <input type="text" id="search-input" placeholder="Find a toy..." class="search-bar px-4 py-2 text-sm w-32 md:w-48">
-      </div>
+      <input type="text" id="search" placeholder="Search toys..." class="bg-gray-100 rounded-full px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-200">
     </div>
   </header>
 
-  <main class="max-w-[1280px] mx-auto px-6">
-    <div class="py-12 text-center md:text-left">
-      <h2 id="view-title" class="text-4xl md:text-6xl font-extrabold mb-4">Smart Toys for Smart Kids 🚀</h2>
-      <p class="text-lg text-gray-500 max-w-2xl">Welcome to our curated playroom! We hand-pick the best educational toys to help your little ones explore, learn, and grow.</p>
-      <div id="item-count" class="mt-4 inline-block bg-yellow-100 text-yellow-700 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
-        Loading the fun...
+  <main class="max-w-[1200px] mx-auto px-6 py-10">
+    <h2 id="title" class="text-5xl font-bold mb-2">The Playroom</h2>
+    <p id="count" class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-10 text-secondary">Checking the shelves...</p>
+
+    <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div id="main-loader" class="col-span-full flex flex-col items-center py-20">
+        <div class="loader mb-4"></div>
+        <p>Loading your toys...</p>
       </div>
     </div>
-
-    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10"></div>
   </main>
 
   <div id="modal">
-    <div class="max-w-[1100px] mx-auto px-6 py-12 relative">
-      <button onclick="closeModal()" class="fixed top-6 right-6 text-5xl font-bold text-gray-300 hover:text-gray-800 transition">&times;</button>
-      
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-10">
+    <div class="max-w-[1000px] mx-auto px-6 py-20 relative">
+      <button onclick="closeModal()" class="absolute top-10 right-10 text-4xl">&times;</button>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div>
-          <div class="aspect-square bg-gray-100 rounded-[3rem] overflow-hidden mb-6 border-4 border-white shadow-inner">
-            <img id="modal-main-img" src="" class="w-full h-full object-contain p-8">
-          </div>
-          <div id="modal-thumbnails" class="flex flex-wrap gap-3 justify-center"></div>
+          <img id="m-img" src="" class="w-full aspect-square object-contain bg-gray-50 rounded-3xl p-6 mb-4">
+          <div id="m-thumbs" class="flex flex-wrap gap-2 justify-center"></div>
         </div>
-
         <div class="flex flex-col justify-center">
-          <span id="modal-cat" class="text-teal-500 font-bold uppercase tracking-widest text-sm mb-2"></span>
-          <h2 id="modal-title" class="text-4xl font-extrabold mb-4 leading-tight"></h2>
-          <div class="text-3xl font-bold text-red-500 mb-6" id="modal-price"></div>
-          <div class="bg-blue-50 p-6 rounded-3xl mb-8">
-            <h4 class="font-bold text-blue-800 mb-2">Why we love this:</h4>
-            <p id="modal-desc" class="text-blue-900 leading-relaxed"></p>
-          </div>
-          <a id="modal-link" href="#" target="_blank" class="btn-buy text-center uppercase tracking-tighter text-xl">View Details & Buy</a>
+          <span id="m-cat" class="text-blue-500 font-bold uppercase text-xs mb-2"></span>
+          <h2 id="m-title" class="text-3xl font-bold mb-4"></h2>
+          <p id="m-price" class="text-2xl text-red-500 font-bold mb-6"></p>
+          <p id="m-desc" class="text-gray-600 leading-relaxed mb-8 bg-blue-50 p-4 rounded-2xl"></p>
+          <a id="m-link" href="#" target="_blank" class="btn-buy shadow-lg">View on AliExpress</a>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="products.js"></script>
+  <script src="./products.js"></script>
 
   <script>
-    // Grid Rendering
-    function renderGrid(products) {
-      const grid = document.getElementById('product-grid');
+    // 1. BULLETPROOF LOADER: Wait for the file to be ready
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (typeof allProducts !== 'undefined') {
+          render(allProducts);
+        } else {
+          document.getElementById('grid').innerHTML = `
+            <div class="col-span-full text-center py-20">
+              <p class="text-red-500 font-bold">Error: products.js not found.</p>
+              <p class="text-sm text-gray-500 mt-2">Make sure products.js is in the same folder as index.html and starts with: <br> <code>const allProducts = [...];</code></p>
+            </div>`;
+        }
+      }, 500); // Small delay to ensure file registration
+    });
+
+    function render(data) {
+      const grid = document.getElementById('grid');
       grid.innerHTML = "";
-
-      if(products.length === 0) {
-        grid.innerHTML = "<div class='col-span-full py-20 text-center text-xl text-gray-400'>Oops! No toys found. Try another search?</div>";
-        return;
-      }
-
-      products.forEach(p => {
-        const card = document.createElement('div');
-        card.className = "product-card p-4 shadow-sm";
-        card.onclick = () => openModal(p.id);
-        card.innerHTML = `
-          <div class="aspect-square rounded-[1.5rem] bg-gray-50 mb-4 overflow-hidden">
-            <img src="${p.images[0]}" class="w-full h-full object-contain p-4 transition duration-500 hover:rotate-2">
+      data.forEach(p => {
+        const div = document.createElement('div');
+        div.className = "product-card p-4 shadow-sm";
+        div.onclick = () => openModal(p.id);
+        div.innerHTML = `
+          <div class="aspect-square mb-4 rounded-2xl overflow-hidden bg-white">
+            <img src="${p.images[0]}" class="w-full h-full object-contain p-2">
           </div>
-          <div class="px-2 pb-2">
-            <span class="text-[10px] font-extrabold text-teal-500 uppercase">${p.category}</span>
-            <h3 class="text-md font-bold text-gray-800 mt-1 line-clamp-2 h-12">${p.title}</h3>
-            <div class="flex justify-between items-center mt-4">
-              <span class="text-2xl font-extrabold text-red-500">$${p.price}</span>
-              <span class="bg-yellow-400 text-white p-2 rounded-lg text-xs font-black">VIEW</span>
-            </div>
-          </div>
+          <p class="text-[10px] font-bold text-blue-400 uppercase">${p.category}</p>
+          <h3 class="font-bold text-sm line-clamp-2 h-10 mb-2">${p.title}</h3>
+          <p class="text-lg font-bold text-red-500">$${p.price}</p>
         `;
-        grid.appendChild(card);
+        grid.appendChild(div);
       });
-      document.getElementById('item-count').innerText = `${products.length} Learning Toys to Explore`;
+      document.getElementById('count').innerText = `${data.length} Toys Available`;
+      document.getElementById('main-loader').style.display = 'none';
     }
 
-    // Modal Details
     function openModal(id) {
-      const p = allProducts.find(item => item.id === id);
-      if(!p) return;
-
-      document.getElementById('modal-title').innerText = p.title;
-      document.getElementById('modal-price').innerText = `$${p.price}`;
-      document.getElementById('modal-desc').innerText = p.description;
-      document.getElementById('modal-cat').innerText = p.category;
-      document.getElementById('modal-link').href = p.buyLink;
+      const p = allProducts.find(x => x.id === id);
+      document.getElementById('m-title').innerText = p.title;
+      document.getElementById('m-price').innerText = `$${p.price}`;
+      document.getElementById('m-desc').innerText = p.description;
+      document.getElementById('m-cat').innerText = p.category;
+      document.getElementById('m-link').href = p.buyLink;
+      document.getElementById('m-img').src = p.images[0];
       
-      const mainImg = document.getElementById('modal-main-img');
-      mainImg.src = p.images[0];
-
-      const thumbs = document.getElementById('modal-thumbnails');
+      const thumbs = document.getElementById('m-thumbs');
       thumbs.innerHTML = p.images.map((img, i) => `
-        <img src="${img}" class="thumb-img ${i===0?'active':''}" onclick="updateMainImg(this, '${img}')">
+        <img src="${img}" class="thumb ${i===0?'active':''}" onclick="setMainImg(this, '${img}')">
       `).join('');
 
       document.getElementById('modal').style.display = 'block';
       document.body.style.overflow = 'hidden';
     }
 
-    function updateMainImg(el, src) {
-      document.getElementById('modal-main-img').src = src;
-      document.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
+    function setMainImg(el, src) {
+      document.getElementById('m-img').src = src;
+      document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
     }
 
@@ -212,26 +146,17 @@
       document.body.style.overflow = 'auto';
     }
 
-    function filterByCategory(cat) {
-      const filtered = cat === 'All' ? allProducts : allProducts.filter(p => p.category === cat);
-      renderGrid(filtered);
-      document.getElementById('view-title').innerText = cat === 'All' ? "The Playroom 🚀" : cat;
+    function filterCat(cat) {
+      const filtered = cat === 'All' ? allProducts : allProducts.filter(x => x.category === cat);
+      render(filtered);
+      document.getElementById('title').innerText = cat === 'All' ? "The Playroom" : cat;
     }
 
-    // Search logic
-    document.getElementById('search-input').addEventListener('input', (e) => {
+    document.getElementById('search').addEventListener('input', (e) => {
       const q = e.target.value.toLowerCase();
-      const filtered = allProducts.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
-      renderGrid(filtered);
+      const s = allProducts.filter(x => x.title.toLowerCase().includes(q) || x.category.toLowerCase().includes(q));
+      render(s);
     });
-
-    window.onload = () => {
-      if (typeof allProducts !== 'undefined') {
-        renderGrid(allProducts);
-      } else {
-        document.getElementById('product-grid').innerHTML = "<div class='col-span-full text-center py-20'>Error: products.js not found in your folder.</div>";
-      }
-    };
   </script>
 </body>
 </html>
