@@ -49,6 +49,16 @@ const allProducts = [
     images: ["Montessori/10.png", "Montessori/11.png", "Montessori/12.png"],
     buyLink: "https://s.click.aliexpress.com/e/_c4t56PAj"
       }
+  {
+    id: 6,
+    category: "Montessori",
+    age: "0-24 Months",
+    title: "9-in-1 Wooden Montessori Musical Set | Rattle & Drum Column",
+    price: "34.95",
+    description: "A beautiful 9-piece wooden musical set designed for early sensory exploration. Includes rattles, bells, and drums to help infants and toddlers discover rhythm and sound through natural materials.",
+    images: ["Montessori/16.png", "Montessori/17.png", "Montessori/18.png", "Montessori/19.png"],
+    buyLink: "https://s.click.aliexpress.com/e/_c4mk6v23"
+  }
  ];
 
 const educationalArticles = [
