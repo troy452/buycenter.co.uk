@@ -30,16 +30,6 @@ const allProducts = [
     buyLink: "https://s.click.aliexpress.com/e/_c45YKcmn"
   },
   {
-    id: 5,
-    category: "Montessori",
-    age: "2-3 Years",
-    title: "Wooden Stick Pulling Game | Boost Thinking Ability Patience Recognition",
-    price: "17.75",
-    description: "Two players Stick Plulling Game When the disc touch the table you lose.",
-    images: ["Montessori/13.png", "Montessori/14.png", "Montessori/15.png"],
-    buyLink: "https://s.click.aliexpress.com/e/_c2JW5Tm7"
-  },
-  {
     id: 4,
     category: "Montessori",
     age: "18m+ Months",
@@ -48,18 +38,38 @@ const allProducts = [
     description: "The ultimate travel companion! This 22-in-1 Busy Cube offers a variety of sensory activities to keep toddlers engaged while developing fine motor skills and problem-solving abilities on the go.",
     images: ["Montessori/10.png", "Montessori/11.png", "Montessori/12.png"],
     buyLink: "https://s.click.aliexpress.com/e/_c4t56PAj"
-      },
+  },
+  {
+    id: 5,
+    category: "Montessori",
+    age: "2-3 Years",
+    title: "Wooden Stick Pulling Game | Boost Thinking & Recognition",
+    price: "17.75",
+    description: "A thrilling two-player game that tests patience and coordination. Players pull sticks strategically; if the disc touches the table, the round is over!",
+    images: ["Montessori/13.png", "Montessori/14.png", "Montessori/15.png"],
+    buyLink: "https://s.click.aliexpress.com/e/_c2JW5Tm7"
+  },
   {
     id: 6,
     category: "Montessori",
     age: "0-24 Months",
-    title: "9-in-1 Wooden Montessori Musical Set | Rattle & Drum Column",
+    title: "9-in-1 Wooden Montessori Musical Set | Rattle & Drum",
     price: "34.95",
-    description: "A beautiful 9-piece wooden musical set designed for early sensory exploration. Includes rattles, bells, and drums to help infants and toddlers discover rhythm and sound through natural materials.",
+    description: "A beautiful 9-piece wooden musical set designed for early sensory exploration. Includes rattles, bells, and drums to help infants discover rhythm.",
     images: ["Montessori/16.png", "Montessori/17.png", "Montessori/18.png", "Montessori/19.png", "Montessori/20.png"],
     buyLink: "https://s.click.aliexpress.com/e/_c4mk6v23"
+  },
+  {
+    id: 7,
+    category: "Montessori",
+    age: "3-6 Years",
+    title: "Montessori Giraffe Busy Book | Preschool Learning Quiet Book",
+    price: "24.22",
+    description: "A whimsical Giraffe-themed quiet book perfect for preschool learning. This sensory travel toy helps children aged 3-6 master basic life skills through fun, hands-on activities.",
+    images: ["Montessori/21.png", "Montessori/22.png", "Montessori/23.png"],
+    buyLink: "https://s.click.aliexpress.com/e/_c3zImrq3"
   }
- ];
+];
 
 const educationalArticles = [
   {
