@@ -47,13 +47,13 @@ const educationalArticles = [
     title: "The Magic of Montessori: Why Less is More",
     excerpt: "Learn why simple wood and tactile toys beat flashing lights for long-term focus and cognitive growth.",
     content: "Montessori education emphasizes independence and respect for a child’s natural psychological development. Unlike electronic toys that 'do the playing for the child,' Montessori toys require the child to engage physically. This builds stronger neural connections and longer attention spans.",
-    image: "Montessori/article-1.avif"
+    image: "Montessori/article-1.jpeg"
   },
   {
     id: "art-2",
     title: "Developing Fine Motor Skills Through Play",
     excerpt: "From zipping to twisting, discover how busy boards prepare little hands for writing and life.",
     content: "Fine motor skills involve the use of small muscles in the hands and wrists. Tools like Busy Boards and Cubes provide safe environments for children to practice 'pincer grips' and coordination, which are foundational for holding pencils and buttoning clothes later in life.",
-    image: "Montessori/article-2.avif"
+    image: "Montessori/article-2.jpg"
   }
 ];
