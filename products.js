@@ -5,7 +5,7 @@ const allProducts = [
     age: "3+ Years",
     title: "Educational Montessori Toy Multi-Layer Track Adventure Game",
     price: "49.66",
-    description: "An interactive brain-building game featuring a multi-layer rail rolling ball model. Designed to enhance motor skills and logical thinking.",
+    description: "An interactive brain-building game featuring a multi-layer rail rolling ball model. Designed to enhance motor skills and logical thinking through engaging, hands-on play.",
     images: ["Montessori/1.avif", "Montessori/2.avif", "Montessori/3.avif"],
     buyLink: "https://s.click.aliexpress.com/e/_c3nfADV1"
   },
@@ -28,5 +28,15 @@ const allProducts = [
     description: "A developmental powerhouse designed specifically for toddlers aged 2-3. Focuses on fine motor skill development and tactile educational learning through various activities.",
     images: ["Montessori/7.avif", "Montessori/8.avif", "Montessori/9.avif"],
     buyLink: "https://s.click.aliexpress.com/e/_c45YKcmn"
+  },
+  {
+    id: 4,
+    category: "Montessori",
+    age: "18m+ Months",
+    title: "22-in-1 Toddler Busy Cube | Montessori Sensory Travel Toy",
+    price: "36.06",
+    description: "The ultimate travel companion! This 22-in-1 Busy Cube offers a variety of sensory activities to keep toddlers engaged while developing fine motor skills and problem-solving abilities on the go.",
+    images: ["Montessori/10.png", "Montessori/11.png", "Montessori/12.png"],
+    buyLink: "https://s.click.aliexpress.com/e/_c4t56PAj"
   }
 ];
