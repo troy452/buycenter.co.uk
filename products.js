@@ -16,7 +16,7 @@ const allProducts = [
     title: "Montessori Busy Board for Toddlers 1-3 | Sensory Music & Light",
     price: "48.72",
     description: "A comprehensive sensory toy featuring music and lights. Perfect for developing fine motor skills and providing early learning engagement for toddlers.",
-    images: ["Montessori/4.avif", "Montessori/5.avif", "Montessori/6.avif"],
+    images: ["Montessori/4.png", "Montessori/5.png", "Montessori/6.png"],
     buyLink: "https://s.click.aliexpress.com/e/_c4L0PDxz"
   },
   {
